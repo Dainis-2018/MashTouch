@@ -1,0 +1,81 @@
+{
+    // Build/upload with the PlatformIO Core CLI (no PlatformIO IDE extension needed).
+    // Run via Terminal > Run Task, or Ctrl+Shift+B for Build.
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "PIO: Build",
+            "type": "process",
+            "command": "${userHome}/.platformio/penv/Scripts/pio.exe",
+            "args": ["run", "-e", "${input:env}"],
+            "group": { "kind": "build", "isDefault": true },
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["autoDetect", "${workspaceFolder}"]
+            }
+        },
+        {
+            "label": "PIO: Upload",
+            "type": "process",
+            "command": "${userHome}/.platformio/penv/Scripts/pio.exe",
+            "args": ["run", "-e", "${input:env}", "-t", "upload"],
+            "group": "build",
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["autoDetect", "${workspaceFolder}"]
+            }
+        },
+        {
+            "label": "PIO: Serial Monitor",
+            "type": "process",
+            "command": "${userHome}/.platformio/penv/Scripts/pio.exe",
+            "args": ["device", "monitor", "--baud", "115200"],
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "PIO: Upload and Monitor",
+            "dependsOrder": "sequence",
+            "dependsOn": ["PIO: Upload", "PIO: Serial Monitor"],
+            "problemMatcher": []
+        },
+        {
+            "label": "PIO: Clean",
+            "type": "process",
+            "command": "${userHome}/.platformio/penv/Scripts/pio.exe",
+            "args": ["run", "-e", "${input:env}", "-t", "clean"],
+            "problemMatcher": []
+        },
+        {
+            "label": "PIO: Refresh IntelliSense",
+            "detail": "Regenerates compile_commands.json for the C/C++ extension",
+            "type": "process",
+            "command": "${userHome}/.platformio/penv/Scripts/pio.exe",
+            "args": ["run", "-e", "${input:env}", "-t", "compiledb"],
+            "problemMatcher": []
+        },
+        {
+            "label": "Mock: web UI on this PC",
+            "detail": "Simulated controller at http://localhost:8080 (tools/mock/server.js)",
+            "type": "process",
+            "command": "node",
+            "args": ["${workspaceFolder}/tools/mock/server.js", "--port", "8080", "--speed", "20"],
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "env",
+            "type": "pickString",
+            "description": "PlatformIO environment",
+            "default": "ws35",
+            "options": [
+                "ws35",
+                "ws35_ota",
+                "devkit",
+                "devkit_ota"
+            ]
+        }
+    ]
+}

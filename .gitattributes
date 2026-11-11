@@ -1,0 +1,14 @@
+# Text files are stored and checked out with LF on every machine
+# (overrides core.autocrlf), so diffs and the embedded web UI stay the same.
+* text=auto eol=lf
+
+# Binary files: never touch line endings, no text diffs
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.bin binary
+*.step binary
+*.stp binary

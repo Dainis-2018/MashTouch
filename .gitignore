@@ -1,0 +1,27 @@
+# PlatformIO build output and libraries
+.pio/
+
+# Generated at build time from web/index.html (tools/embed_web.py)
+src/net/webui_data.h
+
+# PC mock state (may hold Wi-Fi and web passwords)
+tools/mock/data.json
+
+# Editor: keep only the shared build tasks
+.vscode/*
+!.vscode/tasks.json
+*.code-workspace
+compile_commands.json
+
+# KiCad scratch and backups
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.lck
+_autosave-*
+
+# Python and OS clutter
+__pycache__/
+Thumbs.db
+desktop.ini
+.DS_Store

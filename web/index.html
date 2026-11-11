@@ -1,0 +1,1576 @@
+<!doctype html>
+<!--
+  MashTouch web UI. Copyright (C) 2026 MashTouch contributors.
+  SPDX-License-Identifier: GPL-3.0-or-later
+  Plain HTML/CSS/JS, no framework, no build step. Embedded in the firmware
+  (gzipped) by tools/embed_web.py; try it on a PC with tools/mock/server.js.
+  Talks to the JSON API in src/net/web.cpp (docs/web-api.md).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14161a">
+<title>MashTouch</title>
+<style>
+/* ===== Theme =============================================================== */
+:root{
+  color-scheme:light dark;
+  --bg:#f2f3f5;--card:#fff;--card2:#ebedf0;--line:#d9dce1;--text:#17191c;--muted:#626a75;
+  --accent:#c47f17;--on-accent:#fff;--ok:#26864b;--warn:#a5731a;--bad:#c33b31;--heat:#d8532b;--pump:#2a77c4;
+  --r:16px;--r2:10px;--shadow:0 1px 2px #0000000f,0 6px 18px #0000000a;--head:58px;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+:root[data-theme=dark]{color-scheme:dark;
+  --bg:#0f1114;--card:#181b20;--card2:#21252c;--line:#2b3038;--text:#e6e8ec;--muted:#99a1ac;
+  --accent:#f0b13d;--on-accent:#1d1404;--ok:#47c27b;--warn:#e2b24f;--bad:#ef6c61;--heat:#ff7d55;--pump:#5ca7f7;--shadow:0 1px 2px #0000004d}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;
+  --bg:#0f1114;--card:#181b20;--card2:#21252c;--line:#2b3038;--text:#e6e8ec;--muted:#99a1ac;
+  --accent:#f0b13d;--on-accent:#1d1404;--ok:#47c27b;--warn:#e2b24f;--bad:#ef6c61;--heat:#ff7d55;--pump:#5ca7f7;--shadow:0 1px 2px #0000004d}}
+
+/* ===== Base ================================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--font);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+h1{font-size:1.45rem;margin:0}h2{font-size:1rem;margin:0;font-weight:650}h3{font-size:.95rem;margin:0}
+.muted{color:var(--muted)}.small{font-size:13px}.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.num-t{font-variant-numeric:tabular-nums}
+svg.i{width:20px;height:20px;flex:none;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+[hidden]{display:none!important}
+
+/* ===== Header ============================================================== */
+.hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;height:var(--head);
+  padding:0 max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));background:var(--card);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;text-decoration:none;color:inherit}
+.logo b{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--accent);color:var(--on-accent);font-size:13px;letter-spacing:.5px}
+.nav{display:flex;gap:2px;margin:0 auto 0 14px}
+.nav a{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:var(--r2);color:var(--muted);text-decoration:none;font-weight:560;white-space:nowrap}
+.nav a:hover{background:var(--card2);color:var(--text)}
+.nav a.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.tools{display:flex;align-items:center;gap:6px;margin-left:auto}
+.ib{display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:var(--r2);background:none;color:var(--muted);cursor:pointer}
+.ib:hover{background:var(--card2);color:var(--text)}
+.htemp{font-weight:700;font-variant-numeric:tabular-nums;padding:0 4px}
+.bars{display:inline-flex;align-items:flex-end;gap:2px;height:18px;padding:0 4px}
+.bars i{width:4px;border-radius:1px;background:var(--line)}
+.bars i:nth-child(1){height:25%}.bars i:nth-child(2){height:50%}.bars i:nth-child(3){height:75%}.bars i:nth-child(4){height:100%}
+.bars.up i.on{background:var(--ok)}.bars.ap i.on{background:var(--warn)}.bars.down i:first-child{background:var(--bad)}
+.menu-b,.htitle,.scrim{display:none}
+@media (max-width:860px){
+  .menu-b{display:grid}.logo{display:none}.htitle{display:block;font-weight:700;font-size:1.05rem}
+  .nav{display:none;position:absolute;top:calc(var(--head) - 1px);left:0;right:0;z-index:31;flex-direction:column;margin:0;padding:8px;
+    background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 14px 28px #0003}
+  .nav.open{display:flex}.nav a{padding:12px;color:var(--text);font-size:1rem}
+  .scrim{display:block;position:fixed;inset:var(--head) 0 0 0;z-index:29;background:#0000004d}
+}
+.offline{display:flex;justify-content:center;align-items:center;gap:10px;padding:8px;font-weight:600;font-size:14px;
+  background:color-mix(in srgb,var(--bad) 18%,var(--card));border-bottom:1px solid var(--line)}
+.attn{display:flex;justify-content:center;align-items:center;gap:10px;padding:10px 14px;font-weight:700;text-decoration:none;color:var(--on-accent);background:var(--accent)}
+.attn.bad{background:var(--bad);color:#fff}
+.attn u{font-weight:600}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== Layout ============================================================== */
+.page{max-width:1180px;margin:0 auto;padding:16px 16px 96px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.phead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.phead p{margin:2px 0 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.cols{columns:2 400px;column-gap:16px}.cols>.card{break-inside:avoid;margin-bottom:16px}
+.kv{display:grid;margin:8px 0 0}.kv>div{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line)}
+.kv dt{color:var(--muted)}.kv dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.net{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}.net .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+.notice{padding:12px 16px;border-radius:var(--r2);background:color-mix(in srgb,var(--warn) 14%,var(--card));border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);margin-bottom:14px}
+
+/* ===== Buttons & inputs ===================================================== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 16px;border:1px solid transparent;
+  border-radius:var(--r2);background:var(--accent);color:var(--on-accent);font-weight:620;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{filter:brightness(1.06)}.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.btn.ghost{background:var(--card2);color:var(--text)}.btn.danger{background:var(--bad);color:#fff}.btn.ok{background:var(--ok);color:#fff}
+.btn.sm{min-height:32px;padding:0 11px;font-size:13px}
+.lnk{border:0;background:none;padding:0;color:var(--accent);font-weight:620;cursor:pointer}
+input[type=text],input[type=password],input[type=number],select,textarea{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);min-height:36px;padding:0 10px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,.btn:focus-visible,.ib:focus-visible,.sw:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:1px}
+select{padding-right:28px;appearance:none;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center}
+textarea{width:100%;min-height:260px;padding:10px;font:13px/1.45 var(--mono)}
+.num{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:var(--r2);background:var(--card);overflow:hidden}
+.num input{width:66px;min-height:34px;border:0;border-radius:0;padding:0 4px;background:none;text-align:right;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.num input::-webkit-inner-spin-button{display:none}
+.num .u{padding-right:6px;font-size:13px;color:var(--muted)}
+.num button{width:34px;min-height:34px;border:0;background:var(--card2);font-size:18px;cursor:pointer}
+.sw{position:relative;width:46px;height:28px;border:0;padding:0;border-radius:99px;background:var(--line);cursor:pointer;transition:background .15s;flex:none}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0005;transition:transform .15s}
+.sw[aria-checked=true]{background:var(--accent)}.sw[aria-checked=true]::after{transform:translateX(18px)}
+.fld{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0}
+.fld+.fld{border-top:1px solid var(--line)}
+.fld .t{min-width:0}.fld label{font-weight:600}.fld p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.fld.err .num,.fld.err select,.fld.err input{border-color:var(--bad)}
+
+/* ===== Chips =============================================================== */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;background:var(--card2);font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;border:0}
+.chip b{color:var(--text);font-variant-numeric:tabular-nums}
+button.chip{cursor:pointer}button.chip:hover{box-shadow:inset 0 0 0 1px var(--accent)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.chip.heat.on{background:color-mix(in srgb,var(--heat) 15%,var(--card2));color:var(--text)}
+.chip.heat.on .dot{background:var(--heat);box-shadow:0 0 0 3px color-mix(in srgb,var(--heat) 26%,transparent)}
+.chip.pump.on{background:color-mix(in srgb,var(--pump) 15%,var(--card2));color:var(--text)}
+.chip.pump.on .dot{background:var(--pump);box-shadow:0 0 0 3px color-mix(in srgb,var(--pump) 26%,transparent)}
+.chip.go{background:var(--accent);color:var(--on-accent)}.chip.go svg.i{width:14px;height:14px}
+.chip svg.i{width:14px;height:14px}
+.chip.sim{background:color-mix(in srgb,var(--warn) 18%,var(--card2));color:var(--warn)}
+.badge{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+
+/* ===== Brew dashboard ======================================================= */
+.brew{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.brew .col{display:grid;gap:16px;min-width:0}
+.brew .wide{grid-column:1/-1}
+.hero{display:grid;gap:14px}
+.hero-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.mode{font-size:12px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.mode.idle{color:var(--muted)}
+.stage{font-size:1.4rem;line-height:1.2;margin:2px 0 0;font-weight:700}
+.stage.warn{color:var(--warn)}.stage.bad{color:var(--bad)}
+.hero-main{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.big{font-size:3.7rem;font-weight:750;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big small{font-size:.4em;font-weight:600;color:var(--muted);margin-left:3px;letter-spacing:0}
+.big.ok{color:var(--ok)}.big.none{color:var(--muted);opacity:.5}
+.tmr{text-align:right}.tmr .big{font-size:2.3rem;font-weight:680}
+.sub{margin-top:6px;font-size:13px;font-weight:600;color:var(--muted)}
+@media (max-width:380px){.big{font-size:3rem}.tmr .big{font-size:1.8rem}}
+.prompt{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+.prompt.danger{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,var(--card))}
+.prompt .q{font-size:1.2rem;font-weight:700;margin-bottom:12px}
+.prompt .row .btn{flex:1;min-height:52px;font-size:1.05rem}
+.fault{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--card));color:var(--bad);font-weight:650}
+.nn{display:grid;gap:9px}
+.nn-r{display:grid;grid-template-columns:46px 1fr auto;gap:8px;align-items:baseline}
+.nn-tag{font-size:11px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--accent)}
+.nn-l{font-weight:700;font-size:1.05rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nn-m{font-size:13px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.nn-next{border-top:1px solid var(--line);padding-top:9px}.nn-next .nn-tag{color:var(--muted)}.nn-next .nn-l{font-weight:600;font-size:1rem}
+.bar{height:8px;margin-left:54px;border-radius:99px;background:var(--card2);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:inherit;background:var(--accent);transition:width 1s linear}
+.bar.busy span{width:28%!important;animation:busy 1.6s ease-in-out infinite}
+@keyframes busy{from{transform:translateX(-100%)}to{transform:translateX(360%)}}
+.plan{list-style:none;margin:0;padding:0}
+.plan li{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:7px 0}
+.plan li+li{border-top:1px solid var(--line)}
+.plan .pd{width:10px;height:10px;border-radius:50%;border:2px solid var(--line);justify-self:center}
+.plan .pm{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.plan li.ev .pl,.plan li.add .pl{color:var(--muted)}.plan li.add .pl{padding-left:14px;font-size:14px}
+.plan li.ev .pd{border-style:dashed}
+.plan li.done .pd{background:var(--ok);border-color:var(--ok)}.plan li.done .pl{color:var(--muted)}
+.plan li.cur{background:color-mix(in srgb,var(--accent) 11%,transparent);border-radius:var(--r2);margin:0 -8px;padding:7px 8px}
+.plan li.cur .pd{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.plan li.cur .pl{color:var(--text);font-weight:700}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.key{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:74px;padding:8px 4px;
+  border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);cursor:pointer;user-select:none;-webkit-user-select:none;
+  touch-action:none;transition:transform .06s,background .06s;font-weight:700}
+.key svg.i{width:22px;height:22px}
+.key small{font-size:11px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.key:hover{border-color:var(--accent)}
+.key.down{transform:scale(.96);background:color-mix(in srgb,var(--accent) 15%,var(--card))}
+.key.main{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}.key.main small{color:var(--on-accent);opacity:.8}
+.key.act{background:color-mix(in srgb,var(--ok) 17%,var(--card));border-color:var(--ok)}
+.key.stop{color:var(--bad)}
+.key .fill{position:absolute;left:0;bottom:0;height:4px;width:100%;background:currentColor;transform-origin:left;transform:scaleX(0)}
+.key.holding .fill{animation:fill 1s linear forwards}
+@keyframes fill{to{transform:scaleX(1)}}
+.chart-w{position:relative}
+canvas{display:block;width:100%;height:250px}
+.segs{display:inline-flex;padding:3px;gap:2px;border-radius:10px;background:var(--card2)}
+.seg{border:0;padding:5px 11px;border-radius:8px;background:none;color:var(--muted);font-weight:600;font-size:13px;cursor:pointer}
+.seg.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px #0002}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+@media (max-width:760px){
+  .brew{grid-template-columns:minmax(0,1fr);gap:12px}.brew .col{gap:12px}.brew .card{padding:14px}
+  .page.has-keys{padding-bottom:120px}
+  .keys-card{position:fixed;left:0;right:0;bottom:0;z-index:20;border-radius:0;border-width:1px 0 0;padding:8px 10px max(8px,env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 -6px 20px #00000014}
+  .keys-card .key{min-height:62px;box-shadow:none;padding:6px 2px;font-size:14px}.keys-card .card-h{display:none}
+  .keys-card .keys{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+  canvas{height:210px}
+}
+
+/* ===== Recipes ============================================================== */
+.rcard{display:flex;flex-direction:column;gap:10px}
+.rcard.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+.rcard .sum{font-size:13px;color:var(--muted)}
+.rcard .row{margin-top:auto}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:20px;text-align:center;color:var(--muted)}
+.drop.over,body.dragging .drop{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.st{width:100%;border-collapse:collapse}
+.st th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:650;text-align:left;padding:6px 6px}
+.st td{padding:7px 6px;border-top:1px solid var(--line);vertical-align:middle}
+.st td.fixed{font-weight:700;white-space:nowrap}
+.st tr.evr td{border-top:0;padding-top:0;color:var(--warn);font-size:13px;font-weight:600}
+.st input[type=text]{width:100%;min-width:110px}
+.st .acts{white-space:nowrap;text-align:right}.st .acts .ib{display:inline-grid;width:34px;height:34px}.st .acts .ib:disabled{opacity:.3;cursor:default}
+@media (max-width:760px){
+  .st thead{display:none}.st,.st tbody,.st tr,.st td{display:block;width:100%}
+  .st tr{border-top:1px solid var(--line);padding:8px 0}.st td{border:0;padding:3px 0}
+  .st td[data-l]::before{content:attr(data-l);display:inline-block;min-width:90px;color:var(--muted);font-size:13px}
+  .st tr.evr{border:0;padding:0 0 6px}
+}
+
+/* ===== Save bar, toasts, dialog ============================================= */
+.savebar{position:fixed;left:50%;bottom:16px;z-index:25;transform:translateX(-50%);display:flex;align-items:center;gap:14px;
+  width:min(580px,calc(100vw - 24px));padding:10px 10px 10px 18px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);box-shadow:0 10px 32px #0000002e}
+.savebar span{flex:1;font-size:14px;font-weight:600}
+.toasts{position:fixed;right:16px;bottom:16px;z-index:40;display:grid;gap:8px;width:min(380px,calc(100vw - 32px))}
+@media (max-width:760px){.toasts{top:calc(var(--head) + 8px);bottom:auto;left:16px;right:16px;width:auto}}
+.toast{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 10px 11px 14px;background:var(--card);border:1px solid var(--line);
+  border-left:4px solid var(--accent);border-radius:var(--r2);box-shadow:var(--shadow);cursor:pointer}
+.toast.ok{border-left-color:var(--ok)}.toast.err{border-left-color:var(--bad)}.toast.alert{border-left-color:var(--warn);font-weight:700;font-size:1.05rem}
+dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--text);padding:20px;width:min(420px,calc(100vw - 32px));box-shadow:0 20px 50px #0006}
+dialog::backdrop{background:#0008}
+dialog h3{font-size:1.1rem;margin-bottom:6px}
+dialog .dv{display:flex;justify-content:center;margin:16px 0}
+dialog .dv .num input{width:100px;font-size:1.6rem;min-height:52px}
+dialog .dv .num button{width:52px;min-height:52px;font-size:24px}
+dialog .dv input[type=text],dialog .dv input[type=password]{width:100%;min-height:44px}
+dialog .row{justify-content:flex-end;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.spin,.bar.busy span{animation-duration:4s}.key.holding .fill{animation-duration:1s}.bar span{transition:none}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <button class="ib menu-b" id="menuB" aria-label="Menu"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="logo" href="#/brew"><b>MT</b><span>MashTouch</span></a>
+  <span class="htitle" id="htitle">Brew</span>
+  <nav class="nav" id="nav"></nav>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="tools">
+    <span class="htemp" id="htemp"></span>
+    <span class="bars down" id="bars" title="Connection"><i></i><i></i><i></i><i></i></span>
+    <button class="ib" id="soundB" aria-label="Sound"></button>
+    <button class="ib" id="themeB" aria-label="Theme"></button>
+  </div>
+</header>
+<div class="offline" id="offline" hidden><span class="spin"></span>Connection to the controller lost — retrying…</div>
+<a class="attn" id="attn" href="#/brew" hidden></a>
+<main class="page" id="page"></main>
+<div class="toasts" id="toasts"></div>
+<div class="savebar" id="savebar" hidden><span id="saveText">Unsaved changes</span>
+  <button class="btn ghost" id="saveDiscard">Discard</button><button class="btn" id="saveDo">Save</button></div>
+<dialog id="dlg"></dialog>
+
+<script>
+'use strict';
+// ==========================================================================
+// Basics
+// ==========================================================================
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const ICONS = {
+  brew: '<path d="M5 9h14v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M19 11h1.5a1.5 1.5 0 0 1 0 3H19"/><path d="M9 3c-1 1.5 1 2.5 0 4M13 3c-1 1.5 1 2.5 0 4"/>',
+  recipes: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h5"/>',
+  history: '<path d="M4 19V5M4 19h16"/><path d="m7 15 4-5 3 3 5-7"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+  sensors: '<path d="M10 4a2 2 0 1 1 4 0v10.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
+  network: '<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/>',
+  play: '<path d="M7 4v16l13-8z"/>', pause: '<path d="M8 5v14M16 5v14"/>', stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  skip: '<path d="M5 5v14l10-7zM18 5v14"/>', pump: '<path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/>',
+  heat: '<path d="M12 3c3 4 6 6.5 6 10a6 6 0 0 1-12 0c0-2.5 1.5-4 3-5.5.5 2 1.5 3 3 3-1-3 0-5.5 0-7.5z"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M10 2h4"/>',
+  tune: '<path d="M3 12h3l3-7 4 14 3-7h5"/>', clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  hand: '<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v8a7 7 0 0 1-7 7 6 6 0 0 1-5-3l-2.5-4a1.5 1.5 0 0 1 2.5-1.6L8 15"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>', auto: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
+  bell: '<path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>', belloff: '<path d="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l2 2H8M10 21h4M3 3l18 18"/>',
+  up: '<path d="m6 15 6-6 6 6"/>', down: '<path d="m6 9 6 6 6-6"/>', trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  upload: '<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>', dl: '<path d="M12 4v12M7 11l5 5 5-5M4 20h16"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+};
+const icon = (n, cls) => `<svg class="i ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n] || ''}</svg>`;
+
+let S = null, F = false;                       // last status, Fahrenheit display
+const unit = () => F ? '°F' : '°C';
+const toD = c => F ? c * 1.8 + 32 : c, fromD = d => F ? (d - 32) / 1.8 : d;
+const dToD = c => F ? c * 1.8 : c, dFromD = d => F ? d / 1.8 : d;
+const fmtT = (c, dec = 1) => c == null ? '--.-' : toD(c).toFixed(dec);
+const fmtTU = c => c == null ? '--.-' + unit() : fmtT(c) + unit();
+const p2 = n => String(n).padStart(2, '0');
+function fmtTime(ms) { const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600);
+  return h ? `${h}:${p2(Math.floor(s / 60) % 60)}:${p2(s % 60)}` : `${p2(Math.floor(s / 60))}:${p2(s % 60)}`; }
+const fmtMin = m => m >= 60 ? `${Math.floor(m / 60)} h ${m % 60 ? (m % 60) + ' min' : ''}`.trim() : `${m} min`;
+
+// ==========================================================================
+// API
+// ==========================================================================
+async function api(method, path, body, raw) {
+  const opt = {method, headers: {}};
+  if (body !== undefined) { opt.body = raw ? body : JSON.stringify(body); opt.headers['Content-Type'] = raw ? 'text/plain' : 'application/json'; }
+  const r = await fetch(path, opt);
+  const t = await r.text();
+  let j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+  if (!r.ok) {
+    let msg = j && (j.error || (j.errors && j.errors.map(e => e.path + ': ' + e.error).join('; '))) || r.statusText;
+    if (r.status === 401) msg = 'login required';
+    const err = new Error(msg); err.data = j; throw err;
+  }
+  return j;
+}
+const get = p => api('GET', p), post = (p, b, raw) => api('POST', p, b, raw);
+async function act(action, extra) {
+  try { await post('/api/action', Object.assign({action}, extra || {})); poll(); return true; }
+  catch (e) { toast('Not done: ' + e.message, 'err'); return false; }
+}
+
+// ==========================================================================
+// Toasts, sound, dialogs, save bar
+// ==========================================================================
+function toast(text, kind, stay) {
+  const d = document.createElement('div');
+  d.className = 'toast ' + (kind || '');
+  d.innerHTML = `<span>${esc(text)}</span><span class="muted">✕</span>`;
+  d.onclick = () => d.remove();
+  $('toasts').appendChild(d);
+  if (!stay) setTimeout(() => d.remove(), kind === 'alert' ? 20000 : 4000);
+}
+
+let soundOn = localStorage.getItem('mt-sound') !== 'off', audio = null;
+function beep(pattern) {
+  if (!soundOn) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    let t = audio.currentTime;
+    for (const [f, ms] of pattern) {
+      if (f) { const o = audio.createOscillator(), g = audio.createGain();
+        o.frequency.value = f; o.connect(g); g.connect(audio.destination);
+        g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.25, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + ms / 1000);
+        o.start(t); o.stop(t + ms / 1000 + .02); }
+      t += ms / 1000 + .06;
+    }
+  } catch (e) {}
+}
+const SOUNDS = {prompt: [[880, 220], [0, 80], [880, 220]], alarm: [[1320, 160], [0, 60], [1320, 160], [0, 60], [1320, 160], [0, 60], [1320, 300]],
+  info: [[660, 140]], step: [[1047, 280], [784, 520]], fault: [[440, 300], [0, 100], [330, 400]]};
+document.addEventListener('pointerdown', () => { if (soundOn && !audio) try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }, {once: true});
+function renderSoundB() { $('soundB').innerHTML = icon(soundOn ? 'bell' : 'belloff'); $('soundB').title = soundOn ? 'Sounds on' : 'Sounds off'; }
+$('soundB').onclick = () => { soundOn = !soundOn; localStorage.setItem('mt-sound', soundOn ? 'on' : 'off'); renderSoundB(); if (soundOn) beep(SOUNDS.info); };
+
+let theme = localStorage.getItem('mt-theme') || 'auto';
+function applyTheme() {
+  if (theme === 'auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = theme;
+  $('themeB').innerHTML = icon(theme === 'auto' ? 'auto' : theme === 'light' ? 'sun' : 'moon');
+  $('themeB').title = 'Theme: ' + theme;
+}
+$('themeB').onclick = () => { theme = theme === 'auto' ? 'light' : theme === 'light' ? 'dark' : 'auto'; localStorage.setItem('mt-theme', theme); applyTheme(); drawChart(); drawLog(); };
+
+// Number stepper markup; any .num button steps its input.
+function numBox(value, o) {
+  const st = o.step || 1, dec = o.dec ?? (st < 1 ? (String(st).split('.')[1] || '').length : 0);
+  const v = value == null || isNaN(value) ? '' : (+value).toFixed(dec);
+  return `<span class="num"><button type="button" data-d="-1" tabindex="-1">−</button><input type="number" inputmode="decimal" value="${v}" step="${st}"` +
+    `${o.min != null ? ` min="${o.min}"` : ''}${o.max != null ? ` max="${o.max}"` : ''} ${o.attrs || ''}>${o.unit ? `<span class="u">${esc(o.unit)}</span>` : ''}` +
+    `<button type="button" data-d="1" tabindex="-1">+</button></span>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.num button'); if (!b) return;
+  const inp = b.parentNode.querySelector('input'), st = parseFloat(inp.step) || 1;
+  let v = (parseFloat(inp.value) || 0) + st * +b.dataset.d;
+  if (inp.min !== '') v = Math.max(+inp.min, v); if (inp.max !== '') v = Math.min(+inp.max, v);
+  const dec = (String(st).split('.')[1] || '').length;
+  inp.value = v.toFixed(dec);
+  inp.dispatchEvent(new Event('input', {bubbles: true})); inp.dispatchEvent(new Event('change', {bubbles: true}));
+});
+const swHtml = (on, attrs) => `<button type="button" class="sw" role="switch" aria-checked="${!!on}" ${attrs || ''}></button>`;
+document.addEventListener('click', e => {
+  const s = e.target.closest('.sw'); if (!s || s.disabled) return;
+  s.setAttribute('aria-checked', s.getAttribute('aria-checked') !== 'true');
+  s.dispatchEvent(new Event('change', {bubbles: true}));
+});
+
+// Modal dialogs instead of prompt()/confirm().
+function dialog(html, onOpen) {
+  return new Promise(resolve => {
+    const d = $('dlg');
+    d.innerHTML = html;
+    const done = v => { d.close(); resolve(v); };
+    d.onclose = () => resolve(undefined);
+    d.querySelectorAll('[data-r]').forEach(b => b.onclick = () => done(b.dataset.r === 'ok' ? (onOpen && onOpen.value ? onOpen.value(d) : true) : undefined));
+    d.onkeydown = e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); d.querySelector('[data-r=ok]').click(); } };
+    d.showModal();
+    if (onOpen && onOpen.init) onOpen.init(d);
+    const f = d.querySelector('input'); if (f) { f.focus(); f.select && f.select(); }
+  });
+}
+const askNumber = (title, value, o) => dialog(`<h3>${esc(title)}</h3>${o.help ? `<p class="muted small">${esc(o.help)}</p>` : ''}
+  <div class="dv">${numBox(value, o)}</div><div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn" data-r="ok">OK</button></div>`,
+  {value: d => { const v = parseFloat(d.querySelector('input').value); return isNaN(v) ? undefined : Math.min(o.max ?? 1e9, Math.max(o.min ?? -1e9, v)); }});
+const askText = (title, value, o = {}) => dialog(`<h3>${esc(title)}</h3>${o.help ? `<p class="muted small">${esc(o.help)}</p>` : ''}
+  <div class="dv"><input type="${o.password ? 'password' : 'text'}" value="${esc(value || '')}" autocomplete="off"></div>
+  <div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn" data-r="ok">OK</button></div>`,
+  {value: d => d.querySelector('input').value});
+const confirmDlg = (title, text, yes, danger) => dialog(`<h3>${esc(title)}</h3><p class="muted">${esc(text || '')}</p>
+  <div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn ${danger ? 'danger' : ''}" data-r="ok">${esc(yes || 'OK')}</button></div>`);
+
+let saveCtx = null;
+function saveBar(ctx) {  // {text, save(), discard()} or null
+  saveCtx = ctx;
+  $('savebar').hidden = !ctx;
+  if (ctx) $('saveText').textContent = ctx.text || 'Unsaved changes';
+}
+$('saveDiscard').onclick = () => saveCtx && saveCtx.discard();
+$('saveDo').onclick = async () => { if (!saveCtx) return; $('saveDo').disabled = true; try { await saveCtx.save(); } finally { $('saveDo').disabled = false; } };
+window.addEventListener('beforeunload', e => { if (saveCtx) { e.preventDefault(); e.returnValue = ''; } });
+
+// ==========================================================================
+// Routing
+// ==========================================================================
+const PAGES = [['brew', 'Brew'], ['recipes', 'Recipes'], ['history', 'History'], ['sensors', 'Sensors'], ['settings', 'Settings'], ['network', 'System']];
+$('nav').innerHTML = PAGES.map(([k, l]) => `<a href="#/${k}" data-p="${k}">${icon(k)}<span>${l}</span></a>`).join('');
+$('menuB').onclick = () => { const o = !$('nav').classList.contains('open'); $('nav').classList.toggle('open', o); $('scrim').hidden = !o; };
+$('scrim').onclick = () => { $('nav').classList.remove('open'); $('scrim').hidden = true; };
+let route = '', routeArg = '';
+async function navigate() {
+  const [, p = 'brew', a = ''] = location.hash.split('/');
+  const page = PAGES.some(x => x[0] === p) ? p : 'brew';
+  if (saveCtx && (page !== route || a !== routeArg)) {
+    if (!await confirmDlg('Leave without saving?', 'Your changes on this page will be lost.', 'Leave', true)) {
+      history.replaceState(null, '', `#/${route}${routeArg ? '/' + routeArg : ''}`); return;
+    }
+    saveBar(null);
+  }
+  route = page; routeArg = decodeURIComponent(a);
+  document.querySelectorAll('#nav a').forEach(x => x.classList.toggle('on', x.dataset.p === page));
+  $('htitle').textContent = PAGES.find(x => x[0] === page)[1];
+  $('nav').classList.remove('open'); $('scrim').hidden = true;
+  $('page').className = 'page';
+  ({brew: pageBrew, recipes: pageRecipes, history: pageHistory, sensors: pageSensors, settings: pageSettings, network: pageNetwork})[page]();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', navigate);
+
+// ==========================================================================
+// Status polling (1 Hz) and events
+// ==========================================================================
+let failures = 0, lastSeq = -1, lastPrompt = '';
+// Temperature history. It comes from the controller (6 h, one sample per
+// 10 s of its clock), so a reload shows the whole curve; new samples are
+// appended from the status. t is the controller clock in seconds.
+let hist = [], timeSent = false;
+let chartSpan = +(localStorage.getItem('mt-span') || 1800);
+async function loadHistory() {
+  try {
+    const h = await get('/api/history');
+    hist = h.t.map((t, i) => ({t, temp: h.temp[i] == null ? null : h.temp[i] / 10, sp: h.sp[i] == null ? null : h.sp[i] / 10}));
+    if (route === 'brew') drawChart();
+  } catch (e) {}
+}
+async function poll() {
+  try {
+    const s = await get('/api/status');
+    failures = 0; $('offline').hidden = true;
+    const unitChanged = !S || s.fahrenheit !== F;
+    S = s; F = s.fahrenheit;
+    const lastT = hist.length ? hist[hist.length - 1].t : -1e9;
+    if (S.clock < lastT) { hist = []; loadHistory(); }   // the controller restarted
+    else if (S.clock - lastT >= 10) hist.push({t: S.clock, temp: S.temp, sp: S.mode === 'idle' ? null : S.setpoint});
+    while (hist.length > 2200) hist.shift();
+    // No clock on the controller (no NTP in access-point mode): give it this device's time.
+    if (!S.time && !timeSent) { timeSent = true; post('/api/time', {epoch: Math.round(Date.now() / 1000)}).catch(() => {}); }
+    renderHeader();
+    events();
+    attention();
+    if (route === 'brew') renderBrew();
+    if (route === 'sensors') renderSensorReadings();
+    if (unitChanged && route !== 'brew' && !saveCtx) navigate();
+  } catch (e) {
+    if (++failures >= 3) { $('offline').hidden = false; $('bars').className = 'bars down'; }
+  }
+}
+function renderHeader() {
+  $('htemp').textContent = fmtTU(S.temp);
+  const w = S.wifi || {}, r = w.rssi || 0;
+  const n = !w.connected ? (w.apOn ? 2 : 0) : r >= -55 ? 4 : r >= -65 ? 3 : r >= -75 ? 2 : 1;
+  $('bars').className = 'bars ' + (w.connected ? 'up' : w.apOn ? 'ap' : 'down');
+  $('bars').querySelectorAll('i').forEach((b, i) => b.classList.toggle('on', i < n));
+  $('bars').title = w.connected ? `Wi-Fi ${r} dBm` : w.apOn ? 'Setup access point' : 'No Wi-Fi';
+}
+function events() {
+  if (lastSeq < 0) { lastSeq = S.eventSeq; lastPrompt = S.prompt; return; }   // nothing old on page load
+  for (const e of S.events) {
+    if (e.seq <= lastSeq) continue;
+    switch (e.type) {
+      case 'addition': toast('Add now: ' + e.text, 'alert', true); beep(SOUNDS.alarm); buzz([300, 100, 300, 100, 300]); break;
+      case 'timer-done': toast('The countdown has finished', 'alert', true); beep(SOUNDS.alarm); break;
+      case 'temp-reached': toast('Temperature reached', 'ok'); beep(SOUNDS.info); break;
+      case 'step-done': toast('Step finished', 'ok'); beep(SOUNDS.step); break;
+      case 'autotune-done': toast('Autotune done: ' + e.text, 'alert', true); beep(SOUNDS.alarm); break;
+      case 'autotune-failed': toast('Autotune did not finish', 'err', true); beep(SOUNDS.fault); break;
+      case 'sensor-fault': toast('Sensor fault: heater and pump are off', 'err', true); beep(SOUNDS.fault); break;
+      case 'safety-cut': toast('Safety cut: heater off', 'err', true); beep(SOUNDS.fault); break;
+      case 'brew-finished': toast('Brew finished', 'ok', true); beep(SOUNDS.alarm); break;
+      case 'boil-soon': toast('Close to the boil — watch for a boil-over', 'alert', true); beep(SOUNDS.alarm); buzz([300, 100, 300]); break;
+      case 'boil-stalled': boilStalled(); break;
+    }
+  }
+  if (S.prompt && S.prompt !== lastPrompt) { beep(SOUNDS.prompt); buzz([200, 100, 200]); promptAt = Date.now(); }
+  lastPrompt = S.prompt; lastSeq = S.eventSeq;
+}
+const buzz = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+async function boilStalled() {
+  beep(SOUNDS.prompt);
+  if ($('dlg').open) { toast('The temperature stopped rising. If it is boiling, tap "Start timer now" on the Brew page.', 'alert', true); return; }
+  if (await confirmDlg('Is it boiling?', `The temperature stopped rising at ${fmtTU(S.temp)}, below the boil setting. Start the boil timer now? The heater then drops to the boil power.`, 'Start timer'))
+    act('startTimer');
+}
+
+// A waiting prompt or a fault must not be missed on another page or tab:
+// banner on the other pages, the tab title, and a reminder sound every 30 s.
+let promptAt = 0, titleFlip = false;
+function attention() {
+  const waiting = S.mode === 'auto' && (S.prompt || S.confirm);
+  const text = S.faults ? S.faultText.join(' · ') : waiting ? (PROMPTS[S.prompt] ? PROMPTS[S.prompt][0] : S.promptText || 'Confirm on the Brew page') : '';
+  const el = $('attn');
+  el.hidden = !text || route === 'brew';
+  el.className = 'attn' + (S.faults ? ' bad' : '');
+  if (text) el.innerHTML = `${esc(text)} <u>Open Brew →</u>`;
+  if (waiting && !S.faults && Date.now() - promptAt > 30000) { promptAt = Date.now(); beep(SOUNDS.prompt); buzz(200); }
+  titleFlip = !titleFlip;
+  let t = 'MashTouch';
+  if (S.faults) t = '⚠ Fault — MashTouch';
+  else if (waiting && titleFlip) t = '● Waiting for you — MashTouch';
+  else if (S.mode !== 'idle') t = `${fmtTU(S.temp)} · ${stageTitle()}${S.timer.counting ? ' ' + fmtTime(S.timer.remainingMs) : ''} — MashTouch`;
+  document.title = t;
+}
+
+// ==========================================================================
+// Brew page
+// ==========================================================================
+const PROMPTS = {
+  waterAdded: ['Is the water in the kettle and the element covered?', 'Yes, start', 'Stop the brew', 'The pump is primed next, then the strike water heats up.'],
+  addMalt: ['Strike temperature reached. Add the grain and stir.', 'Grain is in', 'Stop the brew', 'The heater holds the temperature and the pump is off until you confirm.'],
+  iodineTest: ['Iodine test: is the conversion complete?', 'Yes, continue', 'Not yet', ''],
+  removeMalt: ['Mash finished. Lift the bag or malt pipe out of the kettle.', 'Bag is out', 'Stop the brew', 'Heating to the boil starts as soon as you confirm; let the bag drain above the kettle.'],
+  startWhirlpool: ['Start the whirlpool?', 'Start', 'Skip', 'The pump runs for the whirlpool time.'],
+  startCooling: ['Boil finished — the heater is off. Start the chiller.', 'Cooling started', 'Skip', 'The brew ends when the cooling target is reached.'],
+  finished: ['Brew finished. Cheers!', 'Done', null, ''],
+};
+let brewRecipe = null, previewRecipe = null, lastMode = '', keysSig = '';
+
+function pageBrew() {
+  keysSig = ''; lastMode = ''; pickSig = '~';
+  $('page').classList.add('has-keys');
+  $('page').innerHTML = `
+  <div class="brew">
+    <div class="col">
+      <div id="bFault" class="card fault" hidden></div>
+      <div id="bResume" class="card prompt" hidden></div>
+      <div id="bPrompt" class="card prompt" hidden></div>
+      <div class="card hero">
+        <div class="hero-top"><div><div id="bMode" class="mode"></div><div id="bStage" class="stage"></div></div><div id="bChips2" class="chips"></div></div>
+        <div class="hero-main">
+          <div><div id="bTemp" class="big none">--.-</div><div id="bTempSub" class="sub"></div></div>
+          <div class="tmr"><div id="bTimer" class="big"></div><div id="bTimerSub" class="sub"></div></div>
+        </div>
+        <div id="bChips" class="chips"></div>
+      </div>
+      <div class="card keys-card"><div class="card-h"><h2>Controls</h2><span class="muted small" id="bKeyHint"></span></div><div id="bKeys" class="keys"></div></div>
+    </div>
+    <div class="col">
+      <div class="card"><div class="card-h"><h2>Now</h2><span id="bPick"></span></div><div id="bNow" class="nn"></div></div>
+      <div class="card"><div class="card-h"><h2 id="bPlanH">Brew plan</h2><a class="lnk" href="#/recipes">Recipes</a></div><ol id="bPlan" class="plan"></ol></div>
+    </div>
+    <div class="card wide"><div class="card-h"><h2>Temperature</h2><div class="row"><div class="legend"><span><i style="background:var(--heat)"></i>Kettle</span><span><i style="background:var(--muted)"></i>Setpoint</span></div>
+        <div class="segs" id="bSpan">${[[1800, '30 min'], [7200, '2 h'], [21600, '6 h']].map(([v, l]) => `<button class="seg ${v === chartSpan ? 'on' : ''}" data-s="${v}" onclick="setSpan(${v})">${l}</button>`).join('')}</div></div></div>
+      <div class="chart-w"><canvas id="chart"></canvas></div></div>
+  </div>`;
+  if (S) renderBrew();
+}
+
+function stageTitle() {
+  if (S.mode === 'manual') return 'Manual control';
+  if (S.mode === 'autotune') return 'PID autotune';
+  if (S.mode === 'idle') return 'Ready to brew';
+  if (S.phase === 'mash') {
+    if (S.step === 0) return S.prompt === 'addMalt' ? 'Add the grain' : S.reached ? 'Mash in' : 'Heating strike water';
+    if (S.step === S.stepCount - 1) return 'Mash out';
+    return S.stepName || `Rest ${S.step}`;
+  }
+  if (S.phase === 'boil') return S.reached ? 'Boil' : 'Heating to the boil';
+  if (S.phase === 'removeMalt') return 'Remove the grain';
+  return S.stepName || S.phaseName;
+}
+// The timer can be started by hand while a mash step or the boil is still heating.
+const canStartTimer = () => S.mode === 'auto' && !S.prompt && !S.reached && (S.phase === 'mash' || (S.phase === 'boil' && S.temp >= 85));
+
+// Rough minutes to the end of the boil: remaining rests and boil plus heating
+// at the measured rate (1 °C/min before there is a measurement).
+function heatRate() {
+  if (!S || S.temp == null || !S.heater.on) return null;
+  const now = S.clock, old = hist.find(p => p.temp != null && now - p.t <= 180);
+  if (!old || now - old.t < 45) return null;
+  const r = (S.temp - old.temp) / ((now - old.t) / 60);
+  return r >= 0.2 ? Math.min(r, 4) : null;
+}
+function estimateMin(r) {
+  if (!r || !S || S.temp == null) return null;
+  const rate = heatRate() || 1, boilT = 99, ramp = (a, b) => b > a ? (b - a) / rate : 0;
+  const seq = r.mash ? [r.mashIn, ...r.rests, r.mashOut] : [];
+  let t = S.temp, min = 0, from = 0;
+  const left = () => S.timer.counting ? S.timer.remainingMs / 60000 : ramp(S.temp, S.setpoint) + (S.timer.remainingMs + S.timer.elapsedMs) / 60000;
+  if (S.mode === 'auto') {
+    if (S.phase === 'delayedStart') min += S.timer.remainingMs / 60000;
+    else if (S.phase === 'mash' || S.phase === 'iodineTest') { min += S.phase === 'mash' ? left() : 0; t = S.setpoint; from = S.step + (S.phase === 'mash' ? 1 : 0); }
+    else if (S.phase === 'removeMalt') from = seq.length;
+    else if (S.phase === 'boil') return Math.round(left());
+    else if (!['waterCheck', 'prime'].includes(S.phase)) return null;   // cooling and later: no estimate
+  }
+  for (let i = from; i < seq.length; i++) { min += ramp(t, seq[i].tempC) + seq[i].minutes; t = Math.max(t, seq[i].tempC); }
+  if (r.boilMinutes) min += ramp(t, boilT) + r.boilMinutes;
+  return Math.round(min);
+}
+function estimateText(r) {
+  const m = estimateMin(r); if (m == null) return '';
+  // In fake heating the clock runs faster, so a wall-clock time would be wrong.
+  const at = S.sim.on ? '' : ' · about ' + new Date(Date.now() + m * 60000).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  return S.mode === 'idle' ? `≈ ${fmtMin(m)} to the end of the boil` : `Boil ends in ≈ ${fmtMin(m)}${at}`;
+}
+
+// Minutes until the setpoint at the current heating rate (last 3 minutes).
+function etaMinutes() {
+  if (S.temp == null || S.mode === 'idle' || S.reached || S.temp >= S.setpoint || S.phase === 'cooling') return null;
+  const now = S.clock, old = hist.find(p => p.temp != null && now - p.t <= 180);
+  if (!old || now - old.t < 45) return null;
+  const rate = (S.temp - old.temp) / ((now - old.t) / 60);
+  if (rate < 0.05) return null;
+  return Math.ceil((S.setpoint - S.temp) / rate);
+}
+
+function renderBrew() {
+  if (!$('bStage')) return;
+  if (S.mode !== lastMode) {
+    if (S.mode === 'auto') get('/api/brew/recipe').then(r => { brewRecipe = r; renderPlan(); renderNow(); }).catch(() => {});
+    else brewRecipe = null;
+    if (S.mode === 'idle') loadPreview();
+    lastMode = S.mode; keysSig = '';
+  }
+  // Fault, resume, prompt
+  $('bFault').hidden = !S.faults;
+  $('bFault').textContent = '⚠ ' + S.faultText.join(' · ');
+  const showResume = S.resume.offered && S.mode === 'idle';
+  $('bResume').hidden = !showResume;
+  if (showResume && !$('bResume').dataset.on) {
+    $('bResume').dataset.on = 1;
+    $('bResume').innerHTML = `<div class="q">Unfinished brew: ${esc(S.resume.phase)}${S.resume.phase === 'Mash' ? ', step ' + (S.resume.step + 1) : ''}. Continue?</div>
+      <div class="row"><button class="btn ghost" onclick="act('discardResume')">Discard</button><button class="btn ok" onclick="act('resume')">${icon('play')}Resume</button></div>`;
+  } else if (!showResume) delete $('bResume').dataset.on;
+  renderPrompt();
+
+  $('bMode').textContent = {idle: 'Idle', auto: 'Automatic', manual: 'Manual', autotune: 'Autotune'}[S.mode] + (S.paused ? ' · paused' : '');
+  $('bMode').className = 'mode' + (S.mode === 'idle' ? ' idle' : '');
+  $('bStage').textContent = stageTitle();
+  $('bStage').className = 'stage' + (S.faults ? ' bad' : S.paused ? ' warn' : '');
+  $('bChips2').innerHTML = S.sim.on ? `<span class="chip sim">SIM ×${S.sim.speed}</span>` : '';
+
+  $('bTemp').innerHTML = S.temp == null ? '--.-' : `${fmtT(S.temp)}<small>${unit()}</small>`;
+  $('bTemp').className = 'big' + (S.temp == null ? ' none' : S.reached && S.mode !== 'idle' ? ' ok' : '');
+  const eta = etaMinutes();
+  $('bTempSub').textContent = S.mode === 'idle' || S.mode === 'autotune' ? (S.mode === 'autotune' ? `around ${fmtTU(S.setpoint)}` : '')
+    : S.phase === 'cooling' && S.mode === 'auto' ? (S.prompt ? `target ${fmtTU(S.setpoint)}` : `cooling to ${fmtTU(S.setpoint)}`)
+    : S.mode === 'auto' && (S.paused || (S.phase === 'removeMalt' && !S.heater.on)) ? 'heater off'
+    : S.reached ? `at ${fmtTU(S.setpoint)}` : eta ? `≈ ${fmtMin(eta)} to ${fmtTU(S.setpoint)}` : S.temp != null && S.temp > S.setpoint + 0.5 ? `above ${fmtTU(S.setpoint)}` : `heating to ${fmtTU(S.setpoint)}`;
+
+  const t = S.timer;
+  let shown = null, sub = '';
+  if (S.mode === 'auto') {
+    const up = S.phase === 'cooling', total = t.elapsedMs + t.remainingMs;
+    if (up && !S.prompt) { shown = t.elapsedMs; sub = 'cooling'; }
+    else if (total) { shown = t.remainingMs; sub = S.prompt ? 'waiting for you' : t.counting ? 'left' : 'starts at temperature'; }
+  } else if (S.mode === 'manual') {
+    shown = S.manual.countdown ? t.remainingMs : t.elapsedMs;
+    sub = S.manual.countdown ? 'countdown' : S.reached ? 'at temperature' : '';
+  } else if (S.mode === 'autotune') { sub = `cycle ${S.tune.cycles} of ${S.tune.of}`; }
+  $('bTimer').textContent = shown == null ? '' : fmtTime(shown);
+  $('bTimerSub').textContent = sub;
+
+  const h = S.heater, hz = h.zone === 'boil' ? `boil ${h.boilPower}%` : h.zone === 'off' ? 'off' : `${h.zone} ${h.duty}%`;
+  const pumpTxt = (S.pump.priming ? 'priming' : S.pump.on ? 'on' : 'off') + (S.pump.resting ? ' · rest' : '') + (S.pump.override ? ' · manual' : '');
+  $('bChips').innerHTML =
+    `<span class="chip heat ${h.on ? 'on' : ''}"><span class="dot"></span>Heater <b>${hz}</b>${h.count > 1 ? ` <span title="heaters on">${h.stages.filter(Boolean).length}/${h.count}</span>` : ''}</span>` +
+    `<span class="chip pump ${S.pump.on ? 'on' : ''}"><span class="dot"></span>Pump <b>${pumpTxt}</b></span>` +
+    (S.fan ? `<span class="chip">Fan <b>${S.fan}%</b></span>` : '') +
+    (S.sparge && S.sparge.available ? `<button class="chip heat ${S.sparge.heating ? 'on' : ''}" onclick="spargeDialog()" title="Sparge water heater"><span class="dot"></span>Sparge <b>${fmtTU(S.sparge.temp)}${S.sparge.on ? ' → ' + fmtTU(S.sparge.setpoint) : ' · off'}</b></button>` : '') +
+    (S.mode !== 'idle' && S.mode !== 'autotune' ? `<button class="chip" onclick="editSetpoint()">Setpoint <b>${fmtTU(S.setpoint)}</b> ${icon('edit')}</button>` : '') +
+    (canStartTimer() ? `<button class="chip go" onclick="startTimerNow()" title="Start the timer although the setpoint is not reached">${icon('play')}Start timer now</button>` : '') +
+    (S.mode === 'manual' || (S.mode === 'auto' && S.phase === 'boil') ? `<button class="chip" onclick="editBoil()">Boil power <b>${h.boilPower}%</b></button>` : '');
+  renderKeys();
+  renderNow();
+  renderPlan();
+  renderPick();
+  drawChart();
+}
+
+function renderPrompt() {
+  let p = null, danger = false;
+  if (S.confirm === 'skip') { p = ['Skip this step?', 'Skip', 'Cancel']; danger = true; }
+  else if (S.confirm === 'stop') { p = ['Stop and end this brew?', 'Stop', 'Cancel']; danger = true; }
+  else if (S.prompt) p = (PROMPTS[S.prompt] || [S.promptText, 'Yes', 'No']).slice();
+  if (p && S.prompt === 'removeMalt' && !S.confirm && brewRecipe && brewRecipe.spargeTempC > 0)
+    p[3] = `Sparge with water at ${fmtTU(brewRecipe.spargeTempC)}${S.sparge && S.sparge.available ? ` (it is at ${fmtTU(S.sparge.temp)} now)` : ''}. ` + p[3];
+  const el = $('bPrompt'), key = p ? p[0] + (p[3] || '') : '';
+  el.hidden = !p;
+  if (el.dataset.k === key) return;
+  el.dataset.k = key;
+  if (!p) return;
+  el.className = 'card prompt' + (danger ? ' danger' : '');
+  el.innerHTML = `<div class="q">${esc(p[0])}</div>${p[3] ? `<p class="muted" style="margin:-6px 0 12px">${esc(p[3])}</p>` : ''}<div class="row">` +
+    (p[2] ? `<button class="btn ghost" onclick="act('answer',{yes:false})">${esc(p[2])}</button>` : '') +
+    `<button class="btn ${danger ? 'danger' : 'ok'}" onclick="act('answer',{yes:true})">${esc(p[1])}</button></div>`;
+}
+
+// Big buttons. Hold-to-confirm keys need a 1 s press (fill bar), as on the touch screen.
+function key(id, ic, label, cap, cls) { return `<button class="key ${cls || ''}" data-k="${id}">${icon(ic)}<span>${esc(label)}</span>${cap ? `<small>${esc(cap)}</small>` : ''}<span class="fill"></span></button>`; }
+const KEYS = {
+  start: () => startBrew(0), delayed: () => startDelayed(), manual: () => act('startManual'), tune: () => startTune(),
+  pause: () => act('pauseResume'), pump: () => act('pumpToggle'), plus5: () => act('addMinutes', {min: 5}).then(ok => ok && toast('+5 min', 'ok')),
+  heat: () => act('heaterToggle'), sp: () => editSetpoint(), timer: () => editTimer(), boil: () => editBoil(),
+};
+const HOLD = {skip: () => act('skip'), stop: () => act('stop')};
+// A key acts only on a press that started on it. While a key is held, the row
+// is not redrawn (a hold-to-stop would otherwise put a new key, e.g. Manual,
+// under the cursor, and the release would "click" it). Presses right after a
+// redraw are ignored too (a fast second tap meant for the old key).
+let keyHeld = false, keyHeldAt = 0, keysDeferred = false, keysAt = 0;
+const KEY_GUARD_MS = 400, KEY_HELD_MAX_MS = 5000;  // never freeze the row for long
+function releaseKeys() {
+  if (!keyHeld) return;
+  keyHeld = false;
+  if (keysDeferred) { keysDeferred = false; renderKeys(); }
+}
+window.addEventListener('pointerup', releaseKeys);
+window.addEventListener('pointercancel', releaseKeys);
+window.addEventListener('blur', releaseKeys);  // released outside the window
+function renderKeys() {
+  const sig = [S.mode, S.paused, S.manual.heater, S.pump.on, S.recipe].join('|');
+  if (sig === keysSig) return;
+  if (keyHeld && Date.now() - keyHeldAt < KEY_HELD_MAX_MS) { keysDeferred = true; return; }
+  keyHeld = false;
+  keysDeferred = false;
+  keysSig = sig;
+  keysAt = Date.now();
+  let h = '';
+  if (S.mode === 'idle') h = key('start', 'play', 'Start brew', S.recipe, 'main') + key('delayed', 'clock', 'Delayed start', 'at a set time') + key('manual', 'hand', 'Manual', 'heat and pump');
+  else if (S.mode === 'auto') h = key('pause', S.paused ? 'play' : 'pause', S.paused ? 'Resume' : 'Pause', S.paused ? 'all is off' : 'all off', S.paused ? 'main' : '') + key('pump', 'pump', 'Pump', S.pump.on ? 'on' : 'off', S.pump.on ? 'act' : '') +
+    key('plus5', 'plus', '+5 min') + key('skip', 'skip', 'Skip', 'hold') + key('stop', 'stop', 'Stop', 'hold', 'stop');
+  else if (S.mode === 'manual') h = key('heat', 'heat', 'Heat', S.manual.heater ? 'on' : 'off', S.manual.heater ? 'act' : '') + key('pump', 'pump', 'Pump', S.pump.on ? 'on' : 'off', S.pump.on ? 'act' : '') +
+    key('sp', 'edit', 'Setpoint') + key('timer', 'timer', 'Timer') + key('stop', 'stop', 'Stop', 'hold', 'stop');
+  else h = key('pump', 'pump', 'Pump', S.pump.on ? 'on' : 'off', S.pump.on ? 'act' : '') + key('stop', 'stop', 'Stop', 'hold', 'stop');
+  $('bKeys').innerHTML = h;
+  $('bKeyHint').textContent = S.mode === 'idle' ? '' : 'Skip and Stop: hold 1 s';
+  $('bKeys').querySelectorAll('.key').forEach(bindKey);
+}
+function bindKey(el) {
+  const k = el.dataset.k, hold = HOLD[k];
+  let timer = null, fired = false, pressed = false;
+  const down = e => { e.preventDefault();
+    if (Date.now() - keysAt < KEY_GUARD_MS) return;
+    pressed = true; keyHeld = true; keyHeldAt = Date.now(); el.classList.add('down'); fired = false;
+    if (hold) { el.classList.add('holding'); timer = setTimeout(() => { fired = true; el.classList.remove('holding'); hold(); }, 1000); } };
+  const up = e => { el.classList.remove('down', 'holding'); clearTimeout(timer);
+    const mine = pressed;
+    pressed = false;
+    if (!mine || e.type === 'pointerleave' || e.type === 'pointercancel') return;
+    if (hold) { if (!fired) toast(`Hold ${k === 'stop' ? 'Stop' : 'Skip'} for a second to confirm`); }
+    else KEYS[k] && KEYS[k](); };
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointerleave', up);
+  el.addEventListener('pointercancel', up);
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hold ? confirmDlg(k === 'stop' ? 'Stop the brew?' : 'Skip this step?', '', k === 'stop' ? 'Stop' : 'Skip', true).then(y => y && hold()) : KEYS[k](); } });
+}
+
+async function startBrew(delay) { if (await act('startAuto', {delayMin: delay})) toast(delay ? `Brew started — heating begins in ${fmtMin(delay)}` : 'Brew started', 'ok'); }
+// Delayed start by clock time: "heat the strike water from 06:30".
+function delayFor(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number), now = new Date(), at = new Date(now);
+  at.setHours(h, m, 0, 0);
+  if (at <= now) at.setDate(at.getDate() + 1);
+  return Math.max(1, Math.round((at - now) / 60000));
+}
+async function startDelayed() {
+  const d = new Date(Date.now() + 3600000), def = `${p2(d.getHours())}:${p2(d.getMinutes() - d.getMinutes() % 5)}`;
+  const min = await dialog(`<h3>Delayed start</h3><p class="muted small">Fill the kettle now. After the water check and pump priming the controller waits, then heats the strike water from this time (within 24 hours).</p>
+    <div class="dv" style="flex-direction:column;align-items:center;gap:8px"><input type="time" id="dlyT" value="${def}" style="font-size:1.6rem;min-height:52px;padding:0 12px"><span class="muted small" id="dlyIn"></span></div>
+    <div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn" data-r="ok">Start</button></div>`,
+    {init: dl => { const t = dl.querySelector('#dlyT'), show = () => dl.querySelector('#dlyIn').textContent = t.value ? 'heating starts in ' + fmtMin(delayFor(t.value)) : ''; t.oninput = show; show(); },
+     value: dl => dl.querySelector('#dlyT').value ? delayFor(dl.querySelector('#dlyT').value) : undefined});
+  if (min != null) startBrew(Math.min(1440, min));
+}
+async function startTimerNow() {
+  const boil = S.phase === 'boil';
+  if (await confirmDlg(boil ? 'Start the boil timer now?' : 'Start this rest now?',
+      boil ? `The kettle is at ${fmtTU(S.temp)}, below the boil setting of ${fmtTU(S.setpoint)}. Use this if it is already boiling: the timer starts and the heater drops to the boil power.`
+           : `The kettle is at ${fmtTU(S.temp)}; the step temperature is ${fmtTU(S.setpoint)}. The rest timer starts now and the heater keeps heating to the setpoint.`, 'Start timer'))
+    act('startTimer');
+}
+async function startTune() {
+  if (S.mode !== 'idle') { toast('Stop the running mode first', 'err'); return; }
+  const t = await askNumber('Autotune at', toD(65), {min: Math.round(toD(30)), max: Math.round(toD(90)), step: F ? 1 : 0.5, unit: unit(),
+    help: 'Fill the kettle with water first. The heater switches around this temperature for several cycles; the new PID gains are saved.'});
+  if (t != null && await act('startAutotune', {tempC: fromD(t)})) location.hash = '#/brew';
+}
+async function editSetpoint() {
+  const t = await askNumber(S.mode === 'manual' ? 'Setpoint' : 'Step temperature', +toD(S.setpoint).toFixed(1), {min: Math.round(toD(5)), max: Math.round(toD(105)), step: F ? 1 : 0.5, unit: unit()});
+  if (t != null) act('setpoint', {tempC: fromD(t)});
+}
+async function editTimer() {
+  const cur = Math.ceil(S.timer.remainingMs / 60000);
+  const m = await askNumber(S.mode === 'manual' ? 'Countdown' : 'Remaining time', S.mode === 'manual' && !S.manual.countdown ? 30 : cur,
+    {min: 0, max: 1440, step: 1, unit: 'min', help: S.mode === 'manual' ? 'Runs while the temperature is reached. 0 turns it off.' : ''});
+  if (m != null) act('timer', {min: Math.round(m)});
+}
+async function spargeDialog() {
+  const sg = S.sparge;
+  const res = await dialog(`<h3>Sparge water</h3><p class="muted small">Heats the sparge water to the target and holds it there. It is at ${fmtTU(sg.temp)} now.</p>
+    <div class="fld"><div class="t"><label>Heater</label></div>${swHtml(sg.on, 'id="sgOn"')}</div>
+    <div class="fld"><div class="t"><label>Target</label></div>${numBox(+toD(sg.setpoint).toFixed(1), {min: Math.round(toD(30)), max: Math.round(toD(99)), step: F ? 1 : 0.5, dec: 1, unit: unit(), attrs: 'id="sgT"'})}</div>
+    <div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn" data-r="ok">Apply</button></div>`,
+    {value: d => ({on: d.querySelector('#sgOn').getAttribute('aria-checked') === 'true', tempC: fromD(parseFloat(d.querySelector('#sgT').value))})});
+  if (res && !isNaN(res.tempC)) act('sparge', res);
+}
+async function editBoil() {
+  const p = await askNumber('Boil power', S.heater.boilPower, {min: 0, max: 100, step: 5, unit: '%', help: 'Heater power once the boil is reached.'});
+  if (p != null) act('boilPower', {pct: Math.round(p)});
+}
+
+function seqStep(r, i) { return i === 0 ? r.mashIn : i === r.rests.length + 1 ? r.mashOut : r.rests[i - 1]; }
+function seqName(r, i) { return i === 0 ? 'Mash in' : i === r.rests.length + 1 ? 'Mash out' : (r.rests[i - 1] || {}).name; }
+function stepMeta(s) { return `${fmtTU(s.tempC)} · ${s.minutes ? fmtMin(s.minutes) : 'no rest'}`; }
+
+function renderNow() {
+  const el = $('bNow'); if (!el) return;
+  const row = (tag, label, meta, next) => `<div class="nn-r ${next ? 'nn-next' : ''}"><span class="nn-tag">${tag}</span><span class="nn-l">${esc(label)}</span><span class="nn-m">${esc(meta || '')}</span></div>`;
+  const bar = (frac, busy) => `<div class="bar ${busy ? 'busy' : ''}"><span style="width:${Math.round(frac * 100)}%"></span></div>`;
+  if (S.mode === 'idle') {
+    const r = previewRecipe;
+    el.innerHTML = r ? row('Recipe', r.name, '') + `<div class="muted small" style="padding-left:54px">${esc(recipeSummary(r))}</div>` +
+                       row('Time', estimateText(r) || '—', '', true) + row('First', 'Water check, then strike water', r.mash ? fmtTU(r.mashIn.tempC) : '', true)
+                     : row('Ready', 'No recipe loaded', '');
+    return;
+  }
+  if (S.mode === 'manual') {
+    el.innerHTML = row('Now', S.manual.heater ? 'Heating to ' + fmtTU(S.setpoint) : 'Heater off', S.reached ? 'reached' : '') +
+      (S.manual.countdown ? row('Timer', fmtTime(S.timer.remainingMs) + ' left', 'countdown', true) : '');
+    return;
+  }
+  if (S.mode === 'autotune') {
+    el.innerHTML = row('Now', 'Autotune around ' + fmtTU(S.setpoint), `cycle ${S.tune.cycles}/${S.tune.of}`) + bar(S.tune.of ? S.tune.cycles / S.tune.of : 0, S.tune.cycles <= 0);
+    return;
+  }
+  const t = S.timer, total = t.elapsedMs + t.remainingMs, r = brewRecipe;
+  let now = stageTitle(), meta = '', next = null, nextMeta = '', busy = false, frac = total ? t.elapsedMs / total : 0;
+  if (S.prompt) { meta = 'waiting for you'; busy = false; }
+  else if (S.phase === 'mash' || S.phase === 'boil') {
+    if (!t.counting) { meta = 'heating to ' + fmtTU(S.setpoint); busy = true; }
+    else meta = fmtTime(t.remainingMs) + ' left';
+  } else if (S.phase === 'cooling') { meta = 'to ' + fmtTU(S.setpoint); busy = true; }
+  else if (S.phase === 'delayedStart' || S.phase === 'hotWhirlpool' || S.phase === 'coldWhirlpool') meta = fmtTime(t.remainingMs) + ' left';
+  if (r) {
+    if (S.phase === 'mash') {
+      if (S.step === 0 && !(S.prompt === 'addMalt')) { next = 'Add malt'; nextMeta = 'when reached'; }
+      else if (S.step + 1 < S.stepCount) { const s = seqStep(r, S.step + 1); next = seqName(r, S.step + 1); nextMeta = stepMeta(s); }
+      else { next = 'Remove malt'; nextMeta = 'then boil'; }
+    } else if (S.phase === 'boil') {
+      const a = r.additions[S.lastAddition + 1];
+      if (a) { next = a.name; const inMin = Math.round(t.remainingMs / 60000) - a.atMinutes; nextMeta = t.counting ? (inMin > 0 ? `in ${fmtMin(inMin)}` : 'now') : `at ${a.atMinutes} min`; }
+      else { next = 'Cooling'; nextMeta = 'after the boil'; }
+    } else if (S.phase === 'removeMalt') { next = r.boilMinutes ? 'Boil' : 'Cooling'; nextMeta = r.boilMinutes ? fmtMin(r.boilMinutes) : ''; }
+    else if (S.phase === 'waterCheck' || S.phase === 'prime' || S.phase === 'delayedStart') { next = r.mash ? 'Mash in' : 'Boil'; nextMeta = r.mash ? fmtTU(r.mashIn.tempC) : ''; }
+  }
+  const est = estimateText(r);
+  el.innerHTML = row('Now', now, meta) + (S.phase === 'finished' ? '' : bar(frac, busy)) + (next ? row('Next', next, nextMeta, true) : '') + (est ? row('Total', est, '', true) : '');
+}
+
+// Recipe picker on the idle Brew page. Rendered only when the list changes,
+// so an open drop-down is not closed by the 1 s refresh.
+let pickList = [], pickSig = '';
+function renderPick() {
+  const el = $('bPick'); if (!el) return;
+  const sig = S.mode === 'idle' ? pickList.map(r => r.id).join() + '|' + S.activeRecipe : '';
+  if (sig === pickSig) return;
+  pickSig = sig;
+  el.innerHTML = sig && pickList.length > 1 ? `<select id="bPickSel" title="Recipe to brew">${pickList.map(r => `<option value="${esc(r.id)}" ${r.id === S.activeRecipe ? 'selected' : ''}>${esc(r.name)}</option>`).join('')}</select>` : '';
+  const sel = $('bPickSel');
+  if (sel) sel.onchange = async () => {
+    try { await post(`/api/recipes/${encodeURIComponent(sel.value)}/use`); await poll(); await loadPreview(); keysSig = ''; }
+    catch (e) { toast(e.message, 'err'); }
+  };
+}
+
+function planItems(r) {
+  const items = [];
+  if (r.mash) {
+    items.push({k: 'step0', l: 'Mash in', m: stepMeta(r.mashIn)});
+    items.push({k: 'maltIn', l: 'Add the grain', ev: 1});
+    r.rests.forEach((s, i) => items.push({k: 'step' + (i + 1), l: s.name, m: stepMeta(s)}));
+    items.push({k: 'step' + (r.rests.length + 1), l: 'Mash out', m: stepMeta(r.mashOut)});
+    items.push({k: 'maltOut', l: 'Lift the bag out' + (r.spargeTempC > 0 ? `, sparge with ${fmtTU(r.spargeTempC)} water` : ''), ev: 1});
+  }
+  if (r.boilMinutes) {
+    items.push({k: 'boil', l: 'Boil', m: fmtMin(r.boilMinutes)});
+    r.additions.forEach((a, i) => items.push({k: 'add' + i, l: a.name + (a.amount ? ` · ${a.amount} ${a.unit}` : ''), m: `${a.atMinutes} min`, add: 1, ai: i}));
+  }
+  items.push({k: 'cool', l: 'Cool', m: ''});
+  return items;
+}
+function recipeSummary(r) {
+  const parts = [];
+  if (r.mash) parts.push(`mash in ${fmtTU(r.mashIn.tempC)}`, `${r.rests.length} rest${r.rests.length === 1 ? '' : 's'}`, `mash out ${fmtTU(r.mashOut.tempC)}`);
+  if (r.mash && r.spargeTempC > 0) parts.push(`sparge ${fmtTU(r.spargeTempC)}`);
+  else parts.push('no mash');
+  parts.push(r.boilMinutes ? `boil ${fmtMin(r.boilMinutes)}` : 'no boil', `${r.additions.length} addition${r.additions.length === 1 ? '' : 's'}`);
+  return parts.join(' · ');
+}
+function renderPlan() {
+  const el = $('bPlan'); if (!el) return;
+  const r = S.mode === 'auto' ? brewRecipe : previewRecipe;
+  $('bPlanH').textContent = S.mode === 'auto' ? 'Brew plan' : 'Recipe: ' + (r ? r.name : '');
+  if (!r || S.mode === 'manual' || S.mode === 'autotune') { el.innerHTML = `<li class="ev"><span class="pd"></span><span class="pl">${S.mode === 'idle' ? 'No recipe' : 'No plan in this mode'}</span></li>`; return; }
+  const items = planItems(r);
+  let cur = -1;
+  if (S.mode === 'auto') {
+    let key = '';
+    switch (S.phase) {
+      case 'mash': key = S.step === 0 && S.prompt === 'addMalt' ? 'maltIn' : 'step' + S.step; break;
+      case 'iodineTest': key = 'step' + (S.stepCount - 1); break;
+      case 'removeMalt': key = 'maltOut'; break;
+      case 'boil': key = 'boil'; break;
+      case 'hotWhirlpool': case 'cooling': case 'coldWhirlpool': key = 'cool'; break;
+      case 'finished': cur = items.length; break;
+    }
+    if (key) cur = items.findIndex(x => x.k === key);
+  }
+  el.innerHTML = items.map((x, i) => {
+    let st = i < cur ? 'done' : i === cur ? 'cur' : '';
+    if (x.add && S.mode === 'auto' && S.phase === 'boil') st = x.ai <= S.lastAddition ? 'done' : '';
+    else if (x.add && S.mode === 'auto' && cur > items.findIndex(y => y.k === 'boil') && items.findIndex(y => y.k === 'boil') >= 0 && i < cur) st = 'done';
+    return `<li class="${st} ${x.ev ? 'ev' : ''} ${x.add ? 'add' : ''}"><span class="pd"></span><span class="pl">${esc(x.l)}</span><span class="pm">${esc(x.m || '')}</span></li>`;
+  }).join('');
+}
+async function loadPreview() {
+  try { previewRecipe = await get('/api/recipes/' + encodeURIComponent(S.activeRecipe)); } catch (e) { previewRecipe = null; }
+  try { pickList = await get('/api/recipes'); } catch (e) { pickList = []; }
+  renderPlan(); renderNow(); renderPick();
+}
+
+// Line chart of temperature and setpoint. pts: [{t, temp, sp}] in °C;
+// ticks: [[t, label]]; marks: [t] drawn as thin vertical lines (events).
+function plot(c, pts, x0, x1, ticks, marks) {
+  const g = c.getContext('2d'), dpr = devicePixelRatio || 1;
+  const w = c.width = c.clientWidth * dpr, h = c.height = c.clientHeight * dpr;
+  const css = getComputedStyle(document.documentElement), col = n => css.getPropertyValue(n).trim();
+  g.clearRect(0, 0, w, h);
+  const padL = 44 * dpr, padB = 22 * dpr, padT = 8 * dpr;
+  const vals = pts.flatMap(p => [p.temp, p.sp]).filter(v => v != null).map(toD);
+  g.font = `${12 * dpr}px system-ui`; g.fillStyle = col('--muted');
+  if (!vals.length) { g.fillText('Waiting for readings…', padL, h / 2); return; }
+  let lo = Math.floor(Math.min(...vals) - 2), hi = Math.ceil(Math.max(...vals) + 2);
+  const stepV = Math.max(1, Math.ceil((hi - lo) / 5)); lo = Math.floor(lo / stepV) * stepV; hi = lo + stepV * Math.max(1, Math.ceil((hi - lo) / stepV));
+  const X = t => padL + (t - x0) / Math.max(1, x1 - x0) * (w - padL - 4 * dpr), Y = v => padT + (hi - v) / (hi - lo) * (h - padT - padB);
+  g.strokeStyle = col('--line'); g.lineWidth = 1;
+  for (let v = lo; v <= hi; v += stepV) { const y = Math.round(Y(v)) + .5; g.beginPath(); g.moveTo(padL, y); g.lineTo(w, y); g.stroke(); g.fillText(v + '°', 4 * dpr, y + 4 * dpr); }
+  for (const [t, label] of ticks) { const tw = g.measureText(label).width; g.fillText(label, Math.max(padL, Math.min(X(t) - tw / 2, w - tw - 2 * dpr)), h - 5 * dpr); }
+  g.strokeStyle = col('--accent'); g.globalAlpha = .45;
+  for (const t of marks || []) { const x = Math.round(X(t)) + .5; g.beginPath(); g.moveTo(x, padT); g.lineTo(x, h - padB); g.stroke(); }
+  g.globalAlpha = 1;
+  const line = (key, color, dash) => {
+    g.strokeStyle = color; g.lineWidth = 2.2 * dpr; g.setLineDash(dash ? [6 * dpr, 5 * dpr] : []); g.beginPath();
+    let on = false;
+    for (const p of pts) { if (p[key] == null) { on = false; continue; } const x = X(p.t), y = Y(toD(p[key])); on ? g.lineTo(x, y) : g.moveTo(x, y); on = true; }
+    g.stroke(); g.setLineDash([]);
+  };
+  line('sp', col('--muted'), true);
+  line('temp', col('--heat'));
+}
+const spanLabel = sec => sec >= 3600 ? (sec / 3600).toFixed(sec % 3600 ? 1 : 0) + ' h' : Math.round(sec / 60) + ' min';
+function drawChart() {
+  const c = $('chart'); if (!c || !S) return;
+  const now = S.clock, x0 = now - chartSpan, ticks = [];
+  for (let i = 0; i <= 3; i++) { const back = chartSpan * (3 - i) / 3; ticks.push([now - back, back ? '−' + spanLabel(back) : 'now']); }
+  plot(c, hist.filter(p => p.t >= x0), x0, now, ticks);
+}
+function setSpan(sec) {
+  chartSpan = sec; localStorage.setItem('mt-span', sec);
+  document.querySelectorAll('#bSpan .seg').forEach(b => b.classList.toggle('on', +b.dataset.s === sec));
+  drawChart();
+}
+window.addEventListener('resize', () => { if (route === 'brew') drawChart(); if (route === 'history') drawLog(); });
+
+// ==========================================================================
+// Recipes
+// ==========================================================================
+let recipes = [], draft = null, draftId = null, draftOrig = '';
+async function pageRecipes() {
+  if (routeArg) return pageRecipeEdit(routeArg);
+  $('page').innerHTML = `<div class="phead"><div><h1>Recipes</h1><p class="muted">The active recipe is used by Start brew. Import BeerXML from Brewfather, BeerSmith and others.</p></div>
+    <div class="row"><button class="btn ghost" onclick="newRecipe()">${icon('plus')}New</button><label class="btn">${icon('upload')}Import<input id="impF" type="file" accept=".xml,.json,.beerxml" multiple hidden></label></div></div>
+    <div id="impNotes"></div>
+    <div class="grid2" id="rList"><div class="card empty">Loading…</div></div>
+    <div class="drop" style="margin-top:16px">Drop BeerXML or JSON recipe files anywhere on this page to import them.</div>`;
+  $('impF').onchange = e => { importFiles([...e.target.files]); e.target.value = ''; };
+  try {
+    recipes = await get('/api/recipes');
+    const full = await Promise.all(recipes.map(r => get('/api/recipes/' + encodeURIComponent(r.id)).catch(() => null)));
+    $('rList').innerHTML = recipes.length ? recipes.map((r, i) => `
+      <div class="card rcard ${r.active ? 'active' : ''}">
+        <div class="card-h" style="margin:0"><h2>${esc(r.name)}</h2>${r.active ? '<span class="badge">Active</span>' : ''}</div>
+        <div class="sum">${full[i] ? esc(recipeSummary(full[i])) : ''}</div>
+        <div class="row">${r.active ? '' : `<button class="btn sm" onclick="useRecipe('${r.id}')">Use</button>`}
+          <a class="btn sm ghost" href="#/recipes/${encodeURIComponent(r.id)}">${icon('edit')}Edit</a>
+          <button class="btn sm ghost" onclick="downloadRecipe('${r.id}')" title="Download JSON">${icon('dl')}</button>
+          ${r.active ? '' : `<button class="btn sm ghost" onclick="deleteRecipe(${i})" title="Delete">${icon('trash')}</button>`}</div>
+      </div>`).join('') : '<div class="card empty">No recipes yet. Import one or create a new one.</div>';
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function useRecipe(id) { try { await post(`/api/recipes/${encodeURIComponent(id)}/use`); toast('Active recipe changed', 'ok'); pageRecipes(); poll(); } catch (e) { toast(e.message, 'err'); } }
+async function deleteRecipe(i) {
+  const id = recipes[i].id, name = recipes[i].name;
+  if (!await confirmDlg(`Delete '${name}'?`, 'This cannot be undone.', 'Delete', true)) return;
+  try { await api('DELETE', `/api/recipes/${encodeURIComponent(id)}`); toast('Recipe deleted', 'ok'); pageRecipes(); } catch (e) { toast(e.message, 'err'); }
+}
+async function downloadRecipe(id) {
+  const r = await get('/api/recipes/' + encodeURIComponent(id));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(r, null, 2)], {type: 'application/json'}));
+  a.download = id + '.json'; a.click();
+}
+async function importFiles(files) {
+  const notes = [];
+  for (const f of files) {
+    try {
+      // Raw bytes: BeerXML is often ISO-8859-1; the controller reads the XML prolog.
+      const r = await fetch('/api/import', {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: await f.arrayBuffer()});
+      const j = await r.json();
+      notes.push(...(j.notes || []).map(n => ['muted', n]));
+      notes.push(j.ok ? ['ok', `${f.name}: imported ${j.ids.join(', ')}`] : ['err', `${f.name}: ${j.error}`]);
+    } catch (e) { notes.push(['err', `${f.name}: ${e.message}`]); }
+  }
+  if (route === 'recipes' && !routeArg) { await pageRecipes(); $('impNotes').innerHTML = `<div class="card" style="margin-bottom:14px">${notes.map(([c, t]) =>
+    `<div class="${c === 'ok' ? '' : c === 'err' ? '' : 'muted small'}" style="${c === 'ok' ? 'color:var(--ok);font-weight:600' : c === 'err' ? 'color:var(--bad);font-weight:600' : ''}">${esc(t)}</div>`).join('')}</div>`; }
+  notes.filter(n => n[0] !== 'muted').forEach(([c, t]) => toast(t, c));
+}
+document.addEventListener('dragover', e => { if (route === 'recipes') { e.preventDefault(); document.body.classList.add('dragging'); } });
+document.addEventListener('dragleave', e => { if (!e.relatedTarget) document.body.classList.remove('dragging'); });
+document.addEventListener('drop', e => { document.body.classList.remove('dragging'); if (route !== 'recipes') return; e.preventDefault();
+  if (routeArg) { toast('Go back to the recipe list to import'); return; } importFiles([...e.dataTransfer.files]); });
+
+async function newRecipe() {
+  const name = await askText('New recipe', '', {help: 'Starts from a single infusion: mash in, one rest, mash out, 60 min boil.'});
+  if (!name) return;
+  const r = {name, mash: true, mashIn: {name: 'Mash in', tempC: 67, minutes: 0, pump: 'on'}, rests: [{name: 'Saccharification', tempC: 66, minutes: 60, pump: 'on'}],
+    mashOut: {name: 'Mash out', tempC: 76, minutes: 10, pump: 'on'}, boilMinutes: 60, additions: [{name: 'Bittering hops', atMinutes: 60, amount: 0, unit: 'g'}]};
+  try { const res = await post('/api/import', JSON.stringify(r), true); location.hash = '#/recipes/' + encodeURIComponent(res.ids[0]); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+const PUMP_OPTS = [['on', 'On'], ['cycle', 'Rest cycles'], ['off', 'Off']];
+const UNITS = ['g', 'kg', 'ml', 'l', 'pcs', 'tsp', 'each'];
+async function pageRecipeEdit(id) {
+  $('page').innerHTML = '<div class="card empty">Loading…</div>';
+  try { const r = await get('/api/recipes/' + encodeURIComponent(id)); draft = JSON.parse(JSON.stringify(r)); draftOrig = JSON.stringify(r); draftId = id; }
+  catch (e) { $('page').innerHTML = `<div class="card empty">${esc(e.message)}<br><br><a class="btn ghost" href="#/recipes">Back</a></div>`; return; }
+  renderEditor();
+}
+function stepRow(label, path, s, fixed, i, n) {
+  const tStep = F ? 1 : 0.5;
+  return `<tr>
+    <td class="${fixed ? 'fixed' : ''}" data-l="Step">${fixed ? esc(label) : `<input type="text" value="${esc(s.name)}" data-e="${path}.name">`}</td>
+    <td data-l="Temperature">${numBox(+toD(s.tempC).toFixed(1), {min: Math.round(toD(1)), max: Math.round(toD(100)), step: tStep, dec: 1, unit: unit(), attrs: `data-e="${path}.tempC" data-k="temp"`})}</td>
+    <td data-l="Rest">${numBox(s.minutes, {min: 0, max: 1440, step: 1, unit: 'min', attrs: `data-e="${path}.minutes"`})}</td>
+    <td data-l="Pump"><select data-e="${path}.pump">${PUMP_OPTS.map(([v, l]) => `<option value="${v}" ${s.pump === v ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
+    <td class="acts">${fixed ? '' : `<button class="ib" onclick="moveRest(${i},-1)" ${i === 0 ? 'disabled' : ''} title="Move up">${icon('up')}</button><button class="ib" onclick="moveRest(${i},1)" ${i === n - 1 ? 'disabled' : ''} title="Move down">${icon('down')}</button><button class="ib" onclick="delRest(${i})" title="Delete">${icon('trash')}</button>`}</td></tr>`;
+}
+function renderEditor() {
+  const r = draft;
+  const ev = t => `<tr class="evr"><td colspan="5">↓ ${t}</td></tr>`;
+  $('page').innerHTML = `
+  <div class="phead"><div><a class="lnk" href="#/recipes">← Recipes</a><h1 style="margin-top:4px">${esc(r.name)}</h1><p class="muted small">${esc(draftId)}</p></div>
+    <div class="row"><button class="btn ghost" onclick="saveAsNew()">Save as new…</button></div></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="fld"><div class="t"><label>Name</label></div><input type="text" value="${esc(r.name)}" data-e="name" style="width:min(320px,55vw)"></div>
+    <div class="fld"><div class="t"><label>Mash</label><p>Off for an extract brew: boil only.</p></div>${swHtml(r.mash, 'data-e="mash"')}</div>
+  </div>
+  ${r.mash ? `<div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>Mash</h2><button class="btn sm ghost" onclick="strikeCalc()">Strike temperature calculator</button></div>
+    <p class="muted small" style="margin:-4px 0 8px">Mash in is the strike water temperature: the grain goes in when it is reached. A rest of 0 min goes on as soon as the temperature is reached.</p>
+    <table class="st"><thead><tr><th>Step</th><th>Temperature</th><th>Rest</th><th>Pump</th><th></th></tr></thead><tbody>
+      ${stepRow('Mash in', 'mashIn', r.mashIn, true)}${ev('add the grain')}
+      ${r.rests.map((s, i) => stepRow('', 'rests.' + i, s, false, i, r.rests.length)).join('')}
+      <tr><td colspan="5"><button class="btn sm ghost" onclick="addRest()">${icon('plus')}Add rest</button></td></tr>
+      ${stepRow('Mash out', 'mashOut', r.mashOut, true)}${ev('lift the bag or malt pipe out')}
+    </tbody></table>
+    <div class="fld"><div class="t"><label>Sparge water</label><p>Lowest value = no sparge. Shown when the bag comes out; with a sparge heater it is heated during the mash.</p></div>${numBox(+toD(r.spargeTempC > 0 ? r.spargeTempC : 0).toFixed(1), {min: Math.round(toD(0)), max: Math.round(toD(99)), step: F ? 1 : 0.5, dec: 1, unit: unit(), attrs: 'data-e="spargeTempC" data-k="sparge"'})}</div></div>` : ''}
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-h"><h2>Boil</h2></div>
+    <div class="fld"><div class="t"><label>Boil time</label><p>0 = no boil.</p></div>${numBox(r.boilMinutes, {min: 0, max: 600, step: 5, unit: 'min', attrs: 'data-e="boilMinutes"'})}</div>
+    <table class="st"><thead><tr><th>Addition</th><th>Minutes before the end</th><th>Amount</th><th>Unit</th><th></th></tr></thead><tbody>
+      ${r.additions.map((a, i) => `<tr><td data-l="Addition"><input type="text" value="${esc(a.name)}" data-e="additions.${i}.name"></td>
+        <td data-l="At">${numBox(a.atMinutes, {min: 0, max: 600, step: 1, unit: 'min', attrs: `data-e="additions.${i}.atMinutes"`})}</td>
+        <td data-l="Amount">${numBox(a.amount, {min: 0, max: 100000, step: 1, dec: a.amount % 1 ? 1 : 0, attrs: `data-e="additions.${i}.amount"`})}</td>
+        <td data-l="Unit"><select data-e="additions.${i}.unit">${[...new Set([a.unit, ...UNITS])].filter(Boolean).map(u => `<option ${u === a.unit ? 'selected' : ''}>${esc(u)}</option>`).join('')}</select></td>
+        <td class="acts"><button class="ib" onclick="delAddition(${i})" title="Delete">${icon('trash')}</button></td></tr>`).join('')}
+      <tr><td colspan="5"><button class="btn sm ghost" onclick="addAddition()">${icon('plus')}Add addition</button></td></tr>
+    </tbody></table>
+    <p class="muted small">An alarm sounds when the time before the end of the boil is reached; a time equal to the boil time alarms at the start.</p>
+  </div>
+  <details class="card"><summary style="cursor:pointer;font-weight:600">Advanced: edit as JSON</summary><p class="muted small">Temperatures in °C. Apply copies it into the form above.</p>
+    <textarea id="edJson" spellcheck="false">${esc(JSON.stringify(r, null, 2))}</textarea><div class="row" style="margin-top:8px"><button class="btn ghost" onclick="applyJson()">Apply</button></div></details>`;
+  $('page').querySelectorAll('[data-e]').forEach(el => {
+    el.addEventListener(el.classList.contains('sw') ? 'change' : 'input', () => editField(el));
+    if (el.tagName === 'SELECT') el.addEventListener('change', () => editField(el));
+  });
+  markDirty();
+}
+// Strike water temperature for a full-volume (BIAB) or infusion mash:
+// Ts = Tm + 0.41 * (grain kg / water l) * (Tm - Tgrain); 0.41 is the heat
+// capacity of malt relative to water.
+async function strikeCalc() {
+  const mem = JSON.parse(localStorage.getItem('mt-strike') || '{}');
+  const target = draft.rests.length ? draft.rests[0].tempC : draft.mashIn.tempC;
+  const tStep = F ? 1 : 0.5, nb = (id, v, o) => numBox(v, Object.assign({attrs: `id="${id}"`}, o));
+  const fld = (label, help, ctl) => `<div class="fld"><div class="t"><label>${label}</label>${help ? `<p>${help}</p>` : ''}</div>${ctl}</div>`;
+  const calc = d => {
+    const v = id => parseFloat(d.querySelector('#' + id).value);
+    const tm = fromD(v('scT')), tg = fromD(v('scG')), w = v('scW'), g = v('scM');
+    if ([tm, tg, w, g].some(isNaN) || w <= 0) return null;
+    return tm + 0.41 * (g / w) * (tm - tg);
+  };
+  const res = await dialog(`<h3>Strike temperature</h3><p class="muted small">How hot the water must be so the mash settles at the target after the cooler grain is stirred in.</p>
+    ${fld('Target mash temperature', '', nb('scT', +toD(target).toFixed(1), {min: Math.round(toD(30)), max: Math.round(toD(80)), step: tStep, dec: 1, unit: unit()}))}
+    ${fld('Water in the kettle', 'All of it for BIAB.', nb('scW', mem.w || 28, {min: 1, max: 500, step: .5, dec: 1, unit: 'l'}))}
+    ${fld('Grain', '', nb('scM', mem.g || 5, {min: 0, max: 100, step: .1, dec: 1, unit: 'kg'}))}
+    ${fld('Grain temperature', '', nb('scG', +toD(mem.tg ?? 20).toFixed(0), {min: Math.round(toD(0)), max: Math.round(toD(40)), step: 1, unit: unit()}))}
+    <div class="dv"><div class="big" id="scR" style="font-size:2.4rem"></div></div>
+    <div class="row"><button class="btn ghost" data-r="no">Cancel</button><button class="btn" data-r="ok">Use as mash-in temperature</button></div>`,
+    {init: d => { const show = () => { const c = calc(d); d.querySelector('#scR').innerHTML = c == null ? '—' : `${fmtT(c)}<small>${unit()}</small>`; };
+       d.querySelectorAll('input').forEach(i => i.addEventListener('input', show)); show(); },
+     value: d => { const c = calc(d); if (c == null) return undefined;
+       localStorage.setItem('mt-strike', JSON.stringify({w: parseFloat(d.querySelector('#scW').value), g: parseFloat(d.querySelector('#scM').value), tg: fromD(parseFloat(d.querySelector('#scG').value))}));
+       return c; }});
+  if (res == null) return;
+  if (res > 100) { toast('That needs water above the boil: use more water or less grain', 'err'); return; }
+  draft.mashIn.tempC = Math.round(res * 10) / 10;
+  renderEditor();
+  toast(`Mash-in temperature set to ${fmtTU(draft.mashIn.tempC)}`, 'ok');
+}
+
+function setPath(obj, path, v) { const ks = path.split('.'), last = ks.pop(); const o = ks.reduce((a, k) => a[k], obj); o[last] = v; }
+function editField(el) {
+  const path = el.dataset.e;
+  let v;
+  if (el.classList.contains('sw')) v = el.getAttribute('aria-checked') === 'true';
+  else if (el.type === 'number') { v = parseFloat(el.value); if (isNaN(v)) return; if (el.dataset.k === 'temp') v = Math.round(fromD(v) * 100) / 100;
+    if (el.dataset.k === 'sparge') v = v <= toD(0) + 0.01 ? 0 : Math.round(fromD(v) * 100) / 100; }
+  else v = el.value;
+  setPath(draft, path, v);
+  if (path === 'mash') { renderEditor(); return; }
+  markDirty();
+}
+function markDirty() {
+  const dirty = JSON.stringify(draft) !== draftOrig;
+  saveBar(dirty ? {text: 'Unsaved recipe changes', save: saveRecipe, discard: () => { draft = JSON.parse(draftOrig); renderEditor(); }} : null);
+}
+function addRest() { const last = draft.rests.length ? draft.rests[draft.rests.length - 1] : draft.mashIn;
+  draft.rests.push({name: 'Rest ' + (draft.rests.length + 1), tempC: last.tempC, minutes: 30, pump: last.pump}); renderEditor(); }
+function delRest(i) { draft.rests.splice(i, 1); renderEditor(); }
+function moveRest(i, d) { const j = i + d; if (j < 0 || j >= draft.rests.length) return; [draft.rests[i], draft.rests[j]] = [draft.rests[j], draft.rests[i]]; renderEditor(); }
+function addAddition() { draft.additions.push({name: 'Hops', atMinutes: 10, amount: 0, unit: 'g'}); renderEditor(); }
+function delAddition(i) { draft.additions.splice(i, 1); renderEditor(); }
+function applyJson() { try { draft = JSON.parse($('edJson').value); renderEditor(); toast('Applied to the form — Save to keep it', 'ok'); } catch (e) { toast('JSON error: ' + e.message, 'err'); } }
+async function saveRecipe() {
+  try { await post(`/api/recipes/${encodeURIComponent(draftId)}`, draft); draftOrig = JSON.stringify(draft); saveBar(null); toast('Recipe saved', 'ok'); renderEditor(); if (S && draftId === S.activeRecipe) previewRecipe = null; }
+  catch (e) { toast('Not saved: ' + e.message, 'err'); }
+}
+async function saveAsNew() {
+  const name = await askText('Save as a new recipe', draft.name + ' 2'); if (!name) return;
+  try { const res = await post('/api/import', JSON.stringify(Object.assign({}, draft, {name})), true); saveBar(null); location.hash = '#/recipes/' + encodeURIComponent(res.ids[0]); toast('Saved as ' + name, 'ok'); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+// ==========================================================================
+// History: one log per automatic brew, kept on the controller
+// ==========================================================================
+const fmtDate = e => e ? new Date(e * 1000).toLocaleString([], {dateStyle: 'medium', timeStyle: 'short'}) : 'date unknown';
+const fmtDur = sec => fmtMin(Math.round(sec / 60));
+const RESULT = {finished: ['Finished', 'var(--ok)'], stopped: ['Stopped', 'var(--warn)'], '': ['Interrupted', 'var(--bad)']};
+let logs = [], logData = null;
+async function pageHistory() {
+  if (routeArg) return pageLog(+routeArg);
+  $('page').innerHTML = `<div class="phead"><div><h1>History</h1><p class="muted">Every automatic brew is logged on the controller: temperature curve and events. The newest 30 are kept.</p></div></div>
+    <div class="grid2" id="hList"><div class="card empty">Loading…</div></div>`;
+  try {
+    logs = await get('/api/logs');
+    $('hList').innerHTML = logs.length ? logs.map((l, i) => {
+      const [txt, colr] = l.active ? ['Running', 'var(--accent)'] : RESULT[l.result] || RESULT[''];
+      return `<div class="card rcard"><div class="card-h" style="margin:0"><h2>${esc(l.recipe || 'Brew')}</h2><span class="badge" style="color:${colr};background:color-mix(in srgb,${colr} 15%,transparent)">${txt}</span></div>
+        <div class="sum">${fmtDate(l.start)} · ${fmtDur(l.durationS)}${l.sim ? ' · fake heating' : ''}</div>
+        <div class="row"><a class="btn sm" href="#/history/${l.id}">View</a><button class="btn sm ghost" onclick="downloadLog(${l.id})" title="Download CSV">${icon('dl')}CSV</button>
+          ${l.active ? '' : `<button class="btn sm ghost" onclick="deleteLog(${i})" title="Delete">${icon('trash')}</button>`}</div></div>`;
+    }).join('') : '<div class="card empty">No brews logged yet. A log starts with every automatic brew.</div>';
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function fetchLog(id) {
+  const r = await fetch('/api/logs/' + id);
+  if (!r.ok) throw new Error('log not found');
+  const lines = (await r.text()).split('\n').filter(Boolean).map(x => { try { return JSON.parse(x); } catch (e) { return null; } }).filter(Boolean);
+  const head = lines.find(l => l.v) || {}, samples = lines.filter(l => l.T != null), evs = lines.filter(l => l.e), end = lines.find(l => l.end);
+  return {head, samples, evs, end, duration: lines.length ? (lines[lines.length - 1].t || 0) : 0};
+}
+const clockOf = (head, t) => head.start && !head.sim ? new Date((head.start + t) * 1000).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : fmtTime(t * 1000);
+async function pageLog(id) {
+  $('page').innerHTML = '<div class="card empty">Loading…</div>';
+  try { logData = await fetchLog(id); } catch (e) { $('page').innerHTML = `<div class="card empty">${esc(e.message)}<br><br><a class="btn ghost" href="#/history">Back</a></div>`; return; }
+  const {head, samples, evs, end, duration} = logData;
+  const temps = samples.map(x => x.T), maxT = temps.length ? Math.max(...temps) : null;
+  const [txt] = !end && S && S.mode === 'auto' ? ['Running'] : RESULT[end ? end.end : ''] || RESULT[''];
+  $('page').innerHTML = `<div class="phead"><div><a class="lnk" href="#/history">← History</a><h1 style="margin-top:4px">${esc(head.recipe || 'Brew')}</h1>
+      <p class="muted">${fmtDate(head.start)} · ${fmtDur(duration)} · ${txt}${head.sim ? ' · fake heating' : ''}${maxT != null ? ' · highest ' + fmtTU(maxT) : ''}</p></div>
+    <button class="btn ghost" onclick="downloadLog(${id})">${icon('dl')}Download CSV</button></div>
+    <div class="card" style="margin-bottom:16px"><div class="card-h"><h2>Temperature</h2><div class="legend"><span><i style="background:var(--heat)"></i>Kettle</span><span><i style="background:var(--muted)"></i>Setpoint</span><span><i style="background:var(--accent);opacity:.5"></i>Events</span></div></div>
+      <canvas id="logChart" style="height:300px"></canvas></div>
+    <div class="card"><div class="card-h"><h2>Events</h2></div><ol class="plan">${evs.map(e => `<li><span class="pd"></span><span class="pl">${esc(e.e)}</span><span class="pm">${clockOf(head, e.t)}</span></li>`).join('') || '<li><span class="pd"></span><span class="pl muted">No events</span></li>'}</ol></div>`;
+  drawLog();
+}
+function drawLog() {
+  const c = $('logChart'); if (!c || !logData) return;
+  const {head, samples, evs, duration} = logData, x1 = Math.max(60, duration), ticks = [];
+  for (let i = 0; i <= 4; i++) ticks.push([x1 * i / 4, clockOf(head, Math.round(x1 * i / 4))]);
+  plot(c, samples.map(x => ({t: x.t, temp: x.T, sp: x.sp})), 0, x1, ticks, evs.map(e => e.t));
+}
+async function downloadLog(id) {
+  try {
+    const d = await fetchLog(id);
+    const rows = ['time_s,temperature_C,setpoint_C,heater_pct,pump,event'];
+    const all = [...d.samples.map(x => [x.t, x.T, x.sp, x.h, x.p, '']), ...d.evs.map(e => [e.t, '', '', '', '', '"' + String(e.e).replace(/"/g, '""') + '"'])].sort((a, b) => a[0] - b[0]);
+    all.forEach(r => rows.push(r.join(',')));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([rows.join('\n')], {type: 'text/csv'}));
+    a.download = `brew-${id}-${(d.head.recipe || 'log').replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.csv`; a.click();
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function deleteLog(i) {
+  const l = logs[i];
+  if (!await confirmDlg(`Delete the log of '${l.recipe}'?`, fmtDate(l.start), 'Delete', true)) return;
+  try { await api('DELETE', '/api/logs/' + l.id); toast('Log deleted', 'ok'); pageHistory(); } catch (e) { toast(e.message, 'err'); }
+}
+
+// ==========================================================================
+// Sensors
+// ==========================================================================
+const ROLES = [['kettle', 'Kettle (control)'], ['rims', 'RIMS outlet'], ['heatsink', 'Heatsink (fan)'], ['sparge', 'Sparge water'], ['aux', 'Display only'], ['none', 'Not used']];
+function pageSensors() {
+  $('page').innerHTML = `<div class="phead"><div><h1>Sensors</h1><p class="muted">Each DS18B20 is remembered by its address. Without a kettle sensor, the first one found is used.</p></div>
+    <button class="btn ghost" onclick="rescan()">${icon('pump')}Rescan bus</button></div><div id="sList" class="grid2"></div>`;
+  renderSensorList();
+}
+function renderSensorList() {
+  if (!S || !$('sList')) return;
+  $('sList').innerHTML = S.sensors.length ? S.sensors.map((s, i) => `
+    <div class="card"><div class="card-h"><h2>${esc(s.name)}</h2><span class="big num-t" style="font-size:1.8rem" id="sr${i}"></span></div>
+      <div class="muted small mono" style="margin-top:-8px">${s.rom}${s.errors ? ` · ${s.errors} read errors` : ''}</div>
+      <div class="fld"><div class="t"><label>Name</label></div><input type="text" id="sn${i}" value="${esc(s.name)}" style="width:170px"></div>
+      <div class="fld"><div class="t"><label>Role</label></div><select id="so${i}">${ROLES.map(([v, l]) => `<option value="${v}" ${v === s.role ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+      <div class="fld"><div class="t"><label>Calibration</label><p>Added to every reading.</p></div>${numBox(+dToD(s.offsetC).toFixed(1), {min: -10, max: 10, step: .1, unit: unit(), attrs: `id="sc${i}"`})}</div>
+      <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm ghost" onclick="forgetSensor(${i})">Forget</button><button class="btn sm" onclick="saveSensor(${i})">Save</button></div>
+    </div>`).join('') : '<div class="card empty">No sensors found. Check the 1-Wire wiring and the 4.7 kΩ pull-up, then rescan.</div>';
+  renderSensorReadings();
+}
+let sensorSig = '';
+function renderSensorReadings() {
+  const sig = S.sensors.map(s => s.rom + s.name + s.role + s.offsetC).join();
+  if (sig !== sensorSig && $('sList')) { sensorSig = sig; renderSensorList(); return; }
+  S.sensors.forEach((s, i) => { const e = $('sr' + i); if (!e) return;
+    e.innerHTML = s.ok ? `${fmtT(s.temp, 2)}<small>${unit()}</small>` : `<span style="color:var(--bad);font-size:1rem">${s.present ? 'fault' : 'missing'}</span>`; });
+}
+async function saveSensor(i) {
+  try { await post(`/api/sensors/${i}`, {name: $('sn' + i).value, role: $('so' + i).value, offsetC: dFromD(parseFloat($('sc' + i).value) || 0)}); toast('Sensor saved', 'ok'); sensorSig = ''; poll(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function forgetSensor(i) {
+  if (!await confirmDlg('Forget this sensor?', 'Its name, role and calibration are removed.', 'Forget', true)) return;
+  try { await post(`/api/sensors/${i}/forget`); toast('Sensor settings removed', 'ok'); sensorSig = ''; poll(); } catch (e) { toast(e.message, 'err'); }
+}
+async function rescan() { try { await post('/api/sensors/rescan'); toast('Bus rescanned', 'ok'); sensorSig = ''; setTimeout(poll, 1200); } catch (e) { toast(e.message, 'err'); } }
+
+// ==========================================================================
+// Settings
+// ==========================================================================
+// kind: num | temp (shown in °C/°F) | delta (temperature difference) | bool | enum | text | pw
+const SCHEMA = [
+  {title: 'Heater', intro: 'Full power far below the setpoint, PID close to it, fixed power in the boil.', fields: [
+    ['heater.boilPowerPct', 'Boil power', 'num', {min: 0, max: 100, step: 5, unit: '%', help: 'Once the boil is reached. Can also be changed during the boil.'}],
+    ['heater.mashPowerPct', 'Mash power limit', 'num', {min: 10, max: 100, step: 5, unit: '%', help: 'Limits the heater while the grain is in the kettle, against scorching on the element. Strike water and the boil use full power.'}],
+    ['heater.fullPowerBandC', 'Full power until', 'delta', {min: 0, max: 20, step: .1, help: 'Below the setpoint by more than this, the heater runs at 100 %.'}],
+    ['heater.nearBoilBandC', 'Full power band near the boil', 'delta', {min: 0, max: 10, step: .1}],
+    ['heater.boilHystC', 'Boil hysteresis', 'delta', {min: 0, max: 5, step: .1, help: 'Boil power holds until the temperature falls this far below the boil.'}],
+    ['heater.kp', 'PID kp', 'num', {min: 0, max: 500, step: .5, help: '% output per degree below the setpoint. Autotune sets kp, ki and kd.'}],
+    ['heater.ki', 'PID ki', 'num', {min: 0, max: 5, step: .001, dec: 4, help: 'Removes the remaining offset over time.'}],
+    ['heater.kd', 'PID kd', 'num', {min: 0, max: 5000, step: 1}],
+    ['heater.sampleMs', 'PID interval', 'num', {min: 100, max: 60000, step: 100, unit: 'ms'}],
+    ['heater.windowMs', 'Switching window', 'num', {min: 500, max: 60000, step: 500, unit: 'ms', help: 'The SSR is on for the duty part of each window.'}],
+    ['heater.controlSensor', 'Control sensor', 'enum', {options: [['kettle', 'Kettle'], ['rims', 'RIMS outlet']]}]]},
+  {title: 'Pump', intro: 'On/off on any output: 12 V directly, or 230 V through an SSR or relay.', fields: [
+    ['pump.stopTempC', 'Stop above', 'temp', {min: 70, max: 110, step: .5, help: 'Prevents cavitation near the boil.'}],
+    ['pump.stopHystC', 'Restart below stop by', 'delta', {min: 0, max: 10, step: .5}],
+    ['pump.externalSensor', 'Sensor in the pump outlet', 'bool', {help: 'The pump runs until the step temperature is reached so the reading is valid.'}],
+    ['pump.cycleMin', 'Rest cycles: run', 'num', {min: 1, max: 120, step: 1, unit: 'min', help: 'For steps with pump "Rest cycles": run, then pause (heater off).'}],
+    ['pump.restMin', 'Rest cycles: pause', 'num', {min: 0, max: 60, step: 1, unit: 'min'}],
+    ['pump.restRestartDropC', 'Pause ends early on a drop of', 'delta', {min: 0, max: 10, step: .5}],
+    ['pump.inBoil', 'Run during the boil', 'bool'],
+    ['pump.duringCooling', 'Run during cooling', 'bool'],
+    ['pump.autoPrime', 'Prime at the start', 'bool'],
+    ['pump.primePulses', 'Prime pulses', 'num', {min: 1, max: 20, step: 1}]]},
+  {title: 'Brew process', fields: [
+    ['process.boilTempC', 'Boil temperature', 'temp', {min: 90, max: 105, step: .5, help: 'Used to detect the boil. Lower at altitude.'}],
+    ['process.reachedTolC', 'Step reached within', 'delta', {min: 0, max: 2, step: .1, help: 'The rest timer starts this close to the step temperature.'}],
+    ['process.skipRemoveMalt', 'No "lift the bag out" prompt', 'bool', {help: 'Go from the mash out straight to the boil, for systems where the grain is not in the kettle.'}],
+    ['process.heatDuringRemoveMalt', 'Keep heating while removing malt', 'bool'],
+    ['process.iodineTest', 'Iodine test before mash out', 'bool'],
+    ['process.iodineTimeoutMin', 'Iodine test timeout', 'num', {min: 0, max: 120, step: 1, unit: 'min', help: '0 = wait for confirmation.'}],
+    ['process.whirlpool', 'Whirlpool', 'enum', {options: [['off', 'Off'], ['hot', 'Hot, before cooling'], ['cold', 'Cold, after cooling']]}],
+    ['process.whirlpoolMin', 'Whirlpool time', 'num', {min: 1, max: 60, step: 1, unit: 'min'}],
+    ['process.coolingTargetC', 'Cool down to', 'temp', {min: 5, max: 40, step: .5}],
+    ['process.boilWarnC', 'Boil-over warning', 'delta', {min: 0, max: 10, step: .5, help: 'Alarm this far below the boil temperature, when the foam rises. 0 = off.'}]]},
+  {title: 'Sparge water', intro: 'For a separate sparge water heater: give an output the "Sparge water heater" role and a sensor the sparge role.', fields: [
+    ['sparge.tempC', 'Default temperature', 'temp', {min: 30, max: 99, step: .5, help: 'Used when the heater is switched on by hand. A brew uses the recipe\'s sparge temperature.'}],
+    ['sparge.autoWithBrew', 'Heat with the brew', 'bool', {help: 'If the recipe has a sparge temperature: start heating when the brew starts, stop at the boil.'}],
+    ['sparge.hystC', 'Switching band', 'delta', {min: 0.2, max: 5, step: .1}]]},
+  {title: 'Safety', fields: [
+    ['safety.maxTempC', 'Heater cut above', 'temp', {min: 50, max: 130, step: 1}],
+    ['safety.runawayC', 'Runaway cut', 'delta', {min: 0, max: 20, step: .5, help: 'Everything is cut if the kettle gets this much hotter while the heater is off: a relay (SSR) that failed closed. 0 = off.'}],
+    ['safety.level', 'Level switch', 'enum', {options: [['ignore', 'Not used'], ['closed', 'Heater only when closed'], ['open', 'Heater only when open']], help: 'Protects the element from running dry.'}]]},
+  {title: 'Cooling fan', intro: 'Without a heatsink sensor the fan runs while the heater works, plus the run-on time.', fields: [
+    ['fan.runOnSec', 'Run-on after heating', 'num', {min: 0, max: 3600, step: 10, unit: 's'}],
+    ['fan.onTempC', 'Heatsink: fan on at', 'temp', {min: 20, max: 80, step: 1}],
+    ['fan.fullTempC', 'Heatsink: full speed at', 'temp', {min: 20, max: 90, step: 1}],
+    ['fan.alarmTempC', 'Heatsink: heater cut at', 'temp', {min: 40, max: 110, step: 1}],
+    ['fan.minPct', 'Minimum fan speed', 'num', {min: 0, max: 100, step: 5, unit: '%'}]]},
+  {title: 'Autotune', fields: [
+    ['autotune.outputHighPct', 'Output high', 'num', {min: 10, max: 100, step: 5, unit: '%'}],
+    ['autotune.outputLowPct', 'Output low', 'num', {min: 0, max: 90, step: 5, unit: '%'}],
+    ['autotune.hysteresisC', 'Switching band', 'delta', {min: 0, max: 2, step: .1}],
+    ['autotune.cycles', 'Cycles', 'num', {min: 1, max: 10, step: 1}],
+    ['autotune.timeoutMin', 'Give up after', 'num', {min: 10, max: 600, step: 10, unit: 'min'}],
+    ['autotune.pumpOn', 'Pump on while tuning', 'bool']]},
+  {title: 'Display', fields: [
+    ['fahrenheit', 'Show °F', 'bool', {help: 'Everywhere: touch screen and web.'}],
+    ['brightness', 'Screen brightness', 'num', {min: 10, max: 255, step: 5}],
+    ['sound.volume', 'Sound volume', 'num', {min: 0, max: 100, step: 5, unit: '%', help: 'The controller\'s speaker. 0 = silent.'}]]},
+  {title: 'Network', intro: 'Wi-Fi itself is set up on the Network page.', fields: [
+    ['net.hostname', 'Name on the network', 'text', {help: 'http://<name>.local — applies after a restart.'}],
+    ['net.timezone', 'Time zone', 'enum', {help: 'For the dates in the brew history. Applies after a restart.', options: [['UTC0', 'UTC'], ['GMT0BST,M3.5.0/1,M10.5.0', 'London, Dublin, Lisbon'], ['CET-1CEST,M3.5.0,M10.5.0/3', 'Central Europe (Berlin, Paris, Warsaw)'], ['EET-2EEST,M3.5.0/3,M10.5.0/4', 'Eastern Europe (Riga, Helsinki, Kyiv)'], ['<+03>-3', 'UTC+3 (Istanbul, Moscow)'], ['EST5EDT,M3.2.0,M11.1.0', 'US Eastern'], ['CST6CDT,M3.2.0,M11.1.0', 'US Central'], ['MST7MDT,M3.2.0,M11.1.0', 'US Mountain'], ['PST8PDT,M3.2.0,M11.1.0', 'US Pacific'], ['AEST-10AEDT,M10.1.0,M4.1.0/3', 'Sydney, Melbourne'], ['NZST-12NZDT,M9.5.0,M4.1.0/3', 'New Zealand']]}],
+    ['net.apPassword', 'Setup access point password', 'pw', {help: '8 characters or more; shorter means an open access point.'}],
+    ['net.webPassword', 'Web password', 'pw', {help: 'User "admin". Empty = no login.'}]]},
+  {title: 'Simulator', intro: 'Fake heating (Network page or console "sim on") replaces the kettle sensor with this model.', fields: [
+    ['sim.speed', 'Clock speed', 'num', {min: 1, max: 100, step: 1, unit: '×'}],
+    ['sim.liters', 'Water', 'num', {min: 1, max: 200, step: 1, unit: 'l'}],
+    ['sim.heaterW', 'Heater power', 'num', {min: 100, max: 20000, step: 100, unit: 'W'}],
+    ['sim.lossWPerK', 'Heat loss', 'num', {min: 0, max: 100, step: 1, unit: 'W/K'}],
+    ['sim.startC', 'Start temperature', 'temp', {min: 0, max: 90, step: 1}],
+    ['sim.sensorTauS', 'Sensor lag', 'num', {min: 0, max: 120, step: 1, unit: 's'}],
+    ['sim.driveOutputs', 'Drive the real outputs', 'bool', {help: 'Off: the physical heater and pump stay off.'}]]},
+];
+// Expert settings, hidden until "Show advanced" is on.
+const ADV = new Set(['heater.fullPowerBandC', 'heater.nearBoilBandC', 'heater.boilHystC', 'heater.kp', 'heater.ki', 'heater.kd', 'heater.sampleMs',
+  'heater.windowMs', 'heater.controlSensor', 'pump.stopHystC', 'pump.externalSensor', 'pump.cycleMin', 'pump.restMin', 'pump.restRestartDropC',
+  'pump.primePulses', 'sparge.hystC', 'process.reachedTolC', 'process.heatDuringRemoveMalt', 'process.iodineTest', 'process.iodineTimeoutMin',
+  'fan.onTempC', 'fan.fullTempC', 'fan.alarmTempC', 'fan.minPct']);
+const ADV_SECTIONS = new Set(['Autotune', 'Simulator']);
+let showAdv = localStorage.getItem('mt-adv') === '1';
+const OUT_NAMES = ['OUT1', 'OUT2', 'OUT3', 'OUT4', 'PWR1', 'PWR2'];
+const OUT_ROLES = [['none:1', 'Not used'], ['heater:1', 'Heater 1'], ['heater:2', 'Heater 2'], ['heater:3', 'Heater 3'], ['heater:4', 'Heater 4'], ['pump:1', 'Pump'], ['fan:1', 'Fan'],
+  ['sparge:1', 'Sparge water heater'], ['alarm:1', 'Alarm light or horn'], ['contactor:1', 'Safety relay (heater mains)']];
+const outRole = (o, i) => { const d = setDraft['outputs.' + i + '.role'], x = setDraft['outputs.' + i + '.index'];
+  const role = d ? d.value : o.role, idx = x ? x.value : o.index; return role + ':' + (role === 'heater' ? idx : 1); };
+let SET = null, setDraft = {};
+const getP = (o, p) => p.split('.').reduce((a, k) => a == null ? a : a[k], o);
+
+async function pageSettings() {
+  $('page').innerHTML = `<div class="phead"><div><h1>Settings</h1><p class="muted">Changes are saved with the bar at the bottom and apply from the next start of a mode (output roles at once).</p></div>
+    <div class="row"><span class="muted small">Show advanced</span>${swHtml(showAdv, 'id="advSw"')}<button class="btn ghost" onclick="resetSettings()">Reset to defaults</button></div></div><div class="cols" id="setCols"><div class="card empty">Loading…</div></div>`;
+  $('advSw').addEventListener('change', e => { showAdv = e.target.getAttribute('aria-checked') === 'true'; localStorage.setItem('mt-adv', showAdv ? '1' : '0'); if (SET) renderSettings(); });
+  try { SET = await get('/api/settings'); setDraft = {}; renderSettings(); } catch (e) { $('setCols').innerHTML = `<div class="card empty">${esc(e.message)}</div>`; }
+}
+function shownValue(kind, v) { return kind === 'temp' ? +toD(v).toFixed(1) : kind === 'delta' ? +dToD(v).toFixed(1) : v; }
+function fieldHtml([path, label, kind, o = {}]) {
+  const v = path in setDraft ? setDraft[path].shown : shownValue(kind, getP(SET, path));
+  let ctl;
+  if (kind === 'bool') ctl = swHtml(v, `data-s="${path}"`);
+  else if (kind === 'enum') ctl = `<select data-s="${path}">${o.options.map(([k, l]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+  else if (kind === 'text') ctl = `<input type="text" value="${esc(v)}" data-s="${path}" style="width:180px">`;
+  else if (kind === 'pw') { const set = SET.net[path.split('.')[1] + 'Set'];
+    ctl = `<input type="password" value="" placeholder="${set ? 'set — type to change' : 'not set'}" data-s="${path}" style="width:180px" autocomplete="new-password">`; }
+  else { const t = kind === 'temp' || kind === 'delta';
+    ctl = numBox(v, {min: t && kind === 'temp' ? Math.round(toD(o.min)) : t ? +dToD(o.min).toFixed(1) : o.min, max: kind === 'temp' ? Math.round(toD(o.max)) : kind === 'delta' ? +dToD(o.max).toFixed(1) : o.max,
+      step: t && F ? Math.max(1, o.step) : o.step, dec: o.dec, unit: t ? unit() : o.unit, attrs: `data-s="${path}"`}); }
+  return `<div class="fld" id="f-${path.replace(/\./g, '-')}"><div class="t"><label>${esc(label)}</label>${o.help ? `<p>${esc(o.help)}</p>` : ''}</div>${ctl}</div>`;
+}
+function renderSettings() {
+  const card = sec => {
+    const fields = sec.fields.filter(fd => showAdv || !(ADV.has(fd[0]) || ADV_SECTIONS.has(sec.title)));
+    return fields.length ? `<div class="card"><h2>${esc(sec.title)}</h2>${sec.intro ? `<p class="muted small" style="margin:4px 0 6px">${esc(sec.intro)}</p>` : ''}${fields.map(fieldHtml).join('')}</div>` : '';
+  };
+  const outs = `<div class="card"><h2>Outputs</h2><p class="muted small" style="margin:4px 0 6px"><b>OUT1–4</b> switch an SSR or a relay coil, which switches the real load at any voltage (230 V heater or pump).
+    <b>PWR1–2</b> power a 12 V load directly (12 V pump, fan; up to 3 A). Several heaters share the power in stages: heater 2 only adds what heater 1 cannot deliver.</p>
+    ${SET.outputs.map((o, i) => `<div class="fld"><div class="t"><label>${OUT_NAMES[i]}</label></div><div class="row">
+      <select data-s="outputs.${i}.roleIdx">${OUT_ROLES.map(([k, l]) => `<option value="${k}" ${k === outRole(o, i) ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      ${showAdv ? `<span class="muted small">inverted</span>${swHtml(('outputs.' + i + '.inverted') in setDraft ? setDraft['outputs.' + i + '.inverted'].shown : o.inverted, `data-s="outputs.${i}.inverted"`)}` : ''}</div></div>`).join('')}</div>`;
+  $('setCols').innerHTML = SCHEMA.slice(0, 2).map(card).join('') + outs + SCHEMA.slice(2).map(card).join('');
+  $('setCols').querySelectorAll('[data-s]').forEach(el => {
+    const ev = el.classList.contains('sw') || el.tagName === 'SELECT' ? 'change' : 'input';
+    el.addEventListener(ev, () => settingChanged(el));
+  });
+  setSaveBar();
+}
+function fieldDef(path) { for (const s of SCHEMA) for (const f of s.fields) if (f[0] === path) return f; return null; }
+function settingChanged(el) {
+  if (el.dataset.s.endsWith('.roleIdx')) {   // "heater:2" -> role and number
+    const base = el.dataset.s.replace('.roleIdx', ''), [role, idx] = el.value.split(':');
+    for (const [p, v] of [[base + '.role', role], [base + '.index', +idx]]) {
+      if (JSON.stringify(v) === JSON.stringify(getP(SET, p))) delete setDraft[p]; else setDraft[p] = {shown: v, value: v};
+    }
+    setSaveBar(); return;
+  }
+  const path = el.dataset.s, def = fieldDef(path), kind = def ? def[2] : (path.endsWith('inverted') ? 'bool' : 'enum');
+  let shown, value;
+  if (el.classList.contains('sw')) shown = value = el.getAttribute('aria-checked') === 'true';
+  else if (el.type === 'number') { shown = parseFloat(el.value); if (isNaN(shown)) return;
+    value = kind === 'temp' ? Math.round(fromD(shown) * 100) / 100 : kind === 'delta' ? Math.round(dFromD(shown) * 100) / 100 : shown;
+    if (Number.isInteger(getP(SET, path)) && kind === 'num' && !(def && def[3] && def[3].step < 1)) value = Math.round(value); }
+  else { shown = value = el.value; if (kind === 'pw' && value === '') { delete setDraft[path]; setSaveBar(); return; } }
+  const orig = getP(SET, path);
+  if (kind !== 'pw' && JSON.stringify(value) === JSON.stringify(orig)) delete setDraft[path]; else setDraft[path] = {shown, value};
+  const f = $('f-' + path.replace(/\./g, '-')); if (f) f.classList.remove('err');
+  setSaveBar();
+}
+function setSaveBar() {
+  const n = Object.keys(setDraft).length;
+  saveBar(n ? {text: `${n} unsaved change${n === 1 ? '' : 's'}`, save: saveSettings, discard: () => { setDraft = {}; renderSettings(); }} : null);
+}
+async function saveSettings() {
+  const changes = Object.entries(setDraft).map(([path, d]) => ({path, value: d.value}));
+  try { await post('/api/settings', {changes}); toast('Settings saved', 'ok'); SET = await get('/api/settings'); setDraft = {}; renderSettings(); poll(); }
+  catch (e) {
+    const errs = (e.data && e.data.errors) || [];
+    errs.forEach(er => { const f = $('f-' + er.path.replace(/\./g, '-')); if (f) f.classList.add('err'); });
+    const failed = new Set(errs.map(x => x.path));
+    Object.keys(setDraft).forEach(p => { if (!failed.has(p)) delete setDraft[p]; });   // the others were saved
+    SET = await get('/api/settings').catch(() => SET);
+    setSaveBar();
+    toast('Not all saved: ' + e.message, 'err', true);
+  }
+}
+async function resetSettings() {
+  if (!await confirmDlg('Reset all settings?', 'Everything goes back to the defaults. Recipes and Wi-Fi are kept.', 'Reset', true)) return;
+  try { await post('/api/settings/reset'); toast('Settings reset', 'ok'); saveBar(null); pageSettings(); } catch (e) { toast(e.message, 'err'); }
+}
+
+// ==========================================================================
+// Network & system
+// ==========================================================================
+let wifiTimer = null;
+function barsHtml(rssi) { const n = rssi >= -55 ? 4 : rssi >= -65 ? 3 : rssi >= -75 ? 2 : 1;
+  return `<span class="bars up">${[0, 1, 2, 3].map(i => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</span>`; }
+function pageNetwork() {
+  $('page').innerHTML = `<div class="phead"><div><h1>System</h1><p class="muted">Wi-Fi, firmware update, tools and the controller.</p></div></div>
+  <div class="cols">
+    <div class="card"><div class="card-h"><h2>Wi-Fi</h2><button class="btn sm ghost" onclick="scanWifi()">Scan</button></div><dl class="kv" id="wfKv"></dl>
+      <div id="wfNets" style="margin-top:10px"></div><div class="row" style="margin-top:12px"><button class="btn sm ghost" onclick="forgetWifi()">Forget home network</button></div></div>
+    <div class="card"><h2>Firmware update</h2><p class="muted small">Upload <span class="mono">.pio/build/devkit/firmware.bin</span> while no mode is running. The controller restarts with the new version; if anything goes wrong, the old one keeps running.</p>
+      <div class="drop" id="fwDrop">Drop firmware.bin here, or <label class="lnk">choose a file<input id="fwFile" type="file" accept=".bin" hidden></label></div>
+      <div id="fwState" class="small" style="margin-top:10px"></div></div>
+    <div class="card"><div class="card-h"><h2>Controller</h2><button class="btn sm ghost" onclick="reboot()">Restart</button></div><dl class="kv" id="sysKv"></dl></div>
+    <div class="card"><h2>Tools</h2>
+      <div class="fld"><div class="t"><label>Prime the pump</label><p>Short pulses to push the air out of the pump and hoses.</p></div><button class="btn sm ghost" onclick="act('pumpPrime').then(ok => ok && toast('Priming…', 'ok'))">Prime</button></div>
+      <div class="fld"><div class="t"><label>PID autotune</label><p>Finds the PID gains for your kettle. Run it once with the usual amount of water; it takes a while.</p></div><button class="btn sm ghost" onclick="startTune()">Start…</button></div>
+      <div class="fld"><div class="t"><label>Fake heating</label><p>For trying things out: a simulated kettle replaces the kettle sensor, and the real heater and pump stay off.</p></div>${swHtml(S && S.sim.on, 'id="simSw"')}</div>
+      <div class="fld"><div class="t"><label>Simulated water temperature</label></div><button class="btn sm ghost" onclick="setSimTemp()">Set…</button></div></div>
+  </div>`;
+  $('fwFile').onchange = e => { if (e.target.files[0]) uploadFirmware(e.target.files[0]); e.target.value = ''; };
+  const dz = $('fwDrop');
+  dz.ondragover = e => { e.preventDefault(); e.stopPropagation(); dz.classList.add('over'); };
+  dz.ondragleave = () => dz.classList.remove('over');
+  dz.ondrop = e => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) uploadFirmware(f); };
+  $('simSw').addEventListener('change', e => act('sim', {on: e.target.getAttribute('aria-checked') === 'true'}));
+  loadWifi(); loadInfo();
+}
+async function loadWifi() {
+  clearTimeout(wifiTimer);
+  if (route !== 'network') return;
+  try {
+    const w = await get('/api/wifi');
+    $('wfKv').innerHTML = [
+      ['Status', w.connected ? `<span style="color:var(--ok);font-weight:650">Connected</span>` : w.ssid ? 'Not connected' : 'No home network'],
+      ['Network', esc(w.ssid || '—')], ['Signal', w.connected ? `${barsHtml(w.rssi)} ${w.rssi} dBm` : '—'], ['Address', w.connected ? `${esc(w.ip)} · <a class="lnk" href="http://${esc(w.hostname)}.local">${esc(w.hostname)}.local</a>` : '—'],
+      ['Setup access point', w.apOn ? `${esc(w.apSsid)} at ${esc(w.apIp)} (${w.apClients} connected)` : 'closed']]
+      .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+    $('wfNets').innerHTML = w.scanning ? '<div class="muted small row"><span class="spin"></span>Scanning…</div>' : w.networks.length ? w.networks.map(n =>
+      `<div class="net"><span class="nm">${esc(n.ssid)}${n.ssid === w.ssid && w.connected ? ' <span class="badge">current</span>' : ''}${n.open ? ' <span class="muted small">open</span>' : ''}</span>${barsHtml(n.rssi)}
+       <button class="btn sm ghost" data-ssid="${esc(n.ssid)}" data-open="${n.open}" onclick="joinWifi(this.dataset.ssid, this.dataset.open === 'true')">Connect</button></div>`).join('') : '';
+    if (w.scanning) wifiTimer = setTimeout(loadWifi, 1500);
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function scanWifi() { try { await post('/api/wifi/scan'); setTimeout(loadWifi, 400); } catch (e) { toast(e.message, 'err'); } }
+async function joinWifi(ssid, open) {
+  const pw = open ? '' : await askText(`Password for ${ssid}`, '', {password: true});
+  if (pw === undefined) return;
+  try { await post('/api/wifi', {ssid, password: pw}); toast(`Connecting to ${ssid}… If this page stops answering, open http://mashtouch.local on that network.`, 'alert', true); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function forgetWifi() {
+  if (!await confirmDlg('Forget the home network?', 'The controller opens its setup access point.', 'Forget', true)) return;
+  try { await post('/api/wifi/forget'); toast('Network forgotten', 'ok'); loadWifi(); } catch (e) { toast(e.message, 'err'); }
+}
+async function loadInfo() {
+  try {
+    const i = await get('/api/info'), kb = n => Math.round(n / 1024).toLocaleString() + ' kB', up = i.uptime;
+    $('sysKv').innerHTML = [['Firmware', esc(i.version)], ['Built', esc(i.build)], ['Storage', `${kb(i.fsUsed)} of ${kb(i.fsTotal)}`],
+      ['Free memory', `${kb(i.heapFree)} · PSRAM ${kb(i.psramFree)}`], ['Running for', `${Math.floor(up / 3600)} h ${Math.floor(up / 60) % 60} min`]]
+      .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function uploadFirmware(f) {
+  if (!/\.bin$/i.test(f.name)) { toast('Choose the firmware .bin file', 'err'); return; }
+  if (!await confirmDlg('Update the firmware?', `${f.name} (${Math.round(f.size / 1024)} kB). The controller restarts afterwards.`, 'Update')) return;
+  const fd = new FormData(); fd.append('firmware', f);
+  const x = new XMLHttpRequest();
+  $('fwState').innerHTML = '<div class="bar" style="margin:0"><span id="fwBar" style="width:0%"></span></div>';
+  x.upload.onprogress = e => { if (e.lengthComputable && $('fwBar')) $('fwBar').style.width = (e.loaded * 100 / e.total) + '%'; };
+  x.onload = () => {
+    let j = {}; try { j = JSON.parse(x.responseText); } catch (e) {}
+    if (x.status === 200 && j.ok) { $('fwState').innerHTML = '<span style="color:var(--ok);font-weight:650">Updated. Restarting… the page reloads by itself.</span>'; setTimeout(() => location.reload(), 9000); }
+    else $('fwState').innerHTML = `<span style="color:var(--bad);font-weight:650">Update failed: ${esc(j.error || x.statusText)}</span>`;
+  };
+  x.onerror = () => { $('fwState').innerHTML = '<span style="color:var(--bad);font-weight:650">Upload failed</span>'; };
+  x.open('POST', '/api/ota'); x.send(fd);
+}
+async function reboot() {
+  if (!await confirmDlg('Restart the controller?', 'Only while no mode is running.', 'Restart')) return;
+  try { await post('/api/reboot'); toast('Restarting…'); setTimeout(() => location.reload(), 7000); } catch (e) { toast(e.message, 'err'); }
+}
+async function setSimTemp() {
+  const t = await askNumber('Simulated water temperature', S ? +toD(S.temp ?? 20).toFixed(0) : 20, {min: Math.round(toD(0)), max: Math.round(toD(100)), step: 1, unit: unit()});
+  if (t != null) act('simTemp', {tempC: fromD(t)});
+}
+
+// ==========================================================================
+// Start
+// ==========================================================================
+applyTheme(); renderSoundB();
+navigate();
+loadHistory();
+poll();
+setInterval(poll, 1000);
+</script>
+</body>
+</html>
