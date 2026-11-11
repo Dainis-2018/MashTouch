@@ -1,14 +1,10 @@
-# Breadboard wiring for bring-up
+# Bring-up wiring and tests
 
-There are two builds:
-- **Waveshare ESP32‑S3‑Touch‑LCD‑3.5** (the product, `pio run -e ws35`). See the next section.
-- **ESP32‑S3‑DevKitC‑1 N16R8 + MSP3526** (the bench build, `pio run -e devkit`). See the sections after it. Its pins are in [src/board/pins_devkit.h](../src/board/pins_devkit.h).
+Hardware: the **Waveshare ESP32‑S3‑Touch‑LCD‑3.5** panel, with test parts on jumper wires to its J8 header until the I/O backpack exists.
 
-The test steps further down ("What to check" and after) apply to both.
+## Waveshare panel
 
-## Waveshare panel (`ws35`)
-
-Pins: [src/board/pins_ws35.h](../src/board/pins_ws35.h). Flash over the panel's USB‑C with `pio run -e ws35 -t upload`; the console is on the same port (USB CDC). If the upload doesn't start, hold BOOT and press RESET once.
+Pins: [src/board/pins.h](../src/board/pins.h). Flash over the panel's USB‑C with `pio run -t upload`; the console is on the same port (USB CDC). If the upload doesn't start, hold BOOT and press RESET once.
 
 **Without anything on J8**, the panel alone should show the UI, react to touch and play the start chime. Then:
 - In the console, run `i2c`. Expect 0x18 ES8311, 0x20 TCA9554, 0x34 AXP2101, 0x38 FT6336, 0x51 PCF85063 and 0x6A/0x6B QMI8658. Note anything missing or extra.
@@ -27,63 +23,25 @@ Pins: [src/board/pins_ws35.h](../src/board/pins_ws35.h). Flash over the panel's 
 
 Never connect a real SSR, pump or heater during bring-up. Leave the camera unplugged (its pins are the outputs).
 
-**Checks specific to this panel** (note the results in `docs/design.md`):
+**Checks for this panel** (note the results in `docs/design.md`):
 1. **Orientation:** the picture is landscape and the right way up. If it is upside down, build with `-DMT_LCD_ROTATION=3`. Colours are wrong? Try `-DMT_LCD_INVERT=0` or `-DMT_LCD_BGR=1`.
 2. **Touch** hits the right spot in all four corners (see step 2 below).
 3. **Sound:** the start chime plays. If the codec answers (`i2c` shows 0x18) but there is no sound, the amplifier enable (PA_CTRL) is probably off. Tell me what the schematic shows for it.
 4. **Power from J8:** feed 5 V into J8 VBUS (no USB) and check that the panel starts without pressing PWR.
 5. **Wi‑Fi range** with the panel in its frame in the box.
 
-## DevKit + MSP3526 (`devkit`)
-
-### MSP3526 → DevKit
-
-The MSP3526 has one 14‑pin header. Label names vary slightly between sellers; check the silkscreen on your module.
-
-| MSP3526 pin | Function | DevKit GPIO |
-|---|---|---|
-| VCC | power | **5V** or 3V3: LCDWiki specifies 3.3–5 V for the module (it has its own regulator); check your seller's listing. Signal levels are 3.3 V either way |
-| GND | ground | GND |
-| LCD_CS | display chip select | 10 |
-| LCD_RST | display reset | **EN / RST pin of the DevKit** (resets with the MCU; no GPIO) |
-| LCD_RS (DC) | data/command | 9 |
-| SDI (MOSI) | SPI data in | 11 |
-| SCK | SPI clock | 12 |
-| LED | backlight | 7 |
-| SDO (MISO) | SPI data out | 13 |
-| CTP_SCL | touch I2C clock | 6 |
-| CTP_RST | touch reset | **EN / RST** (same line as LCD_RST) |
-| CTP_SDA | touch I2C data | 5 |
-| CTP_INT | touch interrupt | not connected (the touch controller is polled) |
-| SD_CS | microSD chip select | 14 (not used yet) |
-
-### Test I/O (DevKit)
-
-| Item | GPIO | How to wire for the test |
-|---|---|---|
-| Button Start/Pause | 1 | push button to GND (internal pull-up) |
-| Button Pump | 2 | push button to GND |
-| LED Start / LED Pump | 42 / 41 | LED + 330 Ω to GND |
-| OUT1–OUT4 | 16 / 17 / 18 / 21 | LED + 330 Ω to GND each |
-| PWR1 / PWR2 | 15 / 3 | LED + 330 Ω to GND (brightness follows the PWM slider) |
-| Speaker | 4 / 8 / 38 | **MAX98357A** breakout: BCLK → 4, LRC → 8, DIN → 38, VIN → 5V, GND → GND; an 8 Ω speaker on its output. Leave GAIN and SD unconnected. (On DevKitC‑1 v1.1 the onboard RGB LED is also on GPIO 38 and may flicker.) |
-| DS18B20 data | 47 | 4.7 kΩ pull-up to **3.3V**; sensor VDD to 3.3V, GND to GND |
-| Level switch | 48 | switch to GND |
-
-Never connect a real SSR, pump or heater during bring-up.
-
 ## What to check
 
 1. After flashing, the screen shows the **MashTouch** home screen in landscape, with readable text. Open **Tools > Output and button test** for the next steps.
    - Colours inverted (black background looks white)? Build with `-DMT_LCD_INVERT=0`.
-   - Red and blue swapped? Tell me; it's a one-line setting.
+   - Red and blue swapped? Build with `-DMT_LCD_BGR=1`.
 2. Touch a corner: **Touch x,y** at the top of the test screen should show about 0,0 at the top left and 479,319 at the bottom right. If the axes are swapped or mirrored, note what you see (and the Home button at the top left will be hard to hit).
 3. Tap **OUT1–OUT4**: the matching LED switches on and off. (Bench-test values only work while the controller is idle.)
 4. Move the **PWR** sliders: LED brightness follows.
 5. **Sound** plays the "brew finished" melody through the speaker; a short chime also plays at power-on. The backlight slider dims the screen.
 6. Hold a front button: the status line shows *held*. (Presses now go to the controller: see below.)
 7. With a DS18B20 connected, its temperature appears in large digits. Tap **Scan** after plugging one in.
-8. The status line shows free heap and PSRAM. PSRAM should be close to 8000 k; if it shows 0, the board isn't an N16R8.
+8. The status line shows free heap and PSRAM. PSRAM should be close to 8000 k; if it shows 0, PSRAM is not enabled in the build.
 
 ## Testing the brewing core (serial console)
 
@@ -152,7 +110,7 @@ The bring-up screen is now **Tools > Output and button test**. Leaving it switch
    - Brew tab: start fake heating (console `sim on 20`), then **Start brew**. Answer the prompts in the browser and on the touch screen; both stay in step.
    - Recipes tab: import your BeerXML file, open it, check the timeline.
    - Settings tab: change a value and check it with `get` on the console.
-5. **Firmware update:** System tab > choose `.pio/build/devkit/firmware.bin` > Upload. The controller restarts with the new build. Try the same with `pio run -e devkit_ota -t upload`.
+5. **Firmware update:** System tab > choose `.pio/build/ws35/firmware.bin` > Upload. The controller restarts with the new build. Try the same with `pio run -e ws35_ota -t upload`.
 6. **Web password:** `set net.webPassword "secret"`. The browser now asks for a login (user `admin`) when you change something.
 7. Switch the home router off: after 20 s the setup access point opens again; with the router back, the controller reconnects.
 8. Check the Wi‑Fi signal (RSSI on the Wi‑Fi screen) with the controller inside the closed box.

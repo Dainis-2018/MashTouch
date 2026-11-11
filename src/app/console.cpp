@@ -171,7 +171,7 @@ const char* kHelp =
     "  rset <path> <value>  edit the active recipe, e.g. rset rests.0.minutes 45\n"
     "  rjson <json>         replace the active recipe with a JSON object\n"
     "  fs                   filesystem usage\n"
-    "  i2c                  scan the shared I2C bus (Waveshare board)\n"
+    "  i2c                  scan the shared I2C bus\n"
     "Network:\n"
     "  wifi                 status (IP, setup access point)\n"
     "  wifi scan | list     scan, then list networks\n"
@@ -193,8 +193,8 @@ const char* i2cName(uint8_t a) {
 }
 
 void i2cScan() {
-  if (!i2cbus::available() || !i2cbus::begin()) {
-    Serial.println("no shared I2C bus on this board");
+  if (!i2cbus::begin()) {
+    Serial.println("I2C bus did not start");
     return;
   }
   int found = 0;

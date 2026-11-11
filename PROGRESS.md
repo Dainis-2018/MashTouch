@@ -4,8 +4,8 @@ Status on 2026-11-12. ESP32‑S3 touchscreen brew controller for single-vessel (
 
 ## Where things stand
 
-- **Hardware change (round 9):** the product is now built on the **Waveshare ESP32‑S3‑Touch‑LCD‑3.5** panel, with an MCU-less I/O backpack on its J8 header. The DevKit + MSP3526 stays as the bench build.
-- **Both builds compile cleanly** (`pio run -e ws35` and `-e devkit`: RAM 25 %, flash 25 %). **Nothing has run on hardware yet**; the parts have not arrived.
+- **Hardware:** the controller is built on the **Waveshare ESP32‑S3‑Touch‑LCD‑3.5** panel, with an MCU-less I/O backpack on its J8 header. That is the only board: the earlier DevKit + MSP3526 bench build was removed.
+- **The firmware builds cleanly** (`pio run`, environment `ws35`: RAM 25 %, flash 25 %). **Nothing has run on hardware yet**; the parts have not arrived.
 - **The web UI is tested on a PC mock** (`node tools/mock/server.js`, http://localhost:8080) with headless-browser screenshots. The mock is a simplified JavaScript model, not the firmware.
 - **The touch UI (LVGL) has never been seen on a screen.** It compiles; layout and touch feel are unverified.
 
@@ -21,7 +21,7 @@ Status on 2026-11-12. ESP32‑S3 touchscreen brew controller for single-vessel (
 | 6 | Wi‑Fi (home network or setup access point), JSON API, web UI, firmware update over the network | `src/net/`, `web/index.html` |
 | 7 | BIAB UX pass: web UI rewrite, boil-over warning, manual timer start, strike calculator | `web/index.html`, `src/core/brew.*` |
 | 8 | Brew history and logs, sparge heater, staged heaters, alarm and safety relay, runaway detection, I2S speaker, NTP clock | `src/app/history.*`, `src/storage/brewlog.*`, `src/hal/audio.*`, `src/app/controller.*` |
-| 9 | Waveshare panel as the product board: board selection, shared I2C bus, expanders, ES8311 codec, console `i2c` scan | `src/board/`, `src/hal/i2cbus.*`, `iox.*`, `es8311.*` |
+| 9 | Waveshare panel as the board: pin map, shared I2C bus, expanders, ES8311 codec, console `i2c` scan | `src/board/pins.h`, `src/hal/i2cbus.*`, `iox.*`, `es8311.*` |
 
 Serial console (`help`), PC mock and docs exist for all of it.
 
@@ -62,12 +62,10 @@ Serial console (`help`), PC mock and docs exist for all of it.
 - No code from BrewManiacEx: its web UI served only as a design reference.
 
 **Hardware (controller head only)**
-- **Product:** Waveshare ESP32‑S3‑Touch‑LCD‑3.5 (ST7796 + FT6336, the same chips as the MSP3526; ES8311 codec and speaker; front cover frame) + an **I/O backpack without an MCU** plugged into its 2×16 header J8. Pin map: `src/board/pins_ws35.h`, with the full table in `docs/design.md`.
+- **Board:** Waveshare ESP32‑S3‑Touch‑LCD‑3.5 (ST7796 + FT6336; ES8311 codec and speaker; front cover frame) + an **I/O backpack without an MCU** plugged into its 2×16 header J8. Pin map: `src/board/pins.h`, with the full table in `docs/design.md`.
   - OUT1–4 on GPIO 38–41, PWR1/2 on 42/21, 1‑Wire 17, level 18, MAX31865 on J8's SPI 11/10/9 with CS 47/48.
   - Buttons and LED rings on a TCA9535 (0x22) on the shared I2C bus. Safety I/O is never on an expander.
   - The shared I2C bus (7/8) belongs to `src/hal/i2cbus`, which uses LovyanGFX's driver so the touch driver can share it. Never use `Wire` on it.
-- **Bench:** ESP32‑S3‑DevKitC‑1 N16R8 + MSP3526 + MAX98357A, with the round‑8 pin map (`src/board/pins_devkit.h`).
-- `src/board/pins.h` selects the board from `MT_BOARD_WS35` / `MT_BOARD_DEVKIT`, plus feature macros.
 - 4 signal outputs (OUT, for SSRs and relay coils) and 2 power outputs (PWR, 12 V loads up to about 3 A), 2 buttons with LED rings, 12 V input.
 - Gate pull-downs on every output, and input protection on 12 V and the sensor lines.
 
@@ -81,18 +79,17 @@ Serial console (`help`), PC mock and docs exist for all of it.
    - the J8 pin order
 
    The open checks are listed under the Waveshare pin map in `docs/design.md`.
-2. **Bench bring-up** with the DevKit, MSP3526, a MAX98357A breakout and a speaker, for anything the panel can't show yet. Run `import selftest` on the console.
+2. Run `import selftest` on the console.
 3. **Check on hardware what could only be compiled:**
    - the ES8311 codec setup and the TCA9535 front-panel layout (written from datasheets)
-   - the I2S speaker and its chimes
-   - the display without a reset GPIO
+   - the chimes through the speaker
+   - the LCD reset through the expander
    - polled touch
-   - GPIO 3 as PWR2
    - brew logs on flash
    - NTP time
    - runaway detection, which may need tuning to avoid false alarms
 4. **See the touch UI on the real screen** and fix layout and spacing. The brew history has no touch screen page yet.
-5. **PT100/PT1000 via MAX31865**: on the Waveshare board on J8's SPI lines (its own bus); on the bench build shared with the display.
+5. **PT100/PT1000 via MAX31865** on J8's SPI lines (its own bus, separate from the display).
 6. **KiCad I/O backpack PCB** (no MCU) to the Waveshare pin map. Take the outline and holes from the vendor STEP file, and keep clear of the panel's antenna.
 7. **Smaller open items:**
    - fonts with Latvian letters (imported names are folded to plain Latin letters today)

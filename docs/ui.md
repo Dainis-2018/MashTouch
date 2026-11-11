@@ -1,6 +1,6 @@
 # Touch UI
 
-LVGL 9.2 on the 480×320 MSP3526 panel. The code is in `src/ui/`:
+LVGL 9.2 on the 480×320 panel of the Waveshare ESP32‑S3‑Touch‑LCD‑3.5. The code is in `src/ui/`:
 
 - `ui`: top bar, screen switching, °C/°F, temperature history
 - `kit`: widgets and popups

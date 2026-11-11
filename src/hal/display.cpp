@@ -13,7 +13,7 @@
 #include "i2cbus.h"
 #include "iox.h"
 
-// IPS panels (MSP3526, Waveshare 3.5) need colour inversion. Override with
+// The IPS panel needs colour inversion. Override with
 // -DMT_LCD_INVERT=0 if colours come out negative on a particular module,
 // -DMT_LCD_BGR=1 if red and blue are swapped, and -DMT_LCD_ROTATION=3 if the
 // picture is upside down (1 and 3 are the two landscape orientations).
@@ -29,8 +29,7 @@
 
 namespace {
 
-// ST7796 panel + FT6336 touch: the same chips on both boards, only the pins
-// and the reset differ.
+// ST7796 panel + FT6336 touch on the Waveshare board.
 class Panel : public lgfx::LGFX_Device {
   lgfx::Panel_ST7796 panel_;
   lgfx::Bus_SPI bus_;
@@ -58,8 +57,8 @@ class Panel : public lgfx::LGFX_Device {
     {
       auto cfg = panel_.config();
       cfg.pin_cs = PIN_LCD_CS;
-      // No reset GPIO: tied to the MCU reset line (MSP3526) or pulsed through the
-      // I2C expander before init (Waveshare). LovyanGFX also sends a software reset.
+      // No reset GPIO: begin() pulses it through the I2C expander before init.
+      // LovyanGFX also sends a software reset.
       cfg.pin_rst = -1;
       cfg.pin_busy = -1;
       cfg.panel_width = 320;
@@ -73,7 +72,7 @@ class Panel : public lgfx::LGFX_Device {
       cfg.invert = MT_LCD_INVERT;
       cfg.rgb_order = MT_LCD_BGR;
       cfg.dlen_16bit = false;
-      cfg.bus_shared = MT_LCD_BUS_SHARED;  // MSP3526: SD card and MAX31865 share the bus
+      cfg.bus_shared = false;  // the LCD has its SPI bus to itself
       panel_.config(cfg);
     }
     {
@@ -95,7 +94,7 @@ class Panel : public lgfx::LGFX_Device {
       cfg.pin_rst = -1;  // reset follows the LCD reset
       cfg.bus_shared = false;
       cfg.offset_rotation = 0;
-      cfg.i2c_port = 0;  // Waveshare: the shared bus, see hal/i2cbus
+      cfg.i2c_port = 0;  // the shared bus, see hal/i2cbus
       cfg.i2c_addr = 0x38;
       cfg.pin_sda = PIN_TOUCH_SDA;
       cfg.pin_scl = PIN_TOUCH_SCL;
@@ -140,12 +139,10 @@ void touchCb(lv_indev_t*, lv_indev_data_t* data) {
 namespace display {
 
 bool begin() {
-#if MT_LCD_RST_EXIO
   i2cbus::begin();
   iox::resetLcd();
-#endif
   if (!lcd.init()) return false;
-  lcd.setRotation(MT_LCD_ROTATION);  // landscape (MSP3526: header pins on the left)
+  lcd.setRotation(MT_LCD_ROTATION);  // landscape
   lcd.setBrightness(200);
   lcd.fillScreen(TFT_BLACK);
 

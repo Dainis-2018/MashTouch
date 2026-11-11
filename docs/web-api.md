@@ -49,8 +49,8 @@ The controller is meant for the home network.
 
 ## Firmware update
 
-- **From the browser:** System tab, choose `.pio/build/devkit/firmware.bin`, Upload.
-- **From PlatformIO:** `pio run -e devkit_ota -t upload` (task "PIO: Upload", env `devkit_ota`). It sends the build with curl to `http://mashtouch.local/api/ota`. If `.local` names do not resolve on the PC, put the IP in `upload_port`. With a web password, add `-u admin:<password>` to `upload_command`.
+- **From the browser:** System tab, choose `.pio/build/ws35/firmware.bin`, Upload.
+- **From PlatformIO:** `pio run -e ws35_ota -t upload` (task "PIO: Upload", env `ws35_ota`). It sends the build with curl to `http://mashtouch.local/api/ota`. If `.local` names do not resolve on the PC, put the IP in `upload_port`. With a web password, add `-u admin:<password>` to `upload_command`.
 
 Updates are refused while a mode is running. The controller switches all outputs off and restarts after a successful update. The 16 MB flash has two app slots, so a failed update leaves the old firmware running.
 

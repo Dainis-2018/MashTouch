@@ -8,13 +8,12 @@ Decisions made so far:
 - **The project's hardware scope is the controller head:** a display panel + an I/O backpack PCB + 2 buttons, with output and sensor connectors compatible with the existing box wiring. The rest of the box (SSRs, heatsink, PSU, mains) is the user's own build and is only documented, not designed.
 - **Display panel (decided 2026‑11‑11):** **Waveshare ESP32‑S3‑Touch‑LCD‑3.5** (V2 PCB), chosen for a finished look: a 3.5" IPS 320×480 panel with a front cover frame, and the MCU on board. It has:
   - ESP32‑S3R8 (8 MB PSRAM) + 16 MB flash, native USB‑C
-  - ST7796 over SPI + FT6336 touch: the same chips as the MSP3526, so the UI code carries over
+  - ST7796 over SPI + FT6336 touch
   - ES8311 codec + NS4150B amplifier and a speaker connector
   - AXP2101 PMU, RTC, IMU, microSD
   - a 2×16 2.54 mm header (J8) for expansion
 
   The -C version adds a case and an OV5640 camera; the camera is not used.
-- **Bench build:** an ESP32‑S3‑DevKitC‑1 N16R8 + an MSP3526 module (LCDWiki 3.5", the same display and touch chips) on a breadboard stays supported as the `devkit` build.
 - **Buttons:** two small 8–12 mm panel-mount momentary buttons with LED rings: **Start/Pause** and **Pump**.
 - **PCB:** an **I/O backpack without an MCU** that plugs straight into the panel's J8 header and stacks behind the panel. It carries 12 V input, the 5 V feed for the panel, output drivers, sensor inputs and the button connector.
 - **Remote control:** a phone or PC through the web UI. No detachable screen.
@@ -32,7 +31,7 @@ Decisions made so far:
 | `core/brew` | Open‑ArdBir state machine reworked to be non-blocking (it uses `delay()` and LCD loops today): manual mode, auto mash steps, boil + hop alarms, delayed start, cooling, pump rest, PID + autotune |
 | `hal/outputs` | **generic outputs with assignable roles**: any physical output can be set as heater 1..n, pump 1..n, sparge heater, fan, or alarm light. All safe-off at boot. Inverted logic and PWM (power outputs) configurable per output |
 | `hal/sensors` | sensor abstraction (`TempSensor`: read, fault, calibration offset). **Any number of sensors** (DS18B20 bus + MAX31865 channels), each assigned a role: kettle, RIMS/HERMS out, sparge, heatsink, or display only. A PID loop can use any sensor |
-| `hal/io`, `hal/iox`, `hal/audio` | outputs, buttons with long-press and LED rings (direct GPIO, or the backpack's I2C expander), the I2S speaker (MAX98357A or the ES8311 codec) |
+| `hal/io`, `hal/iox`, `hal/audio` | outputs, buttons with long-press and LED rings (on the backpack's I2C expander), the I2S speaker through the ES8311 codec |
 | `hal/i2cbus` | the Waveshare board's shared I2C bus (touch, expanders, codec, PMU), one driver for all |
 | `storage` | LittleFS: settings and recipes as JSON, brew logs. The microSD slot is unused (on the Waveshare board its lines are the sensor SPI bus) |
 | `net` | Wi‑Fi STA with setup AP and captive DNS, mDNS, the core `WebServer` (served from `loop()`), JSON API, embedded web UI polling status at 1 Hz, OTA (see `docs/web-api.md`) |
@@ -49,13 +48,13 @@ Decisions made so far:
 | Sensor | Interface | Why |
 |---|---|---|
 | **DS18B20** (existing) | 1‑Wire, several on one bus, 4.7 k pull-up to 3.3 V | must keep working with the existing probes and connector; scan, name and assign roles in the UI |
-| **PT100 / PT1000 via MAX31865** | SPI, own CS, 2 channels. Waveshare: J8 SPI lines (the unused SD bus), separate from the LCD. Bench build: shares the LCD bus | the modern standard for brewing probes (stainless, tri-clamp, fast and accurate, 2/3/4‑wire); MAX31865 boards are cheap and widely available |
+| **PT100 / PT1000 via MAX31865** | SPI on J8 (the unused SD bus, separate from the LCD), own CS, 2 channels | the modern standard for brewing probes (stainless, tri-clamp, fast and accurate, 2/3/4‑wire); MAX31865 boards are cheap and widely available |
 | Thermocouple via **MAX31856** (optional, later) | SPI, own CS | only if someone needs very high temperatures; low priority |
 
 DS18B20 clones are common. Detect them and show read errors and fault counters in the UI, not just a stale value.
 
-## Pin map: Waveshare ESP32‑S3‑Touch‑LCD‑3.5 + backpack (product)
-The source of truth is `src/board/pins_ws35.h` (selected by `-DMT_BOARD_WS35`, build `pio run -e ws35`). Sources:
+## Pin map: Waveshare ESP32‑S3‑Touch‑LCD‑3.5 + backpack
+The source of truth is `src/board/pins.h` (build `pio run`, environment `ws35`). Not usable: GPIO 19/20 (native USB), 26–32 (flash), 33–37 (octal PSRAM in the ESP32‑S3R8). Sources:
 - the Waveshare V2 schematic: its "PIN_OUT" table and header J8
 - the vendor examples [`11_lvgl_arduino_v8`](https://github.com/waveshareteam/ESP32-S3-Touch-LCD-3.5) (LCD defines, TCA9554 at 0x20, LCD reset on EXIO1), `01_audio_out` and `04_es8311_example` (I2S)
 - the datasheets on the vendor [Resources page](https://docs.waveshare.com/ESP32-S3-Touch-LCD-3.5/Resources-And-Documents)
@@ -107,32 +106,7 @@ The schematic text gives the nets but not a certain pin order, so confirm the pi
 **Panels compared (2026‑11):**
 - **Guition JC3248W535** (closed case, JST connectors): its AXS15231B QSPI display needs a new driver (none in LovyanGFX), and it has only about 12 GPIOs on cables.
 - **OpenNextion ONX3248G035:** 14 GPIOs on a 0.5 mm FPC, all shared with camera, mic or UART1; no documented mounting.
-- **Waveshare** won on its stacking header and unchanged display code.
-
-## Pin map: DevKit + MSP3526 (bench build)
-The source of truth is `src/board/pins_devkit.h` (`-DMT_BOARD_DEVKIT`, build `pio run -e devkit`). Not usable: GPIO 19/20 (native USB), 26–32 (flash), 35–37 (octal PSRAM). Strapping pins 0, 45 and 46 are left alone.
-
-| Function | GPIO |
-|---|---|
-| LCD + MAX31865 + SD: SCK / MOSI / MISO | 12 / 11 / 13 |
-| LCD CS / DC(RS) / backlight PWM | 10 / 9 / 7 |
-| LCD RESET and touch reset | not on a GPIO: tied to the MCU reset line (EN) |
-| SD CS (module slot) | 14 |
-| Touch SDA / SCL (INT not connected, polled) | 5 / 6 |
-| MAX31865 CS1 / CS2 | 39 / 40 |
-| Button Start/Pause / Pump | 1 / 2 |
-| LED Start / Pump | 42 / 41 |
-| Signal outputs OUT1–OUT4 | 16 / 17 / 18 / 21 |
-| 12 V power outputs PWR1 / PWR2 | 15 / 3 |
-| Speaker amplifier (I2S): BCLK / LRCLK / DOUT | 4 / 8 / 38 |
-| 1‑Wire sensors / level sensor | 47 / 48 |
-| UART0 debug header TX / RX (not used by the firmware) | 43 / 44 |
-
-Why the map changed from the first version:
-- **Speaker:** the I2S amplifier needs three pins. They come from the old buzzer pin (38), the touch interrupt (4; the touch controller is polled) and the display reset (8; the display now resets together with the MCU).
-- **PWR2 moved from GPIO 43 to GPIO 3.** GPIO 43 is UART0 TX and prints the boot log at every reset, which would pulse the output.
-- **GPIO 3** is a strapping pin only for the JTAG source, and only when an eFuse is burnt. It drives a MOSFET gate with a pull-down, so it reads low at reset.
-- **GPIO 43/44** stay free as a debug UART header. On the DevKit, GPIO 44 is driven by the USB‑UART bridge, so it must not be used as an output there.
+- **Waveshare** won on its stacking header and on using the same display and touch chips as the MSP3526 the firmware was first written for, so the display code carried over.
 
 ## I/O backpack PCB (KiCad)
 - **No MCU on the backpack.** The ESP32‑S3, USB‑C, Wi‑Fi antenna, display and speaker amplifier are on the Waveshare panel. The backpack plugs into the panel's J8 with a 2×16 2.54 mm female header and stacks behind it.
@@ -147,7 +121,7 @@ Why the map changed from the first version:
 - **Sensor inputs:** 1‑Wire bus connector (several DS18B20 in parallel, 4.7 k pull-up to 3.3 V, with ESD protection and a spare second connector for convenience) and the level sensor input. 2× MAX31865 on board (or headers for the common breakout boards) with 2/3/4‑wire PT100/PT1000 terminals.
 - Connector types don't matter (the user will adapt the wiring); use screw terminals or pluggable terminal blocks.
 - Buttons: a JST connector to the two panel-mount buttons and their LEDs.
-- **Speaker instead of a buzzer:** the panel's ES8311 codec and NS4150B amplifier drive a small 8 Ω speaker of 1–2 W (about 28 mm round or 20×30 mm) on the panel's MX1.25 speaker connector. Mount the speaker on the box wall behind a few sound holes. The firmware synthesises its chimes (`src/hal/audio`), so every event has its own sound; the volume is a setting. The bench build uses a MAX98357A breakout instead.
+- **Speaker instead of a buzzer:** the panel's ES8311 codec and NS4150B amplifier drive a small 8 Ω speaker of 1–2 W (about 28 mm round or 20×30 mm) on the panel's MX1.25 speaker connector. Mount the speaker on the box wall behind a few sound holes. The firmware synthesises its chimes (`src/hal/audio`), so every event has its own sound; the volume is a setting.
 - **Input protection:** a fuse or PTC, a reverse-polarity MOSFET and a TVS diode on the 12 V input. ESD protection on the 1‑Wire and level inputs and the button connector. A 100 Ω series resistor on the 1‑Wire data line.
 - **Safety relay (contactor) output:** any output can have the role *Safety relay*. It drives a relay or contactor in the mains feed of the heater SSRs and is closed only while a mode runs without a fault. An SSR that fails closed (their usual failure) can then no longer heat. Fit this relay in the box; an independent thermal cut-out on the kettle is still recommended.
 - **Clock:** the time comes from the network (NTP), or from the browser when there is no internet; it is only needed for the dates in the brew history. The panel's PCF85063 RTC is not used yet.
@@ -176,7 +150,7 @@ Any output can take any role (Settings > Outputs).
 - Box mechanics, SSRs, heatsink, fan mounting, PSU, mains wiring: the user's own existing build. The repo includes a wiring diagram showing how the controller PCB connects to them.
 
 ## Phases
-1. [in progress] Buy an ESP32‑S3 DevKit N16R8, an MSP3526 and one MAX31865 breakout for the bench, and a Waveshare ESP32‑S3‑Touch‑LCD‑3.5 for the product. Create the GPL repo.
+1. [in progress] Buy a Waveshare ESP32‑S3‑Touch‑LCD‑3.5, one MAX31865 breakout, a TCA9535 breakout and test parts (LEDs, buttons, a DS18B20, a speaker). The GPL repo exists. (An ESP32‑S3 DevKit + MSP3526 bench rig was planned first and dropped once the Waveshare panel was chosen.)
 2. [code done, untested on hardware] Firmware bring-up on a breadboard: display, touch, LVGL test screen, outputs, DS18B20. MAX31865 still to do.
 3. [code done, untested on hardware] The brewing core as non-blocking code (`src/core/`, `src/app/controller`, serial console); settings, recipes and power-loss resume on LittleFS (`src/storage/`, see `docs/storage.md`); the touch UI (`src/ui/`, see `docs/ui.md`); recipe import from BeerXML and JSON (see `docs/storage.md`).
 4. [code done, untested on hardware] Brew history and logs, sparge heater, staged heaters, alarm and safety-relay roles, runaway detection, I2S speaker (see `PROGRESS.md`). Network: Wi-Fi with setup access point, mDNS, JSON API, own web UI (written fresh; nothing taken from the BrewManiac webui), recipe import, firmware update over the air (see `docs/web-api.md`). Next: PT100 via MAX31865.

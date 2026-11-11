@@ -1486,7 +1486,7 @@ function pageNetwork() {
   <div class="cols">
     <div class="card"><div class="card-h"><h2>Wi-Fi</h2><button class="btn sm ghost" onclick="scanWifi()">Scan</button></div><dl class="kv" id="wfKv"></dl>
       <div id="wfNets" style="margin-top:10px"></div><div class="row" style="margin-top:12px"><button class="btn sm ghost" onclick="forgetWifi()">Forget home network</button></div></div>
-    <div class="card"><h2>Firmware update</h2><p class="muted small">Upload <span class="mono">.pio/build/devkit/firmware.bin</span> while no mode is running. The controller restarts with the new version; if anything goes wrong, the old one keeps running.</p>
+    <div class="card"><h2>Firmware update</h2><p class="muted small">Upload <span class="mono">.pio/build/ws35/firmware.bin</span> while no mode is running. The controller restarts with the new version; if anything goes wrong, the old one keeps running.</p>
       <div class="drop" id="fwDrop">Drop firmware.bin here, or <label class="lnk">choose a file<input id="fwFile" type="file" accept=".bin" hidden></label></div>
       <div id="fwState" class="small" style="margin-top:10px"></div></div>
     <div class="card"><div class="card-h"><h2>Controller</h2><button class="btn sm ghost" onclick="reboot()">Restart</button></div><dl class="kv" id="sysKv"></dl></div>

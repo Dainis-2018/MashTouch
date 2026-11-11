@@ -17,10 +17,6 @@ bool started = false;
 
 }  // namespace
 
-#ifdef PIN_I2C_SDA
-
-bool available() { return true; }
-
 bool begin() {
   if (started) return true;
   started = lgfx::i2c::init(kPort, PIN_I2C_SDA, PIN_I2C_SCL).has_value();
@@ -45,16 +41,5 @@ bool readRegs(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
 }
 
 bool readReg(uint8_t addr, uint8_t reg, uint8_t* value) { return readRegs(addr, reg, value, 1); }
-
-#else  // board without a shared bus (DevKit: the touch controller has the bus to itself)
-
-bool available() { return false; }
-bool begin() { return false; }
-bool probe(uint8_t) { return false; }
-bool writeReg(uint8_t, uint8_t, uint8_t) { return false; }
-bool readReg(uint8_t, uint8_t, uint8_t*) { return false; }
-bool readRegs(uint8_t, uint8_t, uint8_t*, size_t) { return false; }
-
-#endif
 
 }  // namespace i2cbus

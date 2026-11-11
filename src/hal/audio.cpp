@@ -125,27 +125,19 @@ void begin() {
   cfg.dma_buf_len = kChunk;
   cfg.use_apll = false;
   cfg.tx_desc_auto_clear = true;  // silence, not noise, if the task falls behind
-#if MT_AUDIO_ES8311
   cfg.mclk_multiple = I2S_MCLK_MULTIPLE_256;  // the codec runs from MCLK = 256 fs
-#endif
   if (i2s_driver_install(kPort, &cfg, 0, nullptr) != ESP_OK) return;
 
   i2s_pin_config_t pins = {};
-#if MT_AUDIO_ES8311
   pins.mck_io_num = PIN_I2S_MCLK;
-#else
-  pins.mck_io_num = I2S_PIN_NO_CHANGE;  // MAX98357A needs no MCLK
-#endif
   pins.bck_io_num = PIN_I2S_BCLK;
   pins.ws_io_num = PIN_I2S_LRCLK;
   pins.data_out_num = PIN_I2S_DOUT;
   pins.data_in_num = I2S_PIN_NO_CHANGE;
   if (i2s_set_pin(kPort, &pins) != ESP_OK) return;
   i2s_zero_dma_buffer(kPort);
-#if MT_AUDIO_ES8311
   // MCLK is running now; the codec can be set up.
   if (!es8311::begin()) Serial.println("ES8311 codec not found: no sound");
-#endif
 
   queue = xQueueCreate(3, sizeof(Request));
   if (!queue) return;

@@ -2,8 +2,8 @@
 // Copyright (C) 2026 MashTouch contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// The shared I2C bus on boards that have one (Waveshare: touch, expanders,
-// codec, PMU, RTC, IMU). It uses LovyanGFX's I2C driver on port 0, the same
+// The Waveshare board's shared I2C bus (touch, expanders, codec, PMU, RTC,
+// IMU). It uses LovyanGFX's I2C driver on port 0, the same
 // one its touch driver uses, so only one driver ever touches the peripheral.
 // Do not use Arduino Wire on this bus.
 //
@@ -15,8 +15,7 @@
 
 namespace i2cbus {
 
-// True if this board has the shared bus. begin() is safe to call twice.
-bool available();
+// Safe to call more than once.
 bool begin();
 
 bool probe(uint8_t addr);

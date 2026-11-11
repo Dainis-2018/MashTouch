@@ -2,8 +2,8 @@
 // Copyright (C) 2026 MashTouch contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Sound through I2S to a small speaker: a MAX98357A class-D amplifier (bench
-// build) or the ES8311 codec + amplifier on the Waveshare board.
+// Sound through I2S to the ES8311 codec + amplifier on the Waveshare board
+// and a small speaker.
 // Chimes are synthesised (bell-like tones with a soft attack and a decay),
 // so every event has its own recognisable sound and no audio files are
 // needed. Playback runs in its own task and never blocks loop().

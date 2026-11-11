@@ -2,7 +2,7 @@
 // Copyright (C) 2026 MashTouch contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// ST7796 display + FT6336 touch (MSP3526 or Waveshare 3.5), driven through LovyanGFX,
+// Waveshare 3.5 panel: ST7796 display + FT6336 touch, driven through LovyanGFX,
 // with LVGL on top. Landscape, 480x320.
 #pragma once
 #include <stdint.h>

@@ -6,8 +6,7 @@
 //  - the on-board TCA9554 (LCD reset, touch interrupt, SD detect)
 //  - the backpack TCA9535 (front buttons and LED rings)
 // Nothing safety-related goes through an expander: heater and pump outputs and
-// the level switch are direct GPIOs. On boards without expanders every call
-// is a no-op.
+// the level switch are direct GPIOs.
 #pragma once
 #include <stdint.h>
 

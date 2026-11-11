@@ -27,17 +27,10 @@ constexpr uint32_t kLongPressMs = 800;
 bool signalState[kSignalOutputs];
 uint8_t powerDuty[kPowerOutputs];
 
-// Front buttons (to GND) and LED rings: direct GPIOs, or the backpack's I2C
-// expander on the Waveshare board (polled by iox::loop()).
-#if MT_HAS_IOX_FRONT
+// Front buttons and LED rings are on the backpack's I2C expander (polled by
+// iox::loop()).
 bool buttonRaw(uint8_t i) { return iox::buttonDown(i); }
 void ledWrite(uint8_t i, bool on) { iox::setLed(i, on); }
-#else
-const uint8_t kButtonPins[2] = {PIN_BTN_START, PIN_BTN_PUMP};
-const uint8_t kLedPins[2] = {PIN_LED_START, PIN_LED_PUMP};
-bool buttonRaw(uint8_t i) { return digitalRead(kButtonPins[i]) == LOW; }
-void ledWrite(uint8_t i, bool on) { digitalWrite(kLedPins[i], on ? HIGH : LOW); }
-#endif
 
 struct ButtonState {
   explicit ButtonState(uint8_t i) : index(i) {}
@@ -90,15 +83,7 @@ void begin() {
     powerDuty[i] = 0;
   }
 
-#if MT_HAS_IOX_FRONT
   iox::begin();  // also starts the shared I2C bus
-#else
-  for (int i = 0; i < 2; i++) {
-    pinMode(kButtonPins[i], INPUT_PULLUP);
-    pinMode(kLedPins[i], OUTPUT);
-    digitalWrite(kLedPins[i], LOW);
-  }
-#endif
   pinMode(PIN_LEVEL, INPUT_PULLUP);
 }
 

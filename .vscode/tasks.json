@@ -72,9 +72,7 @@
             "default": "ws35",
             "options": [
                 "ws35",
-                "ws35_ota",
-                "devkit",
-                "devkit_ota"
+                "ws35_ota"
             ]
         }
     ]
