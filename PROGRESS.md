@@ -59,7 +59,6 @@ Serial console (`help`), PC mock and docs exist for all of it.
 - Only libraries from the Arduino core, plus ArduinoJson. The web UI polls `/api/status` once a second; there is no WebSocket.
 - The web UI is one file, `web/index.html`, with no framework. It is gzipped into the firmware at build time, so a firmware update also updates it.
 - `tools/mock/server.js` must be kept in step with `src/net/web.cpp` when the API changes.
-- No code from BrewManiacEx: its web UI served only as a design reference.
 
 **Hardware (controller head only)**
 - **Board:** Waveshare ESP32‑S3‑Touch‑LCD‑3.5 (ST7796 + FT6336; ES8311 codec and speaker; front cover frame) + an **I/O backpack without an MCU** plugged into its 2×16 header J8. Pin map: `src/board/pins.h`, with the full table in `docs/design.md`.

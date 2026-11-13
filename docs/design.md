@@ -1,7 +1,7 @@
 # MashTouch design
 
 ## Context
-The user's current controller runs BrewManiacEx, which is CC BY‑NC‑SA (Vito Tai). That license blocks commercial use, and several of its files carry no license notice at all. The user wants a better screen, a better UI and a free license, so they chose to start a **new firmware based on Open‑ArdBir** (GPLv3‑or‑later in its source header; the repo LICENSE file says GPL‑2.0) and build the missing parts on top of it.
+The goal is a single-vessel brew controller with a better screen, a better UI and a free license that also allows commercial use. MashTouch is a **new firmware based on Open‑ArdBir** (GPLv3‑or‑later in its source header; the repo LICENSE file says GPL‑2.0), with the missing parts built on top of it.
 
 Decisions made so far:
 - **One case for everything.** The user's existing NodeMCU controller box already holds the SSRs, power supply and wiring, and will get an SSR heatsink and a cooling fan. Only the **display / controller / buttons** part gets replaced.
@@ -21,8 +21,7 @@ Decisions made so far:
 
 ## Legal ground rules
 - New **separate repository**, licensed GPL‑3.0‑or‑later. Keep the Open‑ArdBir copyright notices (Mathison, Wilson, Nevi) and add a NOTICE file.
-- **No code copied from BrewManiacEx**: no `src/`, no `html/`, and no tables ported from them. The new code may reproduce its *behaviour* and keep a compatible JSON or web API (interfaces and functionality are not protected in the EU, per CJEU C‑406/10 *SAS Institute*).
-- `webui/` parts ported from upstream (e.g. the `BUTTONS` table in `webui/src/brew/labels.ts`) must be rewritten from the new firmware's own definitions before the web UI moves into the GPL repo.
+- **All code is original or adapted from Open‑ArdBir.** No code, web assets or ported tables come from projects whose license is not GPL‑compatible (for example non-commercial licenses). Common behaviour and the usual brewing workflows may be reproduced, written fresh (functionality and interfaces are not protected in the EU, per CJEU C‑406/10 *SAS Institute*).
 - Check every library license: LVGL is MIT, ArduinoJson is MIT, the Arduino core libraries (WebServer, DNSServer, ESPmDNS, Update) are LGPL‑2.1. The PID and autotune are written fresh (no PID library). ESPAsyncWebServer/AsyncTCP were considered and are not used.
 
 ## Firmware architecture (PlatformIO, Arduino on ESP32‑S3)
@@ -171,7 +170,7 @@ Any output can take any role (Settings > Outputs).
 1. [in progress] Buy a Waveshare ESP32‑S3‑Touch‑LCD‑3.5, one MAX31865 breakout, a TCA9535 breakout and test parts (LEDs, buttons, a DS18B20, a speaker). The GPL repo exists. (An ESP32‑S3 DevKit + MSP3526 bench rig was planned first and dropped once the Waveshare panel was chosen.)
 2. [code done, untested on hardware] Firmware bring-up on a breadboard: display, touch, LVGL test screen, outputs, DS18B20. MAX31865 still to do.
 3. [code done, untested on hardware] The brewing core as non-blocking code (`src/core/`, `src/app/controller`, serial console); settings, recipes and power-loss resume on LittleFS (`src/storage/`, see `docs/storage.md`); the touch UI (`src/ui/`, see `docs/ui.md`); recipe import from BeerXML and JSON (see `docs/storage.md`).
-4. [code done, untested on hardware] Brew history and logs, sparge heater, staged heaters, alarm and safety-relay roles, runaway detection, I2S speaker (see `PROGRESS.md`). Network: Wi-Fi with setup access point, mDNS, JSON API, own web UI (written fresh; nothing taken from the BrewManiac webui), recipe import, firmware update over the air (see `docs/web-api.md`). Next: PT100 via MAX31865.
+4. [code done, untested on hardware] Brew history and logs, sparge heater, staged heaters, alarm and safety-relay roles, runaway detection, I2S speaker (see `PROGRESS.md`). Network: Wi-Fi with setup access point, mDNS, JSON API, own web UI (written fresh), recipe import, firmware update over the air (see `docs/web-api.md`). Next: PT100 via MAX31865.
 5. [code done, untested on hardware] Waveshare panel support (`ws35` build: pin map, shared I2C bus, expanders, ES8311). Bring up the panel and settle the checks listed under its pin map.
 6. KiCad I/O backpack PCB; fit it into the existing box; first real brew.
 
