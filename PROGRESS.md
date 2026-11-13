@@ -74,9 +74,9 @@ Serial console (`help`), PC mock and docs exist for all of it.
 1. **Waveshare panel bring-up** ([docs/bringup-wiring.md](docs/bringup-wiring.md), Waveshare section):
    - the `i2c` scan
    - orientation, colours and touch
-   - the chime through the ES8311 (the amplifier enable is still unknown)
+   - the chime through the ES8311 (amplifier enable on EXIO7, from the V2 schematic)
    - power from J8 VBUS
-   - the J8 pin order
+   - the J8 pin 1 position (the pin order is in `docs/design.md`, from the V2 schematic)
 
    The open checks are listed under the Waveshare pin map in `docs/design.md`.
 2. Run `import selftest` on the console.

@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // I2C port expanders on the Waveshare board:
-//  - the on-board TCA9554 (LCD reset, touch interrupt, SD detect)
+//  - the on-board TCA9554 (LCD reset, speaker amplifier enable; touch
+//    interrupt and SD detect are left as inputs)
 //  - the backpack TCA9535 (front buttons and LED rings)
 // Nothing safety-related goes through an expander: heater and pump outputs and
 // the level switch are direct GPIOs.
@@ -21,6 +22,10 @@ void loop();
 
 // Pulse the LCD reset line and wait for the panel (setup only, blocks ~130 ms).
 void resetLcd();
+
+// Speaker amplifier enable (NS4150B CTRL on EXIO7). False if the expander
+// did not answer.
+bool setAmp(bool on);
 
 // Front panel. Buttons read "not pressed" while the backpack is missing.
 bool frontPresent();

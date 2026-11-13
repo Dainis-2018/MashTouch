@@ -83,19 +83,27 @@ void loop() {
   if (ledBits != ledWritten && i2cbus::writeReg(I2C_ADDR_FRONT, kFrontOut, ledBits)) ledWritten = ledBits;
 }
 
+// Drives one on-board expander pin as an output. Read-modify-write so the
+// other pins keep their state; the latch is set before the pin turns output.
+static bool exioWrite(uint8_t bitNo, bool high) {
+  const uint8_t bit = 1u << bitNo;
+  uint8_t out, cfg;
+  if (!i2cbus::readReg(I2C_ADDR_EXIO, kExioOut, &out)) return false;
+  if (!i2cbus::readReg(I2C_ADDR_EXIO, kExioCfg, &cfg)) return false;
+  out = high ? (out | bit) : (out & ~bit);
+  if (!i2cbus::writeReg(I2C_ADDR_EXIO, kExioOut, out)) return false;
+  return (cfg & bit) == 0 || i2cbus::writeReg(I2C_ADDR_EXIO, kExioCfg, cfg & ~bit);
+}
+
 void resetLcd() {
-  const uint8_t bit = 1u << EXIO_BIT_LCD_RST;
-  // Read-modify-write so the other expander pins keep their power-on state.
-  uint8_t out = 0xFF, cfg = 0xFF;
-  i2cbus::readReg(I2C_ADDR_EXIO, kExioOut, &out);
-  i2cbus::readReg(I2C_ADDR_EXIO, kExioCfg, &cfg);
-  i2cbus::writeReg(I2C_ADDR_EXIO, kExioOut, out | bit);
-  i2cbus::writeReg(I2C_ADDR_EXIO, kExioCfg, cfg & ~bit);
-  i2cbus::writeReg(I2C_ADDR_EXIO, kExioOut, (out | bit) & ~bit);
+  exioWrite(EXIO_BIT_LCD_RST, true);
+  exioWrite(EXIO_BIT_LCD_RST, false);
   delay(10);
-  i2cbus::writeReg(I2C_ADDR_EXIO, kExioOut, out | bit);
+  exioWrite(EXIO_BIT_LCD_RST, true);
   delay(120);  // ST7796: wait before the first command after reset
 }
+
+bool setAmp(bool on) { return exioWrite(EXIO_BIT_PA_CTRL, on); }
 
 bool frontPresent() { return frontOk; }
 

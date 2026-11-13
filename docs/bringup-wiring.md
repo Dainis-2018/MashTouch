@@ -26,7 +26,7 @@ Never connect a real SSR, pump or heater during bring-up. Leave the camera unplu
 **Checks for this panel** (note the results in `docs/design.md`):
 1. **Orientation:** the picture is landscape and the right way up. If it is upside down, build with `-DMT_LCD_ROTATION=3`. Colours are wrong? Try `-DMT_LCD_INVERT=0` or `-DMT_LCD_BGR=1`.
 2. **Touch** hits the right spot in all four corners (see step 2 below).
-3. **Sound:** the start chime plays. If the codec answers (`i2c` shows 0x18) but there is no sound, the amplifier enable (PA_CTRL) is probably off. Tell me what the schematic shows for it.
+3. **Sound:** the start chime plays. The amplifier enable (PA_CTRL) is TCA9554 EXIO7, switched on after the codec init. If the codec answers (`i2c` shows 0x18 and 0x20) but there is no sound, look for "amplifier enable … failed" in the boot log and check the speaker connector.
 4. **Power from J8:** feed 5 V into J8 VBUS (no USB) and check that the panel starts without pressing PWR.
 5. **Wi‑Fi range** with the panel in its frame in the box.
 

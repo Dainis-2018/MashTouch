@@ -67,20 +67,33 @@ The source of truth is `src/board/pins.h` (build `pio run`, environment `ws35`).
 | LCD reset | TCA9554 EXIO1 (pulsed before the panel init) |
 | Shared I2C SCL / SDA | 7 / 8: FT6336 0x38, TCA9554 0x20, ES8311 0x18, AXP2101 0x34, PCF85063 0x51, QMI8658, backpack TCA9535 0x22 |
 | TCA9554 interrupt | 4 (unused, polled) |
-| TCA9554 EXIO0…7 | CAM_PWDN, LCD_RST, TP_INT, SD_CD/D3, RTC_INT, AXP_IRQ, SYS_OUT, unlabelled |
+| TCA9554 EXIO0…7 | CAM_PWDN, LCD_RST, TP_INT, SD_CD (or IMU_INT1, resistor option), RTC_INT, AXP_IRQ, SYS_OUT, PA_CTRL (NS4150B amplifier enable, set high after the codec init) |
 | ES8311 I2S: MCLK / BCLK / LRCK / to codec / from codec | 12 / 13 / 15 / 16 / 14 |
 | microSD (SD_MMC 1‑bit) CLK / CMD / D0 | 11 / 10 / 9 (unused; the same lines are J8's SPI) |
 | USB | 19 / 20 (native USB, console and upload) |
 
-**J8 (2×16, 2.54 mm)** carries:
-- VBUS (5 V input; a diode keeps it off the USB‑C port), VBAT, VCC3V3, GND
-- USB D+/D−
-- ESP_SCLK/MOSI/MISO (GPIO 11/10/9) and I2C (7/8)
-- UART0 TX/RX (43/44)
-- IO0, ESP_EN, PWRON
-- **GPIO 17, 18, 21, 38–42, 45–48** (the camera pins, free with no camera fitted)
+**J8 (2×16, 2.54 mm)**, pin numbers from the V2 schematic's PinOut sheet. VBUS is the 5 V input (a diode keeps it off the USB‑C port). GPIO 17, 18, 21, 38–42 and 45–48 are the camera pins, free with no camera fitted.
 
-The schematic text gives the nets but not a certain pin order, so confirm the pin numbers on the wiki pinout image before laying out the PCB.
+| Pin | Net | Pin | Net |
+|---|---|---|---|
+| 1 | VBUS (5 V in) | 2 | VBAT |
+| 3 | GND | 4 | GND |
+| 5 | USB D− | 6 | GPIO 21 |
+| 7 | USB D+ | 8 | GPIO 38 |
+| 9 | ESP_SCLK (GPIO 11) | 10 | GPIO 39 |
+| 11 | ESP_MOSI (GPIO 10) | 12 | GPIO 40 |
+| 13 | ESP_MISO (GPIO 9) | 14 | GPIO 41 |
+| 15 | GPIO 17 | 16 | GPIO 42 |
+| 17 | GPIO 18 | 18 | GPIO 45 |
+| 19 | IO0 (BOOT) | 20 | GPIO 46 |
+| 21 | ESP_EN | 22 | GPIO 47 |
+| 23 | PWRON | 24 | GPIO 48 |
+| 25 | I2C SCL (GPIO 7) | 26 | UART0 TX (GPIO 43) |
+| 27 | I2C SDA (GPIO 8) | 28 | UART0 RX (GPIO 44) |
+| 29 | GND | 30 | GND |
+| 31 | VCC3V3 | 32 | VCC3V3 |
+
+The schematic doesn't show where pin 1 sits on the board. Take that from the vendor 2D drawing (`reference/waveshare/`) before laying out the PCB.
 
 **Backpack allocation:** heater and pump outputs and the level switch use direct GPIOs with gate pull-downs. Only the front panel goes through an expander.
 
@@ -95,9 +108,9 @@ The schematic text gives the nets but not a certain pin order, so confirm the pi
 | Spare | 45, 46 (strapping pins: outputs with pull-downs only); 43/44 debug UART |
 
 **Checks on the first panel:**
-- J8 pin order
+- J8 pin 1 position. The numbers are settled (see above), but neither the drawing nor the STEP marks pin 1. With USB plugged in, find the 3.3 V pair (31/32) at one end of the header. At the other end, pin 1 (VBUS) reads about 5 V, and pin 2 (VBAT) reads 0 V with no battery fitted.
 - touch reset follows the LCD reset
-- where the amplifier enable (PA_CTRL) comes from: it isn't in the pin table, and none of the vendor examples drive it
+- the start chime plays (amplifier enabled on EXIO7)
 - ES8311 address
 - the board powers up from J8 VBUS without pressing PWR (AXP2101)
 - the console `i2c` scan matches the addresses above
@@ -109,9 +122,14 @@ The schematic text gives the nets but not a certain pin order, so confirm the pi
 - **Waveshare** won on its stacking header and on using the same display and touch chips as the MSP3526 the firmware was first written for, so the display code carried over.
 
 ## I/O backpack PCB (KiCad)
-- **No MCU on the backpack.** The ESP32‑S3, USB‑C, Wi‑Fi antenna, display and speaker amplifier are on the Waveshare panel. The backpack plugs into the panel's J8 with a 2×16 2.54 mm female header and stacks behind it.
-- Outline, mounting holes and the J8 position come from the vendor 2D/3D files (`ESP32-S3-Touch-LCD-3.5-2Dand3D.zip`: `.dwg`, `.pdf`, `.stp`; import the STEP into KiCad). M3 standoffs; the same screws hold the panel frame and the backpack to the box front.
-- **Antenna:** the panel's PCB antenna must stay clear. No copper pour, tall parts or metal on the backpack near the panel's antenna end. Check Wi‑Fi range in the real box early, especially if the box is metal.
+- **No MCU on the backpack.** The ESP32‑S3, USB‑C, Wi‑Fi antenna, display and speaker amplifier are on the Waveshare panel. The backpack plugs into the panel's J8 and stacks behind it. J8 on the panel is a **surface-mount female** 2×16 2.54 mm header (STEP part `HEADER-SMD-F-2_54-2X16PIN`), so the backpack carries a **male** 2×16 pin header.
+- Mechanical data is in the vendor 2D/3D files (`ESP32-S3-Touch-LCD-3.5-2Dand3D.zip`, extracted in `reference/waveshare/`; not in git, see `.gitignore`). `ESP32-S3-Touch-LCD-3.5.*` is the bare board with its front frame and `-C.*` is the fully cased version. Both come as `.dwg` and `.pdf`; there is one `.stp` (bare board) to import into KiCad. From the bare-board drawing, seen from the back:
+  - **Mounting holes:** 4× **M2**, on a 72.00 × 48.50 mm rectangle. The cased version uses the same pattern.
+  - **J8:** along the edge opposite the three side buttons. Its outer row lines up with the two nearby holes, and the header is centred between them (36.00 mm from each). The speaker and battery connectors sit just left of it.
+  - **Frame:** 92.44 × 61.00 mm, R6 corners. The cased version is 95.11 × 63.67 × 14.1 mm.
+  - **No pin 1 mark:** the drawing draws all 32 pads square, and the STEP part is a generic model. Check pin 1 on the board (see the checks under the pin map).
+- M2 standoffs: the same screws hold the panel and the backpack to the box front. Take the stack height from the STEP: the SMD socket height plus the tallest part on the panel's back.
+- **Antenna:** the schematic shows a ceramic chip antenna (CA‑C03), plus a U.FL socket selected by a 0 Ω resistor. Find the antenna on the board and keep the area clear. No copper pour, tall parts or metal on the backpack near the panel's antenna end. Check Wi‑Fi range in the real box early, especially if the box is metal.
 - **USB‑C on the panel stays reachable** for flashing and the console, or rely on firmware updates over Wi‑Fi.
 - **Power input: 12 V** (the same supply as the pump and fan). A buck converter 12 V → 5 V (at least 1.5 A) feeds J8 VBUS, which powers the panel (through its AXP2101) and the SSR drive. Logic on the backpack (MAX31865, TCA9535, 1‑Wire pull-up) runs from the panel's VCC3V3 on J8, so the logic levels match the ESP32. This allows one 12 V supply in the box instead of separate 5 V and 12 V supplies.
 - **Outputs stay off in reset:** every output MOSFET gate has a 10 kΩ pull-down, so heater, pump and the other outputs are off while the MCU is in reset, being flashed or unpowered, and while the panel is unplugged. Each output has an indicator LED.

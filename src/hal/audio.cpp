@@ -10,6 +10,7 @@
 
 #include "board/pins.h"
 #include "es8311.h"
+#include "iox.h"
 
 namespace audio {
 namespace {
@@ -138,6 +139,10 @@ void begin() {
   i2s_zero_dma_buffer(kPort);
   // MCLK is running now; the codec can be set up.
   if (!es8311::begin()) Serial.println("ES8311 codec not found: no sound");
+  // Amplifier on only now, with the codec set up and the DAC silent (no pop).
+  // It stays on: it idles quietly, and toggling it would mean I2C traffic
+  // from the audio task.
+  if (!iox::setAmp(true)) Serial.println("amplifier enable (TCA9554 EXIO7) failed: no sound");
 
   queue = xQueueCreate(3, sizeof(Request));
   if (!queue) return;

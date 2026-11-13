@@ -43,11 +43,14 @@
 #define EXIO_BIT_CAM_PWDN   0
 #define EXIO_BIT_LCD_RST    1
 #define EXIO_BIT_TP_INT     2
-#define EXIO_BIT_SD_CD      3
+#define EXIO_BIT_SD_CD      3  // shared with IMU_INT1 (resistor option)
+#define EXIO_BIT_RTC_INT    4
+#define EXIO_BIT_AXP_IRQ    5
+#define EXIO_BIT_SYS_OUT    6
+#define EXIO_BIT_PA_CTRL    7  // NS4150B amplifier enable, high = on
 
-// Speaker: ES8311 codec (I2S slave, MCLK from the ESP32) + NS4150B amp.
-// The amplifier enable (PA_CTRL) is not on a GPIO in the schematic's pin table;
-// it is assumed to default to on (check on hardware).
+// Speaker: ES8311 codec (I2S slave, MCLK from the ESP32) + NS4150B amp,
+// enabled through EXIO7 once the codec is set up.
 #define PIN_I2S_MCLK   12
 #define PIN_I2S_BCLK   13
 #define PIN_I2S_LRCLK  15
