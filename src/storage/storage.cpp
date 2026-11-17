@@ -49,6 +49,13 @@ void sanitize(settings::Settings& s) {
   if (s.brightness < 10) s.brightness = 10;
   if (s.sim.speed < 1) s.sim.speed = 1;
   clampMax<float>(s.sim.speed, 100);
+  for (auto& r : s.rtd) {
+    if (r.wires < 2) r.wires = 2;
+    clampMax<uint8_t>(r.wires, 4);
+    if (r.refOhm < 0) r.refOhm = 0;
+    clampMax<float>(r.refOhm, 10000);
+    if (r.mainsHz != 60) r.mainsHz = 50;
+  }
 }
 
 // After a set: the value read back must be the one asked for. Otherwise it

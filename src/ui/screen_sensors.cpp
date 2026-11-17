@@ -24,6 +24,7 @@ namespace {
 using settings::SensorRole;
 
 std::vector<lv_obj_t*> tempLabels;
+std::vector<lv_obj_t*> detailLabels;
 const char* kRoles = "none\nkettle\nrims\nheatsink\naux\nsparge";
 
 bool isConfigured(const sensors::Info& s) {
@@ -47,6 +48,7 @@ void configure(int i, SensorRole role, float offset, const std::string& name) {
 
 void create(lv_obj_t* root) {
   tempLabels.clear();
+  detailLabels.clear();
   lv_obj_t* list = kit::scrollList(root);
 
   lv_obj_t* bar = kit::row(list);
@@ -72,6 +74,10 @@ void create(lv_obj_t* root) {
     lv_obj_set_flex_grow(name, 1);
     lv_obj_t* t = kit::label(r1, "", kit::kLarge);
     tempLabels.push_back(t);
+
+    lv_obj_t* d = kit::label(c, "", kit::kSmall);
+    lv_obj_set_style_text_color(d, kit::dim(), 0);
+    detailLabels.push_back(d);
 
     lv_obj_t* r2 = kit::row(c);
     lv_obj_t* dd = lv_dropdown_create(r2);
@@ -110,7 +116,7 @@ void create(lv_obj_t* root) {
     }
   }
   if (sensors::count() == 0)
-    kit::label(list, "No sensors found. Check the 1-Wire wiring and the 4.7k pull-up, then rescan.", kit::kNormal);
+    kit::label(list, "No sensors found. Check the 1-Wire wiring and the 4.7k pull-up, then rescan. PT100 probes are switched on in Settings > PT100.", kit::kNormal);
   update();
 }
 
@@ -123,6 +129,7 @@ void update() {
     else snprintf(buf, sizeof(buf), "fault");
     lv_label_set_text(tempLabels[i], buf);
     lv_obj_set_style_text_color(tempLabels[i], s.ok ? lv_color_white() : kit::bad(), 0);
+    if (i < detailLabels.size()) lv_label_set_text(detailLabels[i], sensors::describe(s).c_str());
   }
 }
 

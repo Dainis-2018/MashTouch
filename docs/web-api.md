@@ -69,7 +69,7 @@ All bodies and responses are JSON unless noted. Errors: HTTP 4xx/5xx with `{"err
   - `timer {remainingMs, elapsedMs, counting}`, `prompt` / `promptText`, `lastAddition`
   - `manual {heater, pump, countdown}`, `tune {cycles, of}`, `resume {offered, phase, step}`, `sim {on, speed}`
   - `fahrenheit`, `recipe`, `activeRecipe`, `wifi {connected, rssi, apOn}`
-  - `sensors[] {name, role, present, ok, temp, offsetC, errors, rom}`
+  - `sensors[] {name, role, present, ok, temp, offsetC, errors, rom, kind, detail}`: `kind` is `ds18b20` or `rtd`; `detail` is a short description ("PT100, 3-wire, ch 1") or, for an RTD with a fault, the fault ("open circuit"). An RTD channel's `rom` is its id `52544401…` ("RTD" + channel).
   - `eventSeq` and `events[] {seq, type, text}`: the last 12 events. Types are those of `core/events.h`, such as `addition`, `temp-reached`, `prompt`, `sensor-fault`, `brew-finished`, `boil-soon` (boil-over watch) and `boil-stalled` (hot but no longer rising: offer `startTimer`).
 - `GET /api/history`: the rolling temperature history for the charts, 6 hours at one sample per 10 s of controller time, as parallel arrays: `{clock, step, t[], temp[], sp[], duty[]}`. `t` is the controller clock in seconds (the same clock as `clock` in the status); `temp` and `sp` are tenths of a degree C, or null.
 - `GET /api/info`: version, build date, free heap/PSRAM, storage use, uptime.

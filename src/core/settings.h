@@ -39,12 +39,31 @@ struct OutputConfig {
 
 enum class SensorRole : uint8_t { None, Kettle, Rims, Heatsink, Aux, Sparge };
 
+// Sensors are keyed by an 8-byte id: the ROM address of a DS18B20, or
+// rtdId() for a PT100/PT1000 channel.
 struct SensorConfig {
   uint8_t rom[8] = {};
   SensorRole role = SensorRole::None;
   float offsetC = 0;
   std::string name;
 };
+
+// PT100/PT1000 inputs: MAX31865 channels on the backpack.
+constexpr int kRtdChannels = 2;
+enum class RtdType : uint8_t { Off, Pt100, Pt1000 };
+
+struct RtdConfig {
+  RtdType type = RtdType::Off;
+  uint8_t wires = 3;       // 2, 3 or 4
+  float refOhm = 0;        // reference resistor; 0 = standard for the type (430 / 4300)
+  uint8_t mainsHz = 50;    // conversion filter: 50 or 60
+};
+
+// The sensor id of RTD channel ch (0-based): "RTD" + channel number, which no
+// 1-Wire device uses (a DS18B20 starts with family code 0x28).
+void rtdId(int ch, uint8_t out[8]);
+// The RTD channel of a sensor id, or -1.
+int rtdChannel(const uint8_t id[8]);
 
 // ---- Control -------------------------------------------------------------
 
@@ -182,6 +201,7 @@ struct Settings {
   Net net;
   OutputConfig outputs[kOutputChannels];
   std::vector<SensorConfig> sensors;
+  RtdConfig rtd[kRtdChannels];
   bool fahrenheit = false;
   uint8_t brightness = 200;  // display backlight 10..255
   std::string activeRecipe;  // recipe id (file name without .json)

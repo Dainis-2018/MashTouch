@@ -13,9 +13,11 @@
 #include <vector>
 
 #include "controller.h"
+#include "board/pins.h"
 #include "core/settings.h"
 #include "hal/i2cbus.h"
 #include "hal/sensors.h"
+#include "hal/temp_rtd.h"
 #include "net/wifi.h"
 #include "storage/beerxml.h"
 #include "storage/files.h"
@@ -161,6 +163,8 @@ const char* kHelp =
     "  sensors | rescan     list / rescan temperature sensors\n"
     "  sensor <n> role <none|kettle|rims|heatsink|aux|sparge>\n"
     "  sensor <n> offset <c> | name <text> | forget\n"
+    "  rtd                  PT100/PT1000 channels: raw, ohms, faults\n"
+    "                       (set rtd.<0|1>.type off|pt100|pt1000, .wires 2|3|4)\n"
     "Recipes:\n"
     "  recipes              list stored recipes (* = active)\n"
     "  recipe [json]        show the active recipe\n"
@@ -252,6 +256,32 @@ void printSensors() {
     if (s.busIndex < 0) Serial.print("  MISSING");
     else if (s.ok) Serial.printf("  %.2f C (offset %.1f)", s.tempC, s.offsetC);
     else Serial.printf("  FAULT (%u errors)", s.errors);
+    Serial.printf("  [%s]", sensors::describe(s).c_str());
+    Serial.println();
+  }
+}
+
+void printRtd() {
+  const auto& cfg = settings::current().rtd;
+  for (int ch = 0; ch < settings::kRtdChannels; ch++) {
+    const settings::RtdConfig& r = cfg[ch];
+    Serial.printf("rtd %d (rtd.%d): ", ch + 1, ch);
+    if (r.type == settings::RtdType::Off) {
+      Serial.println("off");
+      continue;
+    }
+    float r0 = r.type == settings::RtdType::Pt1000 ? 1000 : 100;
+    Serial.printf("%s %u-wire, ref %.0f ohm, %u Hz filter, ", r.type == settings::RtdType::Pt1000 ? "PT1000" : "PT100",
+                  r.wires, r.refOhm > 0 ? r.refOhm : r0 * 4.3f, r.mainsHz);
+    if (!rtd_temp::present(ch)) {
+      Serial.printf("MAX31865 not answering (CS GPIO %d)\n", ch ? PIN_MAX31865_CS2 : PIN_MAX31865_CS1);
+      continue;
+    }
+    Serial.printf("raw %u, %.2f ohm", rtd_temp::raw(ch), rtd_temp::resistance(ch));
+    float t = rtd_temp::temperature(ch);
+    if (t != rtd_temp::kNoReading) Serial.printf(", %.2f C", t);
+    uint8_t f = rtd_temp::faultBits(ch);
+    if (f) Serial.printf(", FAULT 0x%02X %s (%u errors)", f, rtd_temp::faultText(f), rtd_temp::errorCount(ch));
     Serial.println();
   }
 }
@@ -550,6 +580,7 @@ void run(char* cmdLine) {
     sensors::rescan();
     printSensors();
   } else if (!strcmp(cmd, "sensor")) sensorCommand(rest);
+  else if (!strcmp(cmd, "rtd")) printRtd();
   else if (!strcmp(cmd, "recipes")) printRecipes();
   else if (!strcmp(cmd, "recipe")) recipeCommand(rest);
   else if (!strcmp(cmd, "rset")) {

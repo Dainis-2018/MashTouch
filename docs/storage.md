@@ -32,6 +32,7 @@ Settings, recipes and the resume point are JSON files on the LittleFS partition 
   - Output roles, the sensor role of an already-running sensor and the simulator settings apply at once.
   - A running brew keeps its own copy of the recipe.
 - **Sensors** are stored by ROM address (`"rom": "28FF..."`), so they keep their role and calibration when the bus order changes. A configured sensor that is missing is reported as a fault if its role is kettle, RIMS or heatsink.
+- **PT100/PT1000 channels** are switched on in `rtd` (two entries, one per MAX31865): `type` `off` | `pt100` | `pt1000`, `wires` 2–4, `refOhm` (0 = 430 Ω for PT100, 4300 Ω for PT1000), `mainsHz` 50 or 60. A channel that is on is listed with the sensors under the id `52544401…` / `52544402…` ("RTD" + channel), so its role and calibration are stored in `sensors` like a DS18B20's. Switching a channel off while it has a role makes it a missing sensor.
 
 ## Power-loss resume
 
@@ -50,6 +51,8 @@ set safety.level closed            heater only with the level switch closed
 sensor 0 role kettle
 sensor 1 role heatsink
 sensor 0 offset -0.3
+set rtd.0.type pt100               PT100 on MAX31865 channel 1 (then: sensors, rtd)
+set rtd.0.wires 4
 
 recipe new Pale Ale                -> id "pale-ale", active
 rset mashIn.tempC 67

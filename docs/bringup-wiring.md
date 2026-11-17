@@ -10,16 +10,19 @@ Pins: [src/board/pins.h](../src/board/pins.h). Flash over the panel's USB‑C wi
 - In the console, run `i2c`. Expect 0x18 ES8311, 0x20 TCA9554, 0x34 AXP2101, 0x38 FT6336, 0x51 PCF85063 and 0x6A/0x6B QMI8658. Note anything missing or extra.
 - The console warns that the front panel expander 0x22 is missing. That is expected without a backpack; the buttons are just disabled.
 
-**Test I/O on J8.** Take the J8 pin numbers from the Waveshare wiki pinout image and note them here once confirmed.
+**Test I/O on J8.** Pin numbers from the Waveshare pinout image (full table in `docs/design.md`): pin 1 is at the USB‑C end, odd pins on the outer row. GND is on pins 3, 4, 29, 30 and 3V3 on 31, 32.
 
-| Item | GPIO | How to wire for the test |
-|---|---|---|
-| OUT1–OUT4 | 38 / 39 / 40 / 41 | LED + 330 Ω to GND each |
-| PWR1 / PWR2 | 42 / 21 | LED + 330 Ω to GND (brightness follows the PWM slider) |
-| DS18B20 data | 17 | 4.7 kΩ pull-up to J8 **3V3**; sensor VDD to 3V3, GND to GND |
-| Level switch | 18 | switch to GND |
-| Front buttons and LEDs | I2C 7 / 8 | a TCA9535 or PCA9535 breakout set to address **0x22** (A1 high, A0/A2 low), powered from J8 3V3. P00 Start and P01 Pump: push button to GND with a 10 kΩ pull-up to 3V3 each. P02 / P03: LED + 1 kΩ to GND |
+| Item | GPIO | J8 pin | How to wire for the test |
+|---|---|---|---|
+| OUT1–OUT4 | 38 / 39 / 40 / 41 | 7 / 9 / 11 / 13 | LED + 330 Ω to GND each |
+| PWR1 / PWR2 | 42 / 21 | 15 / 5 | LED + 330 Ω to GND (brightness follows the PWM slider) |
+| DS18B20 data | 17 | 16 | 4.7 kΩ pull-up to J8 **3V3**; sensor VDD to 3V3, GND to GND |
+| Level switch | 18 | 18 | switch to GND |
+| Front buttons and LEDs | I2C 7 / 8 | 26 SCL / 28 SDA | a TCA9535 or PCA9535 breakout set to address **0x22** (A1 high, A0/A2 low), powered from J8 3V3. P00 Start and P01 Pump: push button to GND with a 10 kΩ pull-up to 3V3 each. P02 / P03: LED + 1 kΩ to GND |
 | Speaker | panel connector | 8 Ω speaker on the panel's MX1.25 speaker socket |
+| MAX31865 breakout (PT100) | SCK 11 / SDI 10 / SDO 9, CS 47 (channel 1) or 48 (channel 2) | 10 / 12 / 14, CS 21 or 23 | VIN to 3V3, GND to GND. Set the breakout's 2/3/4-wire jumpers to match the probe. Then `set rtd.0.type pt100` (and `set rtd.0.wires 2`, `3` or `4`) |
+
+**PT100 check:** `rtd` prints raw value, resistance, temperature and faults per channel. Without a probe the channel shows *open circuit*. With the chip missing or miswired it shows *MAX31865 not answering* and is retried every 5 s. A 100 Ω resistor in place of the probe should read about 0 °C, a 138.5 Ω about 100 °C. Then compare against the DS18B20 in the same cup of water; correct a steady difference with `sensor <n> offset <c>` (with 2 wires the lead resistance reads as about +2.6 °C per ohm).
 
 Never connect a real SSR, pump or heater during bring-up. Leave the camera unplugged (its pins are the outputs).
 
@@ -27,7 +30,7 @@ Never connect a real SSR, pump or heater during bring-up. Leave the camera unplu
 1. **Orientation:** the picture is landscape and the right way up. If it is upside down, build with `-DMT_LCD_ROTATION=3`. Colours are wrong? Try `-DMT_LCD_INVERT=0` or `-DMT_LCD_BGR=1`.
 2. **Touch** hits the right spot in all four corners (see step 2 below).
 3. **Sound:** the start chime plays. The amplifier enable (PA_CTRL) is TCA9554 EXIO7, switched on after the codec init. If the codec answers (`i2c` shows 0x18 and 0x20) but there is no sound, look for "amplifier enable … failed" in the boot log and check the speaker connector.
-4. **Power from J8:** feed 5 V into J8 VBUS (no USB) and check that the panel starts without pressing PWR.
+4. **Power from J8:** feed 5 V into J8 VBUS (pin 2, no USB) and check that the panel starts without pressing PWR.
 5. **Wi‑Fi range** with the panel in its frame in the box.
 
 ## What to check

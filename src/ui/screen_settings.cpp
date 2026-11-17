@@ -103,6 +103,15 @@ std::vector<Section> sections() {
                {temp("Heater cut above", "safety.maxTempC", 50, 130),
                 delta("Runaway cut (0 = off)", "safety.runawayC", 20),
                 choice("Level switch", "safety.level", "ignore\nclosed\nopen")}});
+  s.push_back({"PT100",
+               {choice("Channel 1 probe", "rtd.0.type", "off\npt100\npt1000"),
+                num("Channel 1 wires", "rtd.0.wires", 2, 4, 1, 0, ""),
+                num("Ch 1 reference (0 = std)", "rtd.0.refOhm", 0, 10000, 10, 0, "ohm"),
+                num("Ch 1 mains filter", "rtd.0.mainsHz", 50, 60, 10, 0, "Hz"),
+                choice("Channel 2 probe", "rtd.1.type", "off\npt100\npt1000"),
+                num("Channel 2 wires", "rtd.1.wires", 2, 4, 1, 0, ""),
+                num("Ch 2 reference (0 = std)", "rtd.1.refOhm", 0, 10000, 10, 0, "ohm"),
+                num("Ch 2 mains filter", "rtd.1.mainsHz", 50, 60, 10, 0, "Hz")}});
   s.push_back({"Autotune",
                {num("Output high", "autotune.outputHighPct", 10, 100, 5, 0, "%"),
                 num("Output low", "autotune.outputLowPct", 0, 90, 5, 0, "%"),

@@ -241,6 +241,8 @@ void handleStatus() {
     if (in.ok) o["temp"] = round2(in.tempC);
     o["offsetC"] = round2(in.offsetC);
     o["errors"] = in.errors;
+    o["kind"] = in.rtd >= 0 ? "rtd" : "ds18b20";
+    o["detail"] = sensors::describe(in);
     char rom[17];
     for (int b = 0; b < 8; b++) snprintf(rom + b * 2, 3, "%02X", in.rom[b]);
     o["rom"] = rom;

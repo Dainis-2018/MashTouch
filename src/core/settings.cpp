@@ -101,6 +101,19 @@ Recipe& recipe() {
   return r;
 }
 
+void rtdId(int ch, uint8_t out[8]) {
+  const uint8_t id[8] = {'R', 'T', 'D', (uint8_t)(ch + 1), 0, 0, 0, 0};
+  for (int i = 0; i < 8; i++) out[i] = id[i];
+}
+
+int rtdChannel(const uint8_t id[8]) {
+  if (id[0] != 'R' || id[1] != 'T' || id[2] != 'D') return -1;
+  for (int i = 4; i < 8; i++)
+    if (id[i]) return -1;
+  int ch = id[3] - 1;
+  return ch >= 0 && ch < kRtdChannels ? ch : -1;
+}
+
 const char* roleName(OutputRole r) {
   switch (r) {
     case OutputRole::Heater: return "heater";

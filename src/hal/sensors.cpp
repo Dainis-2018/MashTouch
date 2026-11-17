@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "temp_onewire.h"
+#include "temp_rtd.h"
 
 namespace sensors {
 namespace {
@@ -28,7 +29,24 @@ bool isCritical(SensorRole r) {
   return r == SensorRole::Kettle || r == SensorRole::Rims || r == SensorRole::Heatsink;
 }
 
+// Push the RTD channel settings to the MAX31865 driver (only changes are
+// written to the chips).
+void applyRtd() {
+  const auto& cfg = settings::current().rtd;
+  for (int ch = 0; ch < settings::kRtdChannels; ch++) {
+    const settings::RtdConfig& r = cfg[ch];
+    rtd_temp::Config c;
+    c.enabled = r.type != settings::RtdType::Off;
+    c.r0 = r.type == settings::RtdType::Pt1000 ? 1000 : 100;
+    c.refOhm = r.refOhm > 0 ? r.refOhm : c.r0 * 4.3f;
+    c.wires = r.wires;
+    c.filter50Hz = r.mainsHz != 60;
+    rtd_temp::configure(ch, c);
+  }
+}
+
 void build() {
+  applyRtd();
   std::vector<Info> old;
   old.swap(list);
   const auto& cfg = settings::current().sensors;
@@ -54,11 +72,37 @@ void build() {
     }
     list.push_back(s);
   }
-  // Configured sensors that are missing: listed, and faulty if critical.
+  // PT100/PT1000 channels that are switched on in the settings.
+  for (int ch = 0; ch < settings::kRtdChannels; ch++) {
+    const settings::RtdConfig& r = settings::current().rtd[ch];
+    if (r.type == settings::RtdType::Off) continue;
+    Info s;
+    settings::rtdId(ch, s.rom);
+    s.rtd = ch;
+    s.busIndex = rtd_temp::present(ch) ? ch : -1;
+    for (size_t c = 0; c < cfg.size(); c++) {
+      if (memcmp(cfg[c].rom, s.rom, 8) == 0) {
+        s.role = cfg[c].role;
+        s.offsetC = cfg[c].offsetC;
+        s.name = cfg[c].name;
+        used[c] = true;
+        break;
+      }
+    }
+    if (s.name.empty()) {
+      char buf[24];
+      snprintf(buf, sizeof(buf), "%s %d", r.type == settings::RtdType::Pt1000 ? "PT1000" : "PT100", ch + 1);
+      s.name = buf;
+    }
+    list.push_back(s);
+  }
+  // Configured sensors that are missing (an RTD channel switched off counts
+  // as missing): listed, and faulty if critical.
   for (size_t c = 0; c < cfg.size(); c++) {
     if (used[c]) continue;
     Info s;
     memcpy(s.rom, cfg[c].rom, 8);
+    s.rtd = settings::rtdChannel(s.rom);
     s.role = cfg[c].role;
     s.offsetC = cfg[c].offsetC;
     s.name = cfg[c].name;
@@ -95,6 +139,7 @@ void begin() {
 
 void rescan() {
   onewire_temp::rescan();
+  rtd_temp::recheck();
   build();
 }
 
@@ -134,7 +179,22 @@ bool forget(int index) {
 
 void loop() {
   onewire_temp::loop();
+  rtd_temp::loop();
   for (auto& s : list) {
+    if (s.rtd >= 0) {
+      bool on = rtd_temp::enabled(s.rtd);
+      s.busIndex = on && rtd_temp::present(s.rtd) ? s.rtd : -1;
+      s.fault = on ? rtd_temp::faultBits(s.rtd) : 0;
+      if (s.busIndex < 0) {
+        s.ok = false;
+        continue;
+      }
+      float t = rtd_temp::temperature(s.rtd);
+      s.errors = rtd_temp::errorCount(s.rtd);
+      s.ok = t != rtd_temp::kNoReading && t > kMinValidC && t < kMaxValidC;
+      if (s.ok) s.tempC = t + s.offsetC;
+      continue;
+    }
     if (s.busIndex < 0) {
       s.ok = false;
       continue;
@@ -144,6 +204,21 @@ void loop() {
     s.ok = t != onewire_temp::kNoReading && t > kMinValidC && t < kMaxValidC;
     if (s.ok) s.tempC = t + s.offsetC;
   }
+}
+
+std::string describe(const Info& s) {
+  if (s.rtd < 0) return "DS18B20";
+  if (s.fault) return rtd_temp::faultText(s.fault);
+  if (s.rtd >= settings::kRtdChannels) return "PT100";
+  const settings::RtdConfig& r = settings::current().rtd[s.rtd];
+  char buf[40];
+  if (r.type == settings::RtdType::Off) {
+    snprintf(buf, sizeof(buf), "RTD ch %d switched off", s.rtd + 1);
+    return buf;
+  }
+  snprintf(buf, sizeof(buf), "%s, %u-wire, ch %d", r.type == settings::RtdType::Pt1000 ? "PT1000" : "PT100",
+           r.wires, s.rtd + 1);
+  return buf;
 }
 
 int count() { return (int)list.size(); }

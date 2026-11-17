@@ -1269,7 +1269,7 @@ async function deleteLog(i) {
 // ==========================================================================
 const ROLES = [['kettle', 'Kettle (control)'], ['rims', 'RIMS outlet'], ['heatsink', 'Heatsink (fan)'], ['sparge', 'Sparge water'], ['aux', 'Display only'], ['none', 'Not used']];
 function pageSensors() {
-  $('page').innerHTML = `<div class="phead"><div><h1>Sensors</h1><p class="muted">Each DS18B20 is remembered by its address. Without a kettle sensor, the first one found is used.</p></div>
+  $('page').innerHTML = `<div class="phead"><div><h1>Sensors</h1><p class="muted">Each DS18B20 is remembered by its address; PT100/PT1000 channels are switched on under Settings &gt; PT100 inputs. Without a kettle sensor, the first one found is used.</p></div>
     <button class="btn ghost" onclick="rescan()">${icon('pump')}Rescan bus</button></div><div id="sList" class="grid2"></div>`;
   renderSensorList();
 }
@@ -1277,19 +1277,21 @@ function renderSensorList() {
   if (!S || !$('sList')) return;
   $('sList').innerHTML = S.sensors.length ? S.sensors.map((s, i) => `
     <div class="card"><div class="card-h"><h2>${esc(s.name)}</h2><span class="big num-t" style="font-size:1.8rem" id="sr${i}"></span></div>
-      <div class="muted small mono" style="margin-top:-8px">${s.rom}${s.errors ? ` · ${s.errors} read errors` : ''}</div>
+      <div class="muted small" style="margin-top:-8px" id="sd${i}"></div>
       <div class="fld"><div class="t"><label>Name</label></div><input type="text" id="sn${i}" value="${esc(s.name)}" style="width:170px"></div>
       <div class="fld"><div class="t"><label>Role</label></div><select id="so${i}">${ROLES.map(([v, l]) => `<option value="${v}" ${v === s.role ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
       <div class="fld"><div class="t"><label>Calibration</label><p>Added to every reading.</p></div>${numBox(+dToD(s.offsetC).toFixed(1), {min: -10, max: 10, step: .1, unit: unit(), attrs: `id="sc${i}"`})}</div>
       <div class="row" style="justify-content:flex-end;margin-top:8px"><button class="btn sm ghost" onclick="forgetSensor(${i})">Forget</button><button class="btn sm" onclick="saveSensor(${i})">Save</button></div>
-    </div>`).join('') : '<div class="card empty">No sensors found. Check the 1-Wire wiring and the 4.7 kΩ pull-up, then rescan.</div>';
+    </div>`).join('') : '<div class="card empty">No sensors found. Check the 1-Wire wiring and the 4.7 kΩ pull-up, then rescan. PT100/PT1000 probes are switched on under Settings.</div>';
   renderSensorReadings();
 }
 let sensorSig = '';
 function renderSensorReadings() {
   const sig = S.sensors.map(s => s.rom + s.name + s.role + s.offsetC).join();
   if (sig !== sensorSig && $('sList')) { sensorSig = sig; renderSensorList(); return; }
-  S.sensors.forEach((s, i) => { const e = $('sr' + i); if (!e) return;
+  S.sensors.forEach((s, i) => { const d = $('sd' + i);
+    if (d) d.innerHTML = `${esc(s.detail || '')} · <span class="mono">${s.rom}</span>${s.errors ? ` · ${s.errors} read errors` : ''}`;
+    const e = $('sr' + i); if (!e) return;
     e.innerHTML = s.ok ? `${fmtT(s.temp, 2)}<small>${unit()}</small>` : `<span style="color:var(--bad);font-size:1rem">${s.present ? 'fault' : 'missing'}</span>`; });
 }
 async function saveSensor(i) {
@@ -1345,6 +1347,15 @@ const SCHEMA = [
     ['sparge.tempC', 'Default temperature', 'temp', {min: 30, max: 99, step: .5, help: 'Used when the heater is switched on by hand. A brew uses the recipe\'s sparge temperature.'}],
     ['sparge.autoWithBrew', 'Heat with the brew', 'bool', {help: 'If the recipe has a sparge temperature: start heating when the brew starts, stop at the boil.'}],
     ['sparge.hystC', 'Switching band', 'delta', {min: 0.2, max: 5, step: .1}]]},
+  {title: 'PT100 inputs', intro: 'PT100/PT1000 probes on the MAX31865 channels of the backpack. A channel that is on appears on the Sensors page, where it gets its role.', fields: [
+    ['rtd.0.type', 'Channel 1 probe', 'enum', {options: [['off', 'Off'], ['pt100', 'PT100'], ['pt1000', 'PT1000']]}],
+    ['rtd.0.wires', 'Channel 1 wires', 'num', {min: 2, max: 4, step: 1, help: 'Set the jumpers on the board to match. With 2 wires the lead resistance reads as extra heat: correct it with the calibration offset.'}],
+    ['rtd.0.refOhm', 'Channel 1 reference resistor', 'num', {min: 0, max: 10000, step: 1, unit: 'Ω', help: '0 = standard (430 Ω for PT100, 4300 Ω for PT1000).'}],
+    ['rtd.0.mainsHz', 'Channel 1 mains filter', 'num', {min: 50, max: 60, step: 10, unit: 'Hz'}],
+    ['rtd.1.type', 'Channel 2 probe', 'enum', {options: [['off', 'Off'], ['pt100', 'PT100'], ['pt1000', 'PT1000']]}],
+    ['rtd.1.wires', 'Channel 2 wires', 'num', {min: 2, max: 4, step: 1}],
+    ['rtd.1.refOhm', 'Channel 2 reference resistor', 'num', {min: 0, max: 10000, step: 1, unit: 'Ω'}],
+    ['rtd.1.mainsHz', 'Channel 2 mains filter', 'num', {min: 50, max: 60, step: 10, unit: 'Hz'}]]},
   {title: 'Safety', fields: [
     ['safety.maxTempC', 'Heater cut above', 'temp', {min: 50, max: 130, step: 1}],
     ['safety.runawayC', 'Runaway cut', 'delta', {min: 0, max: 20, step: .5, help: 'Everything is cut if the kettle gets this much hotter while the heater is off: a relay (SSR) that failed closed. 0 = off.'}],
@@ -1384,7 +1395,8 @@ const SCHEMA = [
 const ADV = new Set(['heater.fullPowerBandC', 'heater.nearBoilBandC', 'heater.boilHystC', 'heater.kp', 'heater.ki', 'heater.kd', 'heater.sampleMs',
   'heater.windowMs', 'heater.controlSensor', 'pump.stopHystC', 'pump.externalSensor', 'pump.cycleMin', 'pump.restMin', 'pump.restRestartDropC',
   'pump.primePulses', 'sparge.hystC', 'process.reachedTolC', 'process.heatDuringRemoveMalt', 'process.iodineTest', 'process.iodineTimeoutMin',
-  'fan.onTempC', 'fan.fullTempC', 'fan.alarmTempC', 'fan.minPct']);
+  'fan.onTempC', 'fan.fullTempC', 'fan.alarmTempC', 'fan.minPct',
+  'rtd.0.refOhm', 'rtd.0.mainsHz', 'rtd.1.refOhm', 'rtd.1.mainsHz']);
 const ADV_SECTIONS = new Set(['Autotune', 'Simulator']);
 let showAdv = localStorage.getItem('mt-adv') === '1';
 const OUT_NAMES = ['OUT1', 'OUT2', 'OUT3', 'OUT4', 'PWR1', 'PWR2'];

@@ -33,6 +33,9 @@ const Name<SensorRole> kSensorRoles[] = {
     {SensorRole::None, "none"},         {SensorRole::Kettle, "kettle"}, {SensorRole::Rims, "rims"},
     {SensorRole::Heatsink, "heatsink"}, {SensorRole::Aux, "aux"},     {SensorRole::Sparge, "sparge"},
 };
+const Name<RtdType> kRtdTypes[] = {
+    {RtdType::Off, "off"}, {RtdType::Pt100, "pt100"}, {RtdType::Pt1000, "pt1000"},
+};
 const Name<PumpMode> kPumpModes[] = {
     {PumpMode::Off, "off"}, {PumpMode::On, "on"}, {PumpMode::Cycle, "cycle"},
 };
@@ -168,6 +171,14 @@ void visitSensor(V& v, SensorConfig& s) {
 }
 
 template <class V>
+void visitRtd(V& v, RtdConfig& r) {
+  v.enumField("type", r.type, kRtdTypes);
+  v.field("wires", r.wires);
+  v.field("refOhm", r.refOhm);
+  v.field("mainsHz", r.mainsHz);
+}
+
+template <class V>
 void visitHeater(V& v, settings::Heater& h) {
   v.field("kp", h.kp);
   v.field("ki", h.ki);
@@ -294,6 +305,7 @@ void visitSettings(V& v, Settings& s) {
   visitNet(c, s.net);
   v.array("outputs", s.outputs, &visitOutput<V>);
   v.list("sensors", s.sensors, &visitSensor<V>);
+  v.array("rtd", s.rtd, &visitRtd<V>);
   v.field("fahrenheit", s.fahrenheit);
   v.field("brightness", s.brightness);
   v.field("activeRecipe", s.activeRecipe);
