@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "backpack")(type "KiCad")(uri "${KIPRJMOD}/backpack.pretty")(options "")(descr "MashTouch backpack footprints"))
+)

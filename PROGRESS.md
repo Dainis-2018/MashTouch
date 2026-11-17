@@ -75,7 +75,8 @@ Serial console (`help`), PC mock and docs exist for all of it.
    - orientation, colours and touch
    - the chime through the ES8311 (amplifier enable on EXIO7, from the V2 schematic)
    - power from J8 VBUS
-   - the J8 pin 1 position (the pin order is in `docs/design.md`, from the V2 schematic)
+   - measure whether the panel has I2C pull-ups on GPIO 7/8 (camera-block R9/R10 "4.7K/NC"); if not, add 2× 4.7 kΩ by hand (`docs/design.md`, *Checks on the first panel*)
+   - confirm the J8 pin 1 position with a meter (pin numbers and position in `docs/design.md`, from the Waveshare pinout image)
 
    The open checks are listed under the Waveshare pin map in `docs/design.md`.
 2. Run `import selftest` on the console.
@@ -88,8 +89,11 @@ Serial console (`help`), PC mock and docs exist for all of it.
    - NTP time
    - runaway detection, which may need tuning to avoid false alarms
 4. **See the touch UI on the real screen** and fix layout and spacing. The brew history has no touch screen page yet.
-5. **PT100/PT1000 via MAX31865** on J8's SPI lines (its own bus, separate from the display).
-6. **KiCad I/O backpack PCB** (no MCU) to the Waveshare pin map. Take the outline and holes from the vendor STEP file, and keep clear of the panel's antenna.
+5. **PT100/PT1000 via MAX31865** (code done, untested): try it with a breakout (`docs/bringup-wiring.md`, *PT100 check*).
+6. **KiCad I/O backpack PCB** (no MCU): the project is in `hardware/backpack/` (schematic done and ERC clean; placed, labelled and routed on 2026‑11‑17, DRC clean; see its README and `docs/backpack-layout.md`). Next:
+   - routed on 2026‑11‑17 (hand-routed power and analog paths, Freerouting for the rest, DRC clean): **look it over in KiCad**, especially the autorouted signals on the back layer and the ground pour around the buck and the RTD inputs
+   - measure the panel's J8 socket depth with calipers, then choose the header's mating-pin length (≤ 4.5 mm) and the 3.5 mm spacers
+   - order from JLCPCB with SMD assembly: match the passives to basic parts, check stock
 7. **Smaller open items:**
    - fonts with Latvian letters (imported names are folded to plain Latin letters today)
    - the web chart mixes units if °C/°F is switched mid-brew

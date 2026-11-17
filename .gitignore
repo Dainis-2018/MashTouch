@@ -28,3 +28,11 @@ desktop.ini
 
 # Vendor files (Waveshare drawings, STEP, schematic): not ours to redistribute
 reference/waveshare/
+
+# KiCad: generated reports and netlists (rebuild with kicad-cli)
+hardware/**/*.rpt
+hardware/**/*.net
+
+# KiCad local history and ad-hoc upload archives
+hardware/**/.history/
+hardware/**/*.zip

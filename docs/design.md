@@ -71,28 +71,28 @@ The source of truth is `src/board/pins.h` (build `pio run`, environment `ws35`).
 | microSD (SD_MMC 1‑bit) CLK / CMD / D0 | 11 / 10 / 9 (unused; the same lines are J8's SPI) |
 | USB | 19 / 20 (native USB, console and upload) |
 
-**J8 (2×16, 2.54 mm)**, pin numbers from the V2 schematic's PinOut sheet. VBUS is the 5 V input (a diode keeps it off the USB‑C port). GPIO 17, 18, 21, 38–42 and 45–48 are the camera pins, free with no camera fitted.
+**J8 (2×16, 2.54 mm)**, pin numbers from the official Waveshare pinout image ([ESP32-S3-Touch-LCD-3.5 details](https://docs.waveshare.com/assets/images/ESP32-S3-Touch-LCD-3.5-details-intro-eb9b36264bce6b8cc1ba8c58154ed1ac.webp)). The V2 schematic's PinOut sheet has the same pairs but numbers the rows the other way round (its pin 1 is VBUS); MashTouch uses the image's numbers. 5V (VBUS) is the 5 V input (a diode keeps it off the USB‑C port). GPIO 17, 18, 21, 38–42 and 45–48 are the camera pins, free with no camera fitted.
 
-| Pin | Net | Pin | Net |
+| Pin | Net (outer row, board edge) | Pin | Net (inner row) |
 |---|---|---|---|
-| 1 | VBUS (5 V in) | 2 | VBAT |
+| 1 | BAT (VBAT) | 2 | 5V (VBUS, 5 V in) |
 | 3 | GND | 4 | GND |
-| 5 | USB D− | 6 | GPIO 21 |
-| 7 | USB D+ | 8 | GPIO 38 |
-| 9 | ESP_SCLK (GPIO 11) | 10 | GPIO 39 |
-| 11 | ESP_MOSI (GPIO 10) | 12 | GPIO 40 |
-| 13 | ESP_MISO (GPIO 9) | 14 | GPIO 41 |
-| 15 | GPIO 17 | 16 | GPIO 42 |
-| 17 | GPIO 18 | 18 | GPIO 45 |
-| 19 | IO0 (BOOT) | 20 | GPIO 46 |
-| 21 | ESP_EN | 22 | GPIO 47 |
-| 23 | PWRON | 24 | GPIO 48 |
-| 25 | I2C SCL (GPIO 7) | 26 | UART0 TX (GPIO 43) |
-| 27 | I2C SDA (GPIO 8) | 28 | UART0 RX (GPIO 44) |
+| 5 | GPIO 21 | 6 | USB D− (GPIO 19) |
+| 7 | GPIO 38 | 8 | USB D+ (GPIO 20) |
+| 9 | GPIO 39 | 10 | ESP_SCLK (GPIO 11) |
+| 11 | GPIO 40 | 12 | ESP_MOSI (GPIO 10) |
+| 13 | GPIO 41 | 14 | ESP_MISO (GPIO 9) |
+| 15 | GPIO 42 | 16 | GPIO 17 |
+| 17 | GPIO 45 | 18 | GPIO 18 |
+| 19 | GPIO 46 | 20 | BOOT (GPIO 0) |
+| 21 | GPIO 47 | 22 | RST (ESP_EN) |
+| 23 | GPIO 48 | 24 | PWR (PWRON) |
+| 25 | UART0 RX (GPIO 44) | 26 | I2C SCL (GPIO 7) |
+| 27 | UART0 TX (GPIO 43) | 28 | I2C SDA (GPIO 8) |
 | 29 | GND | 30 | GND |
-| 31 | VCC3V3 | 32 | VCC3V3 |
+| 31 | 3V3 | 32 | 3V3 |
 
-The schematic doesn't show where pin 1 sits on the board. Take that from the vendor 2D drawing (`reference/waveshare/`) before laying out the PCB.
+**Position on the board:** the image is the back of the panel turned 90° from the vendor 2D drawing (`reference/waveshare/`). On the drawing's back view (USB‑C on the left, the three buttons on top, microSD top right), **pins 1/2 are at the USB‑C end**, pins 31/32 at the microSD end, and the **odd pins form the outer row** along the board edge, in line with the two nearby holes. Every GPIO the backpack uses for outputs (21, 38–42), the MAX31865 chip selects (47/48) and the UART are on the outer row; 5 V in, the SPI bus (11/10/9), 1‑Wire (17), level (18) and I2C are on the inner row. Component placement for the backpack: `docs/backpack-layout.md`.
 
 **Backpack allocation:** heater and pump outputs and the level switch use direct GPIOs with gate pull-downs. Only the front panel goes through an expander.
 
@@ -107,7 +107,8 @@ The schematic doesn't show where pin 1 sits on the board. Take that from the ven
 | Spare | 45, 46 (strapping pins: outputs with pull-downs only); 43/44 debug UART |
 
 **Checks on the first panel:**
-- J8 pin 1 position. The numbers are settled (see above), but neither the drawing nor the STEP marks pin 1. With USB plugged in, find the 3.3 V pair (31/32) at one end of the header. At the other end, pin 1 (VBUS) reads about 5 V, and pin 2 (VBAT) reads 0 V with no battery fitted.
+- J8 pin 1 position (known from the Waveshare image, confirm with a meter). With USB plugged in, the 3.3 V pair (31/32) is at the microSD end of the header. At the USB‑C end, pin 2 (5V, inner row) reads about 5 V and pin 1 (BAT, outer row) reads 0 V with no battery fitted.
+- **I2C pull-ups on GPIO 7/8.** In the V2 schematic the only pull-ups on the shared bus are R9/R10 in the camera block, marked "4.7K/NC", so they may be missing on the version without a camera. Unpowered, measure J8 pin 26 (SCL) and pin 28 (SDA) to pin 31 (3V3): about 4.7 kΩ means they are fitted. If not, the bus runs on the ESP32's weak internal pull-ups; the backpack has no pull-up footprints, so solder 2× 4.7 kΩ (0603) by hand from SDA/SCL to 3V3, e.g. across U6 pins 23/22 and 24 or at J8. Decided 2026‑11‑18 to leave the board as routed.
 - touch reset follows the LCD reset
 - the start chime plays (amplifier enabled on EXIO7)
 - ES8311 address
@@ -126,16 +127,22 @@ The schematic doesn't show where pin 1 sits on the board. Take that from the ven
   - **Mounting holes:** 4× **M2**, on a 72.00 × 48.50 mm rectangle. The cased version uses the same pattern.
   - **J8:** along the edge opposite the three side buttons. Its outer row lines up with the two nearby holes, and the header is centred between them (36.00 mm from each). The speaker and battery connectors sit just left of it.
   - **Frame:** 92.44 × 61.00 mm, R6 corners. The cased version is 95.11 × 63.67 × 14.1 mm.
-  - **No pin 1 mark:** the drawing draws all 32 pads square, and the STEP part is a generic model. Check pin 1 on the board (see the checks under the pin map).
-- M2 standoffs: the same screws hold the panel and the backpack to the box front. Take the stack height from the STEP: the SMD socket height plus the tallest part on the panel's back.
-- **Antenna:** the schematic shows a ceramic chip antenna (CA‑C03), plus a U.FL socket selected by a 0 Ω resistor. Find the antenna on the board and keep the area clear. No copper pour, tall parts or metal on the backpack near the panel's antenna end. Check Wi‑Fi range in the real box early, especially if the box is metal.
+  - **Pin 1:** the drawing draws all 32 pads square and the STEP part is a generic model, but the Waveshare pinout image puts pin 1 (BAT) at the USB‑C end, on the outer row (see the J8 table). Confirm with a meter on the first panel.
+- **Component placement:** zones, connector order and the to-scale drawing are in `docs/backpack-layout.md`.
+- **Build choices (2026‑11‑16):**
+  - SMD parts are assembled by the PCB house (JLCPCB/PCBWay class), chosen from their stocked parts with LCSC numbers in the BOM; only terminals, the J8 header and the JST connector are hand-soldered.
+  - 12 V → 5 V is a synchronous buck IC on the board, not a module.
+  - The two MAX31865 chips sit on the board, each with a reference resistor and a 2.54 mm jumper (header + shunt) for 3-wire or 2/4-wire probes; it must match the `rtd.N.wires` setting.
+  - The schematic and PCB are a KiCad 10 project in `hardware/backpack/`. Terminals are 3.5 mm pluggable headers (Phoenix MC 1,5/…‑G‑3,5 or equivalent).
+- **Stack (from the STEP):** the panel has 4.0 mm SMT M2 standoffs on its back and a 5.1 mm J8 socket. With a 2.5 mm header body the backpack sits 7.6 mm behind the panel, on the standoffs plus 3.5 mm M2 spacers; the header's mating pins must be 4.5 mm or shorter. The tallest other parts on the panel's back are 3.4 mm. Details in `docs/backpack-layout.md`.
+- **Antenna:** the schematic shows a ceramic chip antenna (CA‑C03), plus a U.FL socket selected by a 0 Ω resistor. The STEP places the chip antenna (part `C3`, 9 × 2 mm) in the middle of the microSD-end edge. The backpack has a notch there (no board over the antenna) and keeps copper pour away from it. Check Wi‑Fi range in the real box early, especially if the box is metal.
 - **USB‑C on the panel stays reachable** for flashing and the console, or rely on firmware updates over Wi‑Fi.
 - **Power input: 12 V** (the same supply as the pump and fan). A buck converter 12 V → 5 V (at least 1.5 A) feeds J8 VBUS, which powers the panel (through its AXP2101) and the SSR drive. Logic on the backpack (MAX31865, TCA9535, 1‑Wire pull-up) runs from the panel's VCC3V3 on J8, so the logic levels match the ESP32. This allows one 12 V supply in the box instead of separate 5 V and 12 V supplies.
 - **Outputs stay off in reset:** every output MOSFET gate has a 10 kΩ pull-down, so heater, pump and the other outputs are off while the MCU is in reset, being flashed or unpowered, and while the panel is unplugged. Each output has an indicator LED.
 - **Front panel expander:** a TCA9535 (address 0x22) reads the two buttons (10 k pull-ups, ESD protection) and drives the two LED rings (through transistors if the rings need more than a few mA). The firmware polls it every 10 ms, and a missing expander only disables the buttons.
 - **4 signal outputs (OUT1–OUT4)** for SSRs and other low-current loads: low-side MOSFET (2N7002/AO3400) switching to GND, with the + supply on the connector, the same scheme as the current 2N2222 stages. A jumper selects +5 V or +12 V for the SSR supply (SSR inputs typically accept 3–32 V). Up to about 200 mA each. A signal output can also drive a **relay coil** (for example to switch a 230 V pump), so each signal output gets a flyback diode. For a pump on an SSR, add an RC snubber or varistor across the SSR output in the box wiring (motors are inductive loads).
 - **2 power outputs (PWR1/PWR2)** for 12 V loads such as the DC pump and fan: logic-level MOSFET in a DPAK/PowerPAK package, rated about 3 A continuous, with flyback diode and fuse/PTC. PWM capable, used for quiet fan control; a 12 V pump on a power output is switched on/off.
-- **Sensor inputs:** 1‑Wire bus connector (several DS18B20 in parallel, 4.7 k pull-up to 3.3 V, with ESD protection and a spare second connector for convenience) and the level sensor input. 2× MAX31865 on board (or headers for the common breakout boards) with 2/3/4‑wire PT100/PT1000 terminals.
+- **Sensor inputs:** 1‑Wire bus connector (several DS18B20 in parallel, 4.7 k pull-up to 3.3 V, with ESD protection) and the level sensor input. 2× MAX31865 on board (or headers for the common breakout boards) with 2/3/4‑wire PT100/PT1000 terminals.
 - Connector types don't matter (the user will adapt the wiring); use screw terminals or pluggable terminal blocks.
 - Buttons: a JST connector to the two panel-mount buttons and their LEDs.
 - **Speaker instead of a buzzer:** the panel's ES8311 codec and NS4150B amplifier drive a small 8 Ω speaker of 1–2 W (about 28 mm round or 20×30 mm) on the panel's MX1.25 speaker connector. Mount the speaker on the box wall behind a few sound holes. The firmware synthesises its chimes (`src/hal/audio`), so every event has its own sound; the volume is a setting.
@@ -168,11 +175,11 @@ Any output can take any role (Settings > Outputs).
 
 ## Phases
 1. [in progress] Buy a Waveshare ESP32‑S3‑Touch‑LCD‑3.5, one MAX31865 breakout, a TCA9535 breakout and test parts (LEDs, buttons, a DS18B20, a speaker). The GPL repo exists. (An ESP32‑S3 DevKit + MSP3526 bench rig was planned first and dropped once the Waveshare panel was chosen.)
-2. [code done, untested on hardware] Firmware bring-up on a breadboard: display, touch, LVGL test screen, outputs, DS18B20. MAX31865 still to do.
+2. [code done, untested on hardware] Firmware bring-up on a breadboard: display, touch, LVGL test screen, outputs, DS18B20, PT100/PT1000 via MAX31865 (`src/hal/temp_rtd`, settings `rtd`).
 3. [code done, untested on hardware] The brewing core as non-blocking code (`src/core/`, `src/app/controller`, serial console); settings, recipes and power-loss resume on LittleFS (`src/storage/`, see `docs/storage.md`); the touch UI (`src/ui/`, see `docs/ui.md`); recipe import from BeerXML and JSON (see `docs/storage.md`).
-4. [code done, untested on hardware] Brew history and logs, sparge heater, staged heaters, alarm and safety-relay roles, runaway detection, I2S speaker (see `PROGRESS.md`). Network: Wi-Fi with setup access point, mDNS, JSON API, own web UI (written fresh), recipe import, firmware update over the air (see `docs/web-api.md`). Next: PT100 via MAX31865.
+4. [code done, untested on hardware] Brew history and logs, sparge heater, staged heaters, alarm and safety-relay roles, runaway detection, I2S speaker (see `PROGRESS.md`). Network: Wi-Fi with setup access point, mDNS, JSON API, own web UI (written fresh), recipe import, firmware update over the air (see `docs/web-api.md`).
 5. [code done, untested on hardware] Waveshare panel support (`ws35` build: pin map, shared I2C bus, expanders, ES8311). Bring up the panel and settle the checks listed under its pin map.
-6. KiCad I/O backpack PCB; fit it into the existing box; first real brew.
+6. [schematic done, placement started] KiCad I/O backpack PCB (`hardware/backpack/`); then routing, fit it into the existing box, first real brew.
 
 ## Verification
 - Each phase builds with `pio run`. Bench tests use LEDs on the outputs, a DS18B20 and a PT100 in the same cup of water, comparing their readings.
