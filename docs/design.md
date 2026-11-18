@@ -130,7 +130,7 @@ The source of truth is `src/board/pins.h` (build `pio run`, environment `ws35`).
   - **Pin 1:** the drawing draws all 32 pads square and the STEP part is a generic model, but the Waveshare pinout image puts pin 1 (BAT) at the USB‑C end, on the outer row (see the J8 table). Confirm with a meter on the first panel.
 - **Component placement:** zones, connector order and the to-scale drawing are in `docs/backpack-layout.md`.
 - **Build choices (2026‑11‑16):**
-  - SMD parts are assembled by the PCB house (JLCPCB/PCBWay class), chosen from their stocked parts with LCSC numbers in the BOM; only terminals, the J8 header and the JST connector are hand-soldered.
+  - SMD parts are assembled by the PCB house (JLCPCB/PCBWay class), from the MPNs in `hardware/backpack/parts.csv` (board house: PCBWay); only terminals, the J8 header and the JST connector are hand-soldered.
   - 12 V → 5 V is a synchronous buck IC on the board, not a module.
   - The two MAX31865 chips sit on the board, each with a reference resistor and a 2.54 mm jumper (header + shunt) for 3-wire or 2/4-wire probes; it must match the `rtd.N.wires` setting.
   - The schematic and PCB are a KiCad 10 project in `hardware/backpack/`. Terminals are 3.5 mm pluggable headers (Phoenix MC 1,5/…‑G‑3,5 or equivalent).

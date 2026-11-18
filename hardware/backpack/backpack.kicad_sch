@@ -13195,7 +13195,7 @@
 			(effects
 				(font
 					(size 1 1))))
-		(property "Value" "2N7002"
+		(property "Value" "AO3400A"
 			(at 227.9523 226.5045 0)
 			(effects
 				(font
@@ -13212,7 +13212,7 @@
 				(font
 					(size 1.27 1.27))
 				(hide yes)))
-		(property "MPN" "2N7002"
+		(property "MPN" "AO3400A"
 			(at 223.52 226.06 0)
 			(effects
 				(font
@@ -13415,7 +13415,7 @@
 			(effects
 				(font
 					(size 1 1))))
-		(property "Value" "2N7002"
+		(property "Value" "AO3400A"
 			(at 227.9523 236.6645 0)
 			(effects
 				(font
@@ -13432,7 +13432,7 @@
 				(font
 					(size 1.27 1.27))
 				(hide yes)))
-		(property "MPN" "2N7002"
+		(property "MPN" "AO3400A"
 			(at 223.52 236.22 0)
 			(effects
 				(font

@@ -36,3 +36,6 @@ hardware/**/*.net
 # KiCad local history and ad-hoc upload archives
 hardware/**/.history/
 hardware/**/*.zip
+
+# PCB order files (rebuild with node tools/kicad/fab_export.js)
+hardware/backpack/fab/

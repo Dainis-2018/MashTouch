@@ -256,7 +256,7 @@
 			(at 0 -2.4 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "66e3c377-9f7b-44be-a387-d46a728cdb7e")
+			(uuid "c80612f1-5b6c-42e5-8955-6a34d36e491b")
 			(effects
 				(font
 					(size 1 1)
@@ -264,10 +264,10 @@
 				)
 			)
 		)
-		(property "Value" "2N7002"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
-			(uuid "b99cb3ec-ba51-4288-bf51-8ae9cebd2a99")
+			(uuid "934c13fc-e726-4272-8352-3bbee8d8855f")
 			(effects
 				(font
 					(size 1 1)
@@ -279,7 +279,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "520f86f8-690b-4009-85a5-5ad3d5d3b6d9")
+			(uuid "64566e5f-82ab-4235-a12f-0164f344f4cd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -290,7 +290,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "a56ed7ea-7c76-4a6e-9eb0-7c833f920fac")
+			(uuid "be37e236-641a-43b9-91e6-9335f9f52755")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -309,7 +309,7 @@
 				)
 			)
 		)
-		(property "MPN" "2N7002"
+		(property "MPN" "AO3400A"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -322,7 +322,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/b25431b2-7358-4496-9e5a-e60a3f2eab41")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -606,7 +605,7 @@
 			(roundrect_rratio 0.25)
 			(net "/LED_PUMP")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "1c92819b-6a38-4f22-9178-0f1ead8d5168")
 		)
 		(pad "2" smd roundrect
@@ -652,7 +651,7 @@
 			(at 0 -2.38 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "068a7ae3-e2b6-466b-95e9-6d5cb8179110")
+			(uuid "e94d6541-2ee4-4bbc-91f3-46f54e4d0628")
 			(effects
 				(font
 					(size 1 1)
@@ -663,7 +662,7 @@
 		(property "Value" "3-wire"
 			(at 0 7.46 90)
 			(layer "F.Fab")
-			(uuid "b8fa7c77-9e82-47e3-a62d-5e6e7db19fa6")
+			(uuid "ac7674db-ff47-4f3c-b8fa-37994755945b")
 			(effects
 				(font
 					(size 1 1)
@@ -675,7 +674,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "bd2b7d1b-0cd6-4486-9a7e-5e1fcdd487a6")
+			(uuid "3e2db4f7-3412-4076-8e15-5d1fda05f7d0")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -686,7 +685,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "b136a58a-acc0-4bb4-b8da-640ef7cc0ce1")
+			(uuid "6d073f50-b4df-4f38-8297-52e3ee784531")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -731,14 +730,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "Jumper* TestPoint*3Pads* TestPoint*Bridge*")
 		(path "/e6057431-2b99-424e-bef8-1f226961f068")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2" "3")
+				(pins "3" "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -882,7 +880,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_FP")
-			(pinfunction "A_1")
 			(pintype "passive")
 			(uuid "2feb8cca-5286-4ed4-9cc7-6f3c7bd4ea14")
 		)
@@ -893,7 +890,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_F2")
-			(pinfunction "C_2")
 			(pintype "passive")
 			(uuid "403d3d76-1e71-43a1-bc7c-2139c752a8dc")
 		)
@@ -904,7 +900,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "B_3")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "316b9abc-d6bb-4db7-a870-b2040ba944c5")
@@ -1616,7 +1611,7 @@
 			(at 0 -4.85 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "16e8f042-fc51-43f0-b80d-096469936633")
+			(uuid "75cb5cd8-883d-4400-9bc9-efc671d081c6")
 			(effects
 				(font
 					(size 1 1)
@@ -1627,7 +1622,7 @@
 		(property "Value" "TCA9535PWR"
 			(at 0 4.85 270)
 			(layer "F.Fab")
-			(uuid "f20c9321-ad04-4fea-b173-fc293bd8dbfa")
+			(uuid "8016bfb9-c3a8-43da-84ce-33699d4545e0")
 			(effects
 				(font
 					(size 1 1)
@@ -1639,7 +1634,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "44d113f0-120b-47f5-8749-1738a84eb7ac")
+			(uuid "c57cb242-1981-4508-9818-e44526b5dbeb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1650,7 +1645,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e655ae38-d072-40d6-bf78-44b22d485d81")
+			(uuid "ab4b034d-1514-4473-b419-8ff5bc1d739a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1695,15 +1690,14 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TSSOP*4.4x7.8mm*P0.65mm*")
 		(path "/80f0dac4-d84d-4a37-a662-f10b3a03fea6")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "23" "22" "1" "3" "2" "21" "24" "12" "4" "5" "6" "7" "8" "9" "10"
-					"11" "13" "14" "15" "16" "17" "18" "19" "20"
+				(pins "22" "23" "21" "2" "3" "1" "24" "12" "4" "8" "9" "10" "5" "11"
+					"13" "14" "15" "6" "16" "17" "18" "7" "19" "20"
 				)
 			)
 		)
@@ -1891,7 +1885,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-~{INT}-Pad1)")
 			(pinfunction "~{INT}_1")
-			(pintype "open_collector+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "985a4050-63c6-461b-82cb-61707accdbd5")
 		)
 		(pad "2" smd roundrect
@@ -1901,7 +1895,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "A1_2")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "980fc92c-a70e-461e-b038-a03e20b5d5b7")
 		)
 		(pad "3" smd roundrect
@@ -1911,7 +1905,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "A2_3")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "7bb838ff-e2e4-4d9d-b2b8-5a88c5fc9791")
 		)
 		(pad "4" smd roundrect
@@ -1921,7 +1915,7 @@
 			(roundrect_rratio 0.25)
 			(net "/BTN_START")
 			(pinfunction "P00_4")
-			(pintype "bidirectional")
+			(pintype "passive")
 			(uuid "a7481a2e-af92-4f0d-9e0b-b657a187722a")
 		)
 		(pad "5" smd roundrect
@@ -1931,7 +1925,7 @@
 			(roundrect_rratio 0.25)
 			(net "/BTN_PUMP")
 			(pinfunction "P01_5")
-			(pintype "bidirectional")
+			(pintype "passive")
 			(uuid "343bb62a-b758-483b-9720-0631aefaa401")
 		)
 		(pad "6" smd roundrect
@@ -1941,7 +1935,7 @@
 			(roundrect_rratio 0.25)
 			(net "/LED_START")
 			(pinfunction "P02_6")
-			(pintype "bidirectional")
+			(pintype "passive")
 			(uuid "1246086c-f716-4de3-b54e-ffc72e518312")
 		)
 		(pad "7" smd roundrect
@@ -1951,7 +1945,7 @@
 			(roundrect_rratio 0.25)
 			(net "/LED_PUMP")
 			(pinfunction "P03_7")
-			(pintype "bidirectional")
+			(pintype "passive")
 			(uuid "8e48eb49-346b-4a8f-a40f-551efa742451")
 		)
 		(pad "8" smd roundrect
@@ -1961,7 +1955,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P04-Pad8)")
 			(pinfunction "P04_8")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "240f3629-774c-4f0b-b23e-d9e903c4ffc2")
 		)
 		(pad "9" smd roundrect
@@ -1971,7 +1965,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P05-Pad9)")
 			(pinfunction "P05_9")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "12a8ee55-0aba-40d5-b3ab-5c77ff63cf2c")
 		)
 		(pad "10" smd roundrect
@@ -1981,7 +1975,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P06-Pad10)")
 			(pinfunction "P06_10")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "3bde1988-6360-41af-9a7a-f80cf7768a8b")
 		)
 		(pad "11" smd roundrect
@@ -1991,7 +1985,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P07-Pad11)")
 			(pinfunction "P07_11")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "6c14effa-2d85-46ed-8b5f-bd589d1dc02b")
 		)
 		(pad "12" smd roundrect
@@ -2001,7 +1995,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_12")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "acf203ec-4802-4cf5-83fd-61fca3b86c4e")
 		)
 		(pad "13" smd roundrect
@@ -2011,7 +2005,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P10-Pad13)")
 			(pinfunction "P10_13")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "959e6fa3-eb6b-47c5-a756-4f1c44dc0e58")
 		)
 		(pad "14" smd roundrect
@@ -2021,7 +2015,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P11-Pad14)")
 			(pinfunction "P11_14")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "69895a6d-afb5-42f7-990d-a1c484a5bb3f")
 		)
 		(pad "15" smd roundrect
@@ -2031,7 +2025,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P12-Pad15)")
 			(pinfunction "P12_15")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "54b069a2-5906-4a20-a24b-5dd82257eb40")
 		)
 		(pad "16" smd roundrect
@@ -2041,7 +2035,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P13-Pad16)")
 			(pinfunction "P13_16")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "0ba0ddc9-4625-4d77-939e-8c012a96bda7")
 		)
 		(pad "17" smd roundrect
@@ -2051,7 +2045,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P14-Pad17)")
 			(pinfunction "P14_17")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "91455f19-1acb-482a-a4b6-0b4d17bbd7f1")
 		)
 		(pad "18" smd roundrect
@@ -2061,7 +2055,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P15-Pad18)")
 			(pinfunction "P15_18")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "8085b864-a1db-47f9-bc1e-53ab3c185c8b")
 		)
 		(pad "19" smd roundrect
@@ -2071,7 +2065,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P16-Pad19)")
 			(pinfunction "P16_19")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "be184bdf-2344-460f-a744-9c384d0a99c8")
 		)
 		(pad "20" smd roundrect
@@ -2081,7 +2075,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U6-P17-Pad20)")
 			(pinfunction "P17_20")
-			(pintype "bidirectional+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "c8d63517-8752-4ce2-89b2-9b00b67d4a62")
 		)
 		(pad "21" smd roundrect
@@ -2091,7 +2085,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "A0_21")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "5524f18d-a09d-4d22-ab88-a04397164f69")
 		)
 		(pad "22" smd roundrect
@@ -2101,7 +2095,7 @@
 			(roundrect_rratio 0.25)
 			(net "/I2C_SCL")
 			(pinfunction "SCL_22")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "8b4f5f91-2249-4fbf-86ff-631868bf90e1")
 		)
 		(pad "23" smd roundrect
@@ -2111,7 +2105,7 @@
 			(roundrect_rratio 0.25)
 			(net "/I2C_SDA")
 			(pinfunction "SDA_23")
-			(pintype "bidirectional")
+			(pintype "passive")
 			(uuid "f968be8c-bac4-4fdc-99db-8a048abe0351")
 		)
 		(pad "24" smd roundrect
@@ -2121,7 +2115,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "VCC_24")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "7212ccf7-62ca-4627-949e-c0c19bf50b73")
 		)
 		(embedded_fonts no)
@@ -2589,7 +2583,7 @@
 			(at 0 -3.15 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "399af819-0e0e-404a-b86f-b75a172b019a")
+			(uuid "2f509c00-2db4-48d5-a2d9-646e9cb8ad25")
 			(effects
 				(font
 					(size 1 1)
@@ -2600,7 +2594,7 @@
 		(property "Value" "M2"
 			(at 0 3.15 0)
 			(layer "F.Fab")
-			(uuid "1166b23c-0341-4e4f-b27d-f56eae26163d")
+			(uuid "76257f2a-f42f-4b0e-aa6a-47a04c151c87")
 			(effects
 				(font
 					(size 1 1)
@@ -2612,7 +2606,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "ed7364dc-f3bb-4294-82fa-f0d658dbb750")
+			(uuid "84553b61-f659-4d99-8d25-3c88d0c51432")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2623,7 +2617,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "797c0510-3fbd-4f14-af86-109f1acbfc23")
+			(uuid "a2a8f1f2-bf8b-42a1-93dc-27b5fa6ac01d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4662,7 +4656,7 @@
 			(at 0 -2.4 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "3642ee00-0722-4ff3-a956-7ac97739a795")
+			(uuid "a52a3b00-9417-4430-89a7-af583c315826")
 			(effects
 				(font
 					(size 1 1)
@@ -4673,7 +4667,7 @@
 		(property "Value" "UCC27511A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
-			(uuid "92c4c404-bf74-48fe-870e-3de1a3b02824")
+			(uuid "697f36ab-a47d-4c88-ae3b-af145f2fcf79")
 			(effects
 				(font
 					(size 1 1)
@@ -4685,7 +4679,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "93c95c22-ad57-4c96-8c34-c4aa7edd3260")
+			(uuid "2973fcc0-09bf-408d-8cd1-92fdcc4d27bd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4696,7 +4690,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2927c48a-ea7e-4410-8e39-988cfddc65f2")
+			(uuid "6ae06ac2-cac5-4a59-a6d0-8d9506148b88")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4741,14 +4735,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/59513b41-2f21-47de-9f2a-6c6ee8fffb0a")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "6" "5" "1" "4" "2" "3")
+				(pins "2" "3" "1" "6" "5" "4")
 			)
 		)
 		(attr smd)
@@ -4974,8 +4967,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "+12V")
-			(pinfunction "V_{DD}_1")
-			(pintype "power_in")
+			(pinfunction "VDD_1")
+			(pintype "passive")
 			(uuid "697ae698-76d4-4160-a98f-5b4031f13813")
 		)
 		(pad "2" smd roundrect
@@ -4985,7 +4978,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR2_OH")
 			(pinfunction "OUTH_2")
-			(pintype "output")
+			(pintype "passive")
 			(uuid "af43881a-1092-4689-9701-239b0c95e404")
 		)
 		(pad "3" smd roundrect
@@ -4995,7 +4988,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR2_G")
 			(pinfunction "OUTL_3")
-			(pintype "output")
+			(pintype "passive")
 			(uuid "5f29bbc3-81f2-4d7d-86b1-e148c8d8e063")
 		)
 		(pad "4" smd roundrect
@@ -5005,7 +4998,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_4")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "911b7065-3fce-4fc5-bb8e-7252ea1f32a2")
 		)
 		(pad "5" smd roundrect
@@ -5014,8 +5007,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "GND")
-			(pinfunction "IN-_5")
-			(pintype "input")
+			(pinfunction "IN−_5")
+			(pintype "passive")
 			(uuid "31728f81-0190-4083-a62e-6653fafd3837")
 		)
 		(pad "6" smd roundrect
@@ -5025,7 +5018,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR2")
 			(pinfunction "IN+_6")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "6c5ebda9-3bfd-413c-8860-1c6020fb0df2")
 		)
 		(embedded_fonts no)
@@ -5368,7 +5361,7 @@
 			(at 0 -4.5 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "b11d5d17-f41d-418c-ba41-8589f012f489")
+			(uuid "ac876072-15ba-466e-aeed-62c1a3e99a21")
 			(effects
 				(font
 					(size 1 1)
@@ -5379,7 +5372,7 @@
 		(property "Value" "AOD4184A"
 			(at 0 4.5 90)
 			(layer "F.Fab")
-			(uuid "c9299be6-171b-44a9-8f2d-1c362942f71c")
+			(uuid "d17f7ee2-a4b6-49fd-8b3c-bff0860ba3cd")
 			(effects
 				(font
 					(size 1 1)
@@ -5391,7 +5384,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "254823e6-10da-4d72-ba4a-dcd2d1b2860c")
+			(uuid "b548de5b-d750-4fe3-98bd-1725b9a00d1e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5402,7 +5395,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "9d544d16-6984-4f77-aa1b-74364edd5285")
+			(uuid "395dfa99-2513-4ac2-819d-a815f1b3b765")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5656,7 +5649,7 @@
 			(roundrect_rratio 0.208333)
 			(net "/PWR1_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "ca8846d3-a012-43d5-bc3e-0c265b032e23")
 		)
 		(pad "2" smd roundrect
@@ -5703,7 +5696,7 @@
 			(at 0 -1.35 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "08b50092-d02b-40bf-928a-51cb28eb3eb4")
+			(uuid "527bb2e6-db78-44ab-9048-0a6fac760bd2")
 			(effects
 				(font
 					(size 1 1)
@@ -5714,7 +5707,7 @@
 		(property "Value" "PESD5V0S1UL"
 			(at 0 1.35 0)
 			(layer "F.Fab")
-			(uuid "bf3b065b-a170-4771-9e02-6cfdf1690463")
+			(uuid "9c6acdbb-f969-48e9-b6ca-67c771cbf8ad")
 			(effects
 				(font
 					(size 1 1)
@@ -5727,7 +5720,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "317f5753-df17-4259-88e1-0cd9d6f9b965")
+			(uuid "da3e6d09-9664-4d2f-a97e-17f887a17f17")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5740,7 +5733,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "52cc7299-bb2f-4a83-8e0c-f60554d7a1c3")
+			(uuid "8c3ce1d5-4823-4250-99af-dc5196255700")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5761,7 +5754,7 @@
 				)
 			)
 		)
-		(property ki_fp_filters "D*SOD?882")
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/ccdedaf4-8473-4825-9ee2-9021e4937dc1")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -6884,7 +6877,7 @@
 			(at 0 -3.8 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "b50ea87a-684d-4222-9861-200ad9f74912")
+			(uuid "1e3e2bc8-aa52-4582-b9c4-37f2530f644b")
 			(effects
 				(font
 					(size 1 1)
@@ -6895,7 +6888,7 @@
 		(property "Value" "MAX31865ATP+"
 			(at 0 3.8 270)
 			(layer "F.Fab")
-			(uuid "aecf25ca-7ddb-4610-be0a-3830434f3c0c")
+			(uuid "a698e870-cf46-4d51-911b-fd8925b7ac5f")
 			(effects
 				(font
 					(size 1 1)
@@ -6907,7 +6900,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5aefd9db-f133-48de-9e10-1671cfe0ca86")
+			(uuid "cd6ddda3-0817-4960-9534-8fdb456ebae5")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6918,7 +6911,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e6cadb84-4f55-4b5c-9f9a-c7ce6bec6da7")
+			(uuid "1f94c95c-383e-4675-b4b4-30ee4d0e0c78")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6963,15 +6956,14 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TQFN*1EP*5x5mm*P0.65mm*")
 		(path "/fd76b200-c463-47c3-903d-07207fa15430")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "18" "11" "12" "13" "14" "17" "19" "15" "20" "10" "16" "21" "1"
-					"2" "3" "4" "5" "6" "7" "8" "9"
+				(pins "12" "11" "14" "13" "10" "15" "16" "21" "6" "5" "7" "8" "9" "1"
+					"2" "3" "4" "18" "17" "20" "19"
 				)
 			)
 		)
@@ -7327,7 +7319,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD1_BIAS")
 			(pinfunction "BIAS_1")
-			(pintype "power_out")
+			(pintype "passive")
 			(uuid "35998370-6d03-4a03-9e70-463782252a51")
 		)
 		(pad "2" smd roundrect
@@ -7337,7 +7329,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD1_BIAS")
 			(pinfunction "REFIN+_2")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "b994990c-bb91-4f72-8c83-683fbae0275f")
 		)
 		(pad "3" smd roundrect
@@ -7346,8 +7338,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD1_REF")
-			(pinfunction "REFIN-_3")
-			(pintype "input")
+			(pinfunction "REFIN−_3")
+			(pintype "passive")
 			(uuid "5a708312-48a6-455e-9a30-8f16f05c5712")
 		)
 		(pad "4" smd roundrect
@@ -7377,7 +7369,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD1_F2")
 			(pinfunction "FORCE2_6")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "7cf628bd-41d6-48e4-aaf0-c7e739a52674")
 		)
 		(pad "7" smd roundrect
@@ -7387,7 +7379,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD1_SP")
 			(pinfunction "RTDIN+_7")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "f82fedd6-c70c-417f-b2bd-2308c8a94d17")
 		)
 		(pad "8" smd roundrect
@@ -7396,8 +7388,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD1_SM")
-			(pinfunction "RTDIN-_8")
-			(pintype "input")
+			(pinfunction "RTDIN−_8")
+			(pintype "passive")
 			(uuid "f286ac4d-e819-49f8-997d-b54d778af205")
 		)
 		(pad "9" smd roundrect
@@ -7406,8 +7398,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD1_FM")
-			(pinfunction "FORCE-_9")
-			(pintype "power_out")
+			(pinfunction "FORCE−_9")
+			(pintype "passive")
 			(uuid "dcb8ab71-7f62-4854-a772-e53c94bb907d")
 		)
 		(pad "10" smd roundrect
@@ -7417,7 +7409,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_10")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "dfb343fc-fb92-44de-a3ec-7d18062a97da")
 		)
 		(pad "11" smd roundrect
@@ -7427,7 +7419,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_MOSI")
 			(pinfunction "SDI_11")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "ab0be112-15a6-4c54-8aa6-c9c084a32808")
 		)
 		(pad "12" smd roundrect
@@ -7437,7 +7429,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_SCK")
 			(pinfunction "SCLK_12")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "07ed0544-c6b2-4ad5-a23a-023b57c8f50b")
 		)
 		(pad "13" smd roundrect
@@ -7447,7 +7439,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD_CS1")
 			(pinfunction "~{CS}_13")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "bf18a7a2-ae13-4d2a-a735-b5dce4a953f9")
 		)
 		(pad "14" smd roundrect
@@ -7457,7 +7449,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_MISO")
 			(pinfunction "SDO_14")
-			(pintype "tri_state")
+			(pintype "passive")
 			(uuid "9b67c841-adc7-4dbf-871a-ac3d3213a814")
 		)
 		(pad "15" smd roundrect
@@ -7467,7 +7459,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "DGND_15")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "aaca0dd4-ceb0-4d39-8f96-c002ec6aa01c")
 		)
 		(pad "16" smd roundrect
@@ -7487,7 +7479,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U4-NC-Pad17)")
 			(pinfunction "NC_17")
-			(pintype "no_connect")
+			(pintype "passive+no_connect")
 			(uuid "77c2605e-9b5e-48e7-bc12-ec56299c50e3")
 		)
 		(pad "18" smd roundrect
@@ -7497,7 +7489,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U4-~{DRDY}-Pad18)")
 			(pinfunction "~{DRDY}_18")
-			(pintype "output+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "dfa949d6-1d83-49fd-9bd3-29f58d84b03e")
 		)
 		(pad "19" smd roundrect
@@ -7507,7 +7499,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "DVDD_19")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "f771cf42-366d-4e60-81a4-709639d66d05")
 		)
 		(pad "20" smd roundrect
@@ -7517,7 +7509,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "VDD_20")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "73f7ffee-6709-4e77-8a44-9e642e189d3a")
 		)
 		(pad "21" smd rect
@@ -7526,7 +7518,7 @@
 			(property pad_prop_heatsink)
 			(layers "F.Cu" "F.Mask")
 			(net "GND")
-			(pinfunction "GND_21")
+			(pinfunction "EP_21")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "3449a7b6-529c-474a-9da0-7ca91f383675")
@@ -8044,7 +8036,7 @@
 			(at 0 -2.4 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "02e9f58d-1791-488d-980d-bdf5049c5346")
+			(uuid "e5aa4315-731b-46db-a4e8-e845e23f91da")
 			(effects
 				(font
 					(size 1 1)
@@ -8055,7 +8047,7 @@
 		(property "Value" "AO3400A"
 			(at 0 2.4 90)
 			(layer "F.Fab")
-			(uuid "238939e5-9bfe-47a9-b982-1b550917472f")
+			(uuid "2afc892e-97cf-45c0-ab17-b311ed745076")
 			(effects
 				(font
 					(size 1 1)
@@ -8067,7 +8059,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7bee53b4-5128-4447-b05c-e2014970a2bf")
+			(uuid "4e849047-7544-43cc-98d6-ce0047738d83")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8078,7 +8070,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "80419429-48dc-4194-9f3a-b7d2fce7cd41")
+			(uuid "919fcfb7-8158-42bf-b4e6-49bd45bd3248")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8110,7 +8102,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/b0f01497-b4e0-429b-b88b-00bc36edd1cf")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -8394,7 +8385,7 @@
 			(roundrect_rratio 0.25)
 			(net "/OUT2_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "777b9158-3fdc-4828-9e3d-0da616e6741a")
 		)
 		(pad "2" smd roundrect
@@ -8771,7 +8762,7 @@
 			(at 0 -2.38 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "d17eee91-f071-4de2-bd6b-54cf1f7e36ae")
+			(uuid "0ea7c02c-e1ad-45d9-8a7c-a684df64339f")
 			(effects
 				(font
 					(size 1 1)
@@ -8782,7 +8773,7 @@
 		(property "Value" "3-wire"
 			(at 0 7.46 90)
 			(layer "F.Fab")
-			(uuid "8d297dd4-437f-4ad8-811c-89f3bc612ff8")
+			(uuid "700b9bb3-ce2e-49a0-b7ee-64a033486e63")
 			(effects
 				(font
 					(size 1 1)
@@ -8794,7 +8785,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5eaa7827-de57-47b2-94e9-777d6d2766d6")
+			(uuid "06ba3d27-4954-4a8c-9770-7cd873aeee71")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8805,7 +8796,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "27615147-14e2-41d1-8740-c0553ec00e8c")
+			(uuid "21a1e3f9-dba1-4f40-a9e0-c9138b600831")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8850,14 +8841,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "Jumper* TestPoint*3Pads* TestPoint*Bridge*")
 		(path "/5b1bc25d-e0ed-4bf5-8b55-82337ac6bc5b")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2" "3")
+				(pins "3" "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -9001,7 +8991,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD1_FP")
-			(pinfunction "A_1")
 			(pintype "passive")
 			(uuid "a8f20efa-8d32-433e-be01-a5bfe8b98c52")
 		)
@@ -9012,7 +9001,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD1_F2")
-			(pinfunction "C_2")
 			(pintype "passive")
 			(uuid "59ff0f1e-6642-490d-9335-7d5e2325f5c4")
 		)
@@ -9023,7 +9011,6 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "B_3")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "b1169558-ecb7-4d5d-af22-341edadde64c")
@@ -9052,7 +9039,7 @@
 			(at 12.25 -3 180)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "d7c0767a-0380-420c-b848-5f75e877d648")
+			(uuid "f3d583b6-3c98-4a6e-b412-877edfcd1c65")
 			(effects
 				(font
 					(size 1 1)
@@ -9063,7 +9050,7 @@
 		(property "Value" "OUT1-4"
 			(at 12.25 9.2 180)
 			(layer "F.Fab")
-			(uuid "b972bd6b-d2ba-413d-bfd2-568446d6cb35")
+			(uuid "a98a40e6-2611-4a30-bbcb-947e3f08993b")
 			(effects
 				(font
 					(size 1 1)
@@ -9075,7 +9062,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "33a033dc-21b1-4726-981d-786dcb15690b")
+			(uuid "4e955a34-ad40-443d-92e1-105cf5ad1c66")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9086,7 +9073,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "a30f3e7c-5408-456c-a3ac-872f65d151d0")
+			(uuid "30ddc017-adc2-411f-bdae-78e1fe7b0afd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9118,14 +9105,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/6f94598d-fc87-497e-93c3-f596b41078a0")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2" "3" "4" "5" "6" "7" "8")
+				(pins "8" "7" "6" "5" "4" "3" "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -9351,7 +9337,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.138889)
 			(net "/OUT4_L")
-			(pinfunction "Pin_1_1")
+			(pinfunction "OUT4−_1")
 			(pintype "passive")
 			(uuid "0eb11df0-752a-4d70-91f2-71d08c387705")
 		)
@@ -9362,7 +9348,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT_V")
-			(pinfunction "Pin_2_2")
+			(pinfunction "OUT4+V_2")
 			(pintype "passive")
 			(uuid "c2e85f09-f0b8-4fe9-9f81-cfaf9e301b47")
 		)
@@ -9373,7 +9359,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT3_L")
-			(pinfunction "Pin_3_3")
+			(pinfunction "OUT3−_3")
 			(pintype "passive")
 			(uuid "73de0184-f1c6-4ac2-8922-38548ffe5ad2")
 		)
@@ -9384,7 +9370,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT_V")
-			(pinfunction "Pin_4_4")
+			(pinfunction "OUT3+V_4")
 			(pintype "passive")
 			(uuid "cd87988a-dd6c-4386-b366-01242efac5a8")
 		)
@@ -9395,7 +9381,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT2_L")
-			(pinfunction "Pin_5_5")
+			(pinfunction "OUT2−_5")
 			(pintype "passive")
 			(uuid "6cddd4d8-2d11-4846-8b1e-937c55e28b1d")
 		)
@@ -9406,7 +9392,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT_V")
-			(pinfunction "Pin_6_6")
+			(pinfunction "OUT2+V_6")
 			(pintype "passive")
 			(uuid "df09c496-dad3-42cb-aef0-6e4f2f736992")
 		)
@@ -9417,7 +9403,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT1_L")
-			(pinfunction "Pin_7_7")
+			(pinfunction "OUT1−_7")
 			(pintype "passive")
 			(uuid "930b7c86-f068-468f-b427-ef05559e02db")
 		)
@@ -9428,7 +9414,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT_V")
-			(pinfunction "Pin_8_8")
+			(pinfunction "OUT1+V_8")
 			(pintype "passive")
 			(uuid "e1965108-e2fe-4005-9f40-a612ebbe600b")
 		)
@@ -9774,7 +9760,7 @@
 			(at 0 -3.15 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "836850eb-597e-48da-94ed-c085ab7a6258")
+			(uuid "89b6d570-20d9-430d-a57f-037c4342dc69")
 			(effects
 				(font
 					(size 1 1)
@@ -9785,7 +9771,7 @@
 		(property "Value" "M2"
 			(at 0 3.15 0)
 			(layer "F.Fab")
-			(uuid "84042790-6a3a-4cfe-8456-5f4afd23ee94")
+			(uuid "09c449fa-5070-4bda-9397-cf176bee8bed")
 			(effects
 				(font
 					(size 1 1)
@@ -9797,7 +9783,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2aee75f2-5768-4315-886b-d5e11add74e6")
+			(uuid "c545dd1b-0b5c-4416-b15f-e656c3a1ee99")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9808,7 +9794,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e3075f14-7005-4a53-8ff1-0756cb451c2d")
+			(uuid "85d2b267-1444-4ba2-97bf-1af78db87766")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12011,7 +11997,7 @@
 			(at 0 -1.35 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "a778ca1d-597f-4443-a982-28e9f87ca253")
+			(uuid "587fcc3f-5279-4c30-a3ca-47e06ba74322")
 			(effects
 				(font
 					(size 1 1)
@@ -12022,7 +12008,7 @@
 		(property "Value" "PESD5V0S1UL"
 			(at 0 1.35 0)
 			(layer "F.Fab")
-			(uuid "2deb7749-6daa-4770-9c37-1fc43ed7766b")
+			(uuid "82797a8e-2d5d-4c4e-b16c-0a6d4b1b1273")
 			(effects
 				(font
 					(size 1 1)
@@ -12035,7 +12021,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "efa92883-714a-4009-95e4-f5f9345c2fb2")
+			(uuid "158cb773-e3c3-406d-9a99-4da245fc76a0")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12048,7 +12034,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "8601fae8-779a-422c-8545-bdb777134604")
+			(uuid "86582078-810e-43c8-86fd-7d168fdaafe3")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12069,7 +12055,7 @@
 				)
 			)
 		)
-		(property ki_fp_filters "D*SOD?882")
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/a14bd8fe-461c-4f2a-b52b-8662a8de7ada")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -12544,7 +12530,7 @@
 			(at 1.75 -3 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "8a6b81e4-07d6-4a9f-a723-3a907088a1e9")
+			(uuid "061cf880-f948-4477-83ae-8e497735c87e")
 			(effects
 				(font
 					(size 1 1)
@@ -12555,7 +12541,7 @@
 		(property "Value" "Level"
 			(at 1.75 9.2 90)
 			(layer "F.Fab")
-			(uuid "86ca2af0-0d39-40d9-a705-f3a3636cb517")
+			(uuid "e2bbbe2c-e446-48c4-998c-05789deaaf49")
 			(effects
 				(font
 					(size 1 1)
@@ -12567,7 +12553,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "bcbcd2a3-5817-405b-ab58-a09d5d6352ff")
+			(uuid "a028094d-93cc-46b9-94a1-46b0738f61ea")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12578,7 +12564,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "897b4e31-f2b0-4ec2-9173-a77c6ff6ab3f")
+			(uuid "547cc705-513f-4caf-9e25-830f73e4359a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12610,14 +12596,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/33f79c18-774a-4b9c-9950-844e38b1ba59")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2")
+				(pins "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -12783,7 +12768,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.138889)
 			(net "GND")
-			(pinfunction "Pin_1_1")
+			(pinfunction "GND_1")
 			(pintype "passive")
 			(uuid "eec5dd98-9dc2-46de-ad16-8ddd10b2c9ce")
 		)
@@ -12794,7 +12779,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/LEVEL_IN")
-			(pinfunction "Pin_2_2")
+			(pinfunction "Level_2")
 			(pintype "passive")
 			(uuid "0e52bd90-e74c-4ab1-ae1a-76403cdb0e2a")
 		)
@@ -13471,7 +13456,7 @@
 			(at 0 -3.15 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "d81c752f-65dc-4445-96da-6e9f32465a22")
+			(uuid "af4de6a4-a634-4b79-8973-eb8db6a0f89c")
 			(effects
 				(font
 					(size 1 1)
@@ -13482,7 +13467,7 @@
 		(property "Value" "M2"
 			(at 0 3.15 0)
 			(layer "F.Fab")
-			(uuid "bd76df7f-f78d-469b-8133-217524344afc")
+			(uuid "6f8e6591-166e-4679-8d10-85a0038e5eec")
 			(effects
 				(font
 					(size 1 1)
@@ -13494,7 +13479,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "238168f0-3512-45ae-b1ec-8438bef73327")
+			(uuid "5fee8f19-2f48-4641-9506-fd5d62b1f598")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13505,7 +13490,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "877aa3da-aa3b-44fc-852b-e27cd0ae83ee")
+			(uuid "2437d062-0bea-468a-a31b-d0cb46305540")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14670,7 +14655,7 @@
 			(at 1.75 -3 180)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "a60b82de-e506-4337-9496-a27499c362c3")
+			(uuid "e1cf3aea-a83e-4070-b316-7c5d96b769ea")
 			(effects
 				(font
 					(size 1 1)
@@ -14681,7 +14666,7 @@
 		(property "Value" "12V IN"
 			(at 1.75 9.2 180)
 			(layer "F.Fab")
-			(uuid "31b41068-8f2f-45dd-b7c3-ceb01956c303")
+			(uuid "34683526-3071-4632-90f3-846e8da68414")
 			(effects
 				(font
 					(size 1 1)
@@ -14693,7 +14678,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "316cf56f-5ffc-41e6-b7c3-1c18dbf63058")
+			(uuid "8076ed3c-c080-400d-85a1-0eecf30804b1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14704,7 +14689,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "c7fd6fb0-03ff-4232-9ce5-d04efc19f208")
+			(uuid "10a51eb9-75f6-49a4-ac24-8caccd220260")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14736,14 +14721,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/10703687-a37e-4536-9c1c-275d6be84ed8")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2")
+				(pins "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -14909,7 +14893,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.138889)
 			(net "GND")
-			(pinfunction "Pin_1_1")
+			(pinfunction "GND_1")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "444668d0-c36a-4ab0-b24a-f9ca9638db26")
@@ -14921,7 +14905,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/+12V_IN")
-			(pinfunction "Pin_2_2")
+			(pinfunction "+12/V_2")
 			(pintype "passive")
 			(uuid "b666f2c4-2fc6-4836-86bd-18f6de5a3e39")
 		)
@@ -15538,7 +15522,7 @@
 			(at 0 -3.15 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "a4a1a7af-d88f-4b95-8c89-0c58d77d3426")
+			(uuid "33fdeefb-0155-4ba6-9db6-afc93e534f20")
 			(effects
 				(font
 					(size 1 1)
@@ -15549,7 +15533,7 @@
 		(property "Value" "M2"
 			(at 0 3.15 0)
 			(layer "F.Fab")
-			(uuid "d5d825b5-1fa4-47e4-849c-b9394dbb3ba1")
+			(uuid "0efe9e64-1ec1-41f6-98f0-09ab669c0296")
 			(effects
 				(font
 					(size 1 1)
@@ -15561,7 +15545,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7a580f7d-a9e0-48cd-9d4c-0cf2d13ebb96")
+			(uuid "e7ee82d9-8aa7-4e41-9f4e-0110f35e4705")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15572,7 +15556,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7fe9e971-d57f-4688-bb38-7dcc5c632487")
+			(uuid "1a808b57-f932-4cdf-bdf5-7e69567ebeb3")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15667,7 +15651,7 @@
 			(at 0 -4.6 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "e385519d-851d-4f45-8d15-2aef331347fb")
+			(uuid "2136690a-0698-4424-adc5-00aff09f09fd")
 			(effects
 				(font
 					(size 1 1)
@@ -15678,7 +15662,7 @@
 		(property "Value" "4.7u"
 			(at 0 4.2 270)
 			(layer "F.Fab")
-			(uuid "6bee7571-1e2e-4ce7-bc35-e2231e1fd023")
+			(uuid "4b3649e2-bc9a-45e7-a4c0-29b7c40624bd")
 			(effects
 				(font
 					(size 1 1)
@@ -15691,7 +15675,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "21694992-c515-480e-af91-80308e12ec52")
+			(uuid "d9423ccc-7978-43a3-a40b-e955ea051bd7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15704,7 +15688,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "61113bef-fbd2-4f53-91e6-85e4c51f5d3a")
+			(uuid "6c3bfc0d-3c0f-46a5-92ce-792ac80f1521")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15893,7 +15877,6 @@
 			(size 2.35 5.1)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "/BUCK_SW")
-			(pinfunction "1_1")
 			(pintype "passive")
 			(uuid "48b9d879-1d09-412e-9b35-f119548218e7")
 		)
@@ -15902,7 +15885,6 @@
 			(size 2.35 5.1)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net "+5V")
-			(pinfunction "2_2")
 			(pintype "passive")
 			(uuid "c3ad11e5-b129-41b5-bb34-bf1c2264c28d")
 		)
@@ -16139,7 +16121,7 @@
 			(at 0 -2.38 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "7b7c82ea-8fa9-4430-ac44-b12646b85eaf")
+			(uuid "d3b580e8-78ec-4d17-9dce-143f1b0e6cbd")
 			(effects
 				(font
 					(size 1 1)
@@ -16150,7 +16132,7 @@
 		(property "Value" "UART"
 			(at 0 7.46 270)
 			(layer "F.Fab")
-			(uuid "d20e11ca-5aed-484c-9fd6-ee19f02355ec")
+			(uuid "eaa037f1-3166-44ae-9b54-e7ab6fce2081")
 			(effects
 				(font
 					(size 1 1)
@@ -16162,7 +16144,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "66e11ade-646f-468c-92b8-a1b0c00eaf3c")
+			(uuid "7f995757-2ae3-42b5-b252-f292153a2f88")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16173,7 +16155,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "f2f2a92e-b586-4b4a-b694-e8af96a0328b")
+			(uuid "f002addf-55a8-4b74-8e91-946ef7d4bff8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16205,14 +16187,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/d3fda057-d9a5-4fe1-845c-045260f1ec18")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2" "3")
+				(pins "3" "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -16356,7 +16337,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_1_1")
+			(pinfunction "GND_1")
 			(pintype "passive")
 			(uuid "df7dba0a-4e9f-4db5-9a14-2d34d8f3ba88")
 		)
@@ -16367,7 +16348,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/UART_TX")
-			(pinfunction "Pin_2_2")
+			(pinfunction "TX_2")
 			(pintype "passive")
 			(uuid "c56c67b9-1694-4ad6-a8d4-00ee12380a8e")
 		)
@@ -16378,7 +16359,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/UART_RX")
-			(pinfunction "Pin_3_3")
+			(pinfunction "RX_3")
 			(pintype "passive")
 			(uuid "9cbe9967-32a4-4804-8b88-4339c93ec506")
 		)
@@ -17754,7 +17735,7 @@
 			(at 0 -4.5 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "d4397982-a103-4941-8614-23882eb99a75")
+			(uuid "1553c02f-384e-4fbb-96d2-de4447d6dd07")
 			(effects
 				(font
 					(size 1 1)
@@ -17765,7 +17746,7 @@
 		(property "Value" "AOD4185"
 			(at 0 4.5 90)
 			(layer "F.Fab")
-			(uuid "8261cfab-235e-4395-b18c-4c4391c02f41")
+			(uuid "5796cd70-e4f5-45f6-b15c-d0ecbae0bf10")
 			(effects
 				(font
 					(size 1 1)
@@ -17777,7 +17758,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e2d60e6e-deac-490f-9cfb-9beb4f94494e")
+			(uuid "645b3205-287a-4b08-a8eb-d1119041797e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17788,7 +17769,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "a8b12ba8-2506-43bf-97a9-1469195ba19d")
+			(uuid "3c739c10-2b11-492c-8ce6-e99e0b6a70cd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18055,7 +18036,7 @@
 			(roundrect_rratio 0.208333)
 			(net "/REVP_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "2d0fe47d-52b9-4d67-b7cb-41fd0500b1b6")
 		)
 		(pad "2" smd roundrect
@@ -18101,7 +18082,7 @@
 			(at 0 -2.4 180)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "5d591c53-2f70-448f-ae0e-97ad24630960")
+			(uuid "8adbfec3-7fbf-4f19-8bdd-86faefb32d2c")
 			(effects
 				(font
 					(size 1 1)
@@ -18112,7 +18093,7 @@
 		(property "Value" "AP63205WU"
 			(at 0 2.4 180)
 			(layer "F.Fab")
-			(uuid "4785452d-7a4d-4d9c-ad01-25a777b83ec6")
+			(uuid "81ae8214-05c6-4e2e-a1f6-d897ee97e0b4")
 			(effects
 				(font
 					(size 1 1)
@@ -18124,7 +18105,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "01af8e18-c7a6-43c4-b70c-9e2d4a8587f3")
+			(uuid "1022ad1b-780f-4b6a-a282-d43d2283c937")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18135,7 +18116,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "ac5a8e88-80c5-4bbd-bd5f-a46494281745")
+			(uuid "bf1aa781-13af-4cf0-b0f5-87870e60830d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18180,14 +18161,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TSOT?23*")
 		(path "/8d2124de-5f5e-4e10-a4f4-731b0110f95c")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "3" "2" "4" "5" "6" "1")
+				(pins "3" "2" "4" "6" "5" "1")
 			)
 		)
 		(attr smd)
@@ -18414,7 +18394,7 @@
 			(roundrect_rratio 0.25)
 			(net "+5V")
 			(pinfunction "FB_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "9ec4761c-bc61-4ad4-965d-e154b79d6fec")
 		)
 		(pad "2" smd roundrect
@@ -18424,7 +18404,7 @@
 			(roundrect_rratio 0.25)
 			(net "+12V")
 			(pinfunction "EN_2")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "fe2bf121-ec22-45cc-8b18-14c32cc5cee1")
 		)
 		(pad "3" smd roundrect
@@ -18434,7 +18414,7 @@
 			(roundrect_rratio 0.25)
 			(net "+12V")
 			(pinfunction "IN_3")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "1f7a63cc-f37c-44f9-b56b-faf8d43efa64")
 		)
 		(pad "4" smd roundrect
@@ -18444,7 +18424,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_4")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "9f608b18-26eb-4598-a074-48a1baa55062")
 		)
 		(pad "5" smd roundrect
@@ -18454,7 +18434,7 @@
 			(roundrect_rratio 0.25)
 			(net "/BUCK_SW")
 			(pinfunction "SW_5")
-			(pintype "output")
+			(pintype "passive")
 			(uuid "c22ee26d-aa45-4ed6-9488-d611f6ad8484")
 		)
 		(pad "6" smd roundrect
@@ -18662,7 +18642,7 @@
 			(at 0 -1.35 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "14f48e8f-9824-492b-a93e-eb4b7be1b313")
+			(uuid "32915d5a-3bf7-46c6-a877-493cf0ef5edd")
 			(effects
 				(font
 					(size 1 1)
@@ -18673,7 +18653,7 @@
 		(property "Value" "PESD5V0S1UL"
 			(at 0 1.35 0)
 			(layer "F.Fab")
-			(uuid "f0247a42-975d-43a4-975d-ab501906840f")
+			(uuid "01771b59-95d5-4a39-ae3d-7b50fd54d660")
 			(effects
 				(font
 					(size 1 1)
@@ -18686,7 +18666,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "bacfcecd-06e5-48da-9aee-fb310d6009d2")
+			(uuid "02e35aeb-b949-43f4-9ac1-c2943fd7f0bc")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18699,7 +18679,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "f89090e4-3588-45e9-879b-2699e69f3d46")
+			(uuid "25533b2f-278d-44ed-a62c-93ef9d6d2ef4")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18720,7 +18700,7 @@
 				)
 			)
 		)
-		(property ki_fp_filters "D*SOD?882")
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/845bf16d-f2ff-47ec-976a-44b380c44a8c")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -19649,7 +19629,7 @@
 			(at 5 -2.9 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "06e6d262-ef02-4ee5-8714-03b25b389a09")
+			(uuid "467b8888-016e-45e8-ad1b-378fb0541399")
 			(effects
 				(font
 					(size 1 1)
@@ -19660,7 +19640,7 @@
 		(property "Value" "Buttons"
 			(at 5 4 90)
 			(layer "F.Fab")
-			(uuid "755eca21-08be-4992-9ee6-d3b6fb568741")
+			(uuid "60974e58-2ace-4f53-a372-354df9918ad2")
 			(effects
 				(font
 					(size 1 1)
@@ -19672,7 +19652,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "4e77b8ad-b57f-47b5-80b4-e23a1783bd32")
+			(uuid "7e05dfe5-e6bc-41be-948a-7f66432a9a8a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19683,7 +19663,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "cf7a0c68-ab82-400f-a12e-f9837fc1bdeb")
+			(uuid "cba42afa-3c32-445c-bbbf-5a2e615d69bf")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19728,7 +19708,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/4a7fe63d-ce1e-4c16-a12d-6cd901c04b00")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -20182,7 +20161,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.208333)
 			(net "/BTN_START_X")
-			(pinfunction "Pin_1_1")
+			(pinfunction "START_1")
 			(pintype "passive")
 			(uuid "d74db0d5-63f0-4711-9775-6571ea0bad39")
 		)
@@ -20193,7 +20172,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/BTN_PUMP_X")
-			(pinfunction "Pin_2_2")
+			(pinfunction "PUMP_2")
 			(pintype "passive")
 			(uuid "a541679d-b04f-481d-9a6d-d5f1dcc65095")
 		)
@@ -20204,7 +20183,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/LED_START_K")
-			(pinfunction "Pin_3_3")
+			(pinfunction "LED/START−_3")
 			(pintype "passive")
 			(uuid "8d894544-7e97-4129-88b4-11b080179473")
 		)
@@ -20215,7 +20194,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/LED_PUMP_K")
-			(pinfunction "Pin_4_4")
+			(pinfunction "LED/PUMP−_4")
 			(pintype "passive")
 			(uuid "de37942d-c35c-4c69-a73c-08263b4f30b7")
 		)
@@ -20226,7 +20205,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+5V")
-			(pinfunction "Pin_5_5")
+			(pinfunction "LED+(5/V)_5")
 			(pintype "passive")
 			(uuid "90b9ec04-781f-4ca3-bab1-af1bdacb9d75")
 		)
@@ -20237,7 +20216,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_6_6")
+			(pinfunction "GND_6")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "b12c49f8-3a0d-416e-91bd-98fa3a87c3cc")
@@ -20437,7 +20416,7 @@
 			(at 0 -2.38 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "e8d1da51-0fea-4a28-99e9-1bef470686cf")
+			(uuid "2cc5c050-c77e-48a5-9dfe-d23f3e383529")
 			(effects
 				(font
 					(size 1 1)
@@ -20448,7 +20427,7 @@
 		(property "Value" "OUT V select"
 			(at 0 7.46 90)
 			(layer "F.Fab")
-			(uuid "0da284d8-9add-4654-9518-bd3a5f4700cd")
+			(uuid "ae5f4cd7-c6b8-4bae-8617-d2471fc44bf9")
 			(effects
 				(font
 					(size 1 1)
@@ -20460,7 +20439,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "631094bb-f21b-4779-8c3d-78f27888ffd6")
+			(uuid "5e0b682f-456e-4ff0-91f3-f8bf072b7ffd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20471,7 +20450,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "78b54053-a3d1-4175-87e6-bd2fc3a6c974")
+			(uuid "39dbe7db-7b67-442f-86c1-a30125aaf5ba")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20503,7 +20482,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/c0aef4be-7e19-4ebd-8ed8-bb540d227d31")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -20654,7 +20632,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+12V")
-			(pinfunction "Pin_1_1")
+			(pinfunction "12V_1")
 			(pintype "passive")
 			(uuid "87f4be90-0ab0-466f-b6be-d46e40e199d8")
 		)
@@ -20665,7 +20643,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT_V")
-			(pinfunction "Pin_2_2")
+			(pinfunction "OUT_V_2")
 			(pintype "passive")
 			(uuid "05e50c75-37c9-4024-88e3-14a14aa4c3be")
 		)
@@ -20676,7 +20654,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+5V")
-			(pinfunction "Pin_3_3")
+			(pinfunction "5V_3")
 			(pintype "passive")
 			(uuid "324cbd49-eaf9-4b96-9a4c-c628adeb419f")
 		)
@@ -20703,7 +20681,7 @@
 			(at 0 -2.4 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "a947b8f9-d16c-45e2-a2e7-dc59531df9eb")
+			(uuid "7df22438-0524-43ee-9393-0ae727876288")
 			(effects
 				(font
 					(size 1 1)
@@ -20714,7 +20692,7 @@
 		(property "Value" "UCC27511A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
-			(uuid "e61b4545-df18-4832-a3c4-2172a6497efd")
+			(uuid "083272d6-fa4b-48ea-bac9-39b3ecd35d85")
 			(effects
 				(font
 					(size 1 1)
@@ -20726,7 +20704,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5cfe8ce7-ef0f-4cb9-b60a-dcb9bca73fe4")
+			(uuid "e56ce08d-a393-4f24-bec9-15f0ad0140ca")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20737,7 +20715,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "cd24b075-d89f-4546-a7cb-f146a9efd6eb")
+			(uuid "14e04055-2a8d-4eed-83de-8206feb81a0e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20782,14 +20760,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/21de91de-4d21-4839-9da0-645152563a91")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "6" "5" "1" "4" "2" "3")
+				(pins "2" "3" "1" "6" "5" "4")
 			)
 		)
 		(attr smd)
@@ -21015,8 +20992,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "+12V")
-			(pinfunction "V_{DD}_1")
-			(pintype "power_in")
+			(pinfunction "VDD_1")
+			(pintype "passive")
 			(uuid "d9692fbd-0399-4978-82bc-c6beef323dbb")
 		)
 		(pad "2" smd roundrect
@@ -21026,7 +21003,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR1_OH")
 			(pinfunction "OUTH_2")
-			(pintype "output")
+			(pintype "passive")
 			(uuid "d25acca4-f149-478d-970c-7e5b6b83bf08")
 		)
 		(pad "3" smd roundrect
@@ -21036,7 +21013,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR1_G")
 			(pinfunction "OUTL_3")
-			(pintype "output")
+			(pintype "passive")
 			(uuid "c80b0d2b-bba3-4a92-a24e-d1b6f549bacb")
 		)
 		(pad "4" smd roundrect
@@ -21046,7 +21023,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_4")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "ea158a6d-4f28-4d19-ac82-2be5901e2764")
 		)
 		(pad "5" smd roundrect
@@ -21055,8 +21032,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "GND")
-			(pinfunction "IN-_5")
-			(pintype "input")
+			(pinfunction "IN−_5")
+			(pintype "passive")
 			(uuid "54af53cb-83c0-49e7-9e20-1c0ce0fdbadf")
 		)
 		(pad "6" smd roundrect
@@ -21066,7 +21043,7 @@
 			(roundrect_rratio 0.25)
 			(net "/PWR1")
 			(pinfunction "IN+_6")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "39269dd5-488c-41da-93c0-29f375e1f87a")
 		)
 		(embedded_fonts no)
@@ -21092,7 +21069,7 @@
 			(at 0 -2.4 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "1491ce06-7a64-4fc1-888d-79a8dc72e17d")
+			(uuid "edade9b8-0cd2-4a62-9100-baa96033d952")
 			(effects
 				(font
 					(size 1 1)
@@ -21100,10 +21077,10 @@
 				)
 			)
 		)
-		(property "Value" "2N7002"
+		(property "Value" "AO3400A"
 			(at 0 2.4 0)
 			(layer "F.Fab")
-			(uuid "99eba344-afab-41a1-b7b3-9e92642c1655")
+			(uuid "30e9ae80-aafd-4d4e-ac9f-8fcacbfd3005")
 			(effects
 				(font
 					(size 1 1)
@@ -21115,7 +21092,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "4a5cebb6-25d1-4420-9775-f991fb9489ea")
+			(uuid "4a6aa209-e11b-4deb-924d-389428213781")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21126,7 +21103,7 @@
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "89ef7ae3-b076-49d0-97d6-967ff3210a83")
+			(uuid "a6997bbc-ca4b-4fad-b61d-76fa438e6351")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21145,7 +21122,7 @@
 				)
 			)
 		)
-		(property "MPN" "2N7002"
+		(property "MPN" "AO3400A"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -21158,7 +21135,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/bf35a7fa-41f9-48a4-b329-4d83ed3d3811")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -21442,7 +21418,7 @@
 			(roundrect_rratio 0.25)
 			(net "/LED_START")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "ff9accf7-3ccf-44e7-a135-7aa259240eeb")
 		)
 		(pad "2" smd roundrect
@@ -21488,7 +21464,7 @@
 			(at 0 -2.4 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "3243ac8e-a312-41e3-9365-d4ad2c093c0e")
+			(uuid "df05a561-f818-48f8-8f7f-6a6e7e32b1fa")
 			(effects
 				(font
 					(size 1 1)
@@ -21499,7 +21475,7 @@
 		(property "Value" "AO3400A"
 			(at 0 2.4 90)
 			(layer "F.Fab")
-			(uuid "b40048d1-a3b0-4a6f-b121-8c2b2d6f0942")
+			(uuid "8d68d8fa-72b9-4bac-a942-4a662caa7690")
 			(effects
 				(font
 					(size 1 1)
@@ -21511,7 +21487,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "1a46f098-3432-4076-87b1-0ca43c98e452")
+			(uuid "57522c18-8202-4c09-9ad4-1bfd9ac73824")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21522,7 +21498,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "a91db672-5940-4176-af3b-4cc569ef284d")
+			(uuid "a3178618-7814-4285-a255-cf30e5df295e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21554,7 +21530,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/2916ace3-84cd-4e5d-91f8-505b00720930")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -21838,7 +21813,7 @@
 			(roundrect_rratio 0.25)
 			(net "/OUT3_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "51d19b21-dba4-4fc6-b511-0909f91c2e3e")
 		)
 		(pad "2" smd roundrect
@@ -21884,7 +21859,7 @@
 			(at 0 -2.4 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "163b31ba-02ad-4922-97f3-0b4514c8179d")
+			(uuid "36b87d51-8d97-4094-82d7-3a5d9830781d")
 			(effects
 				(font
 					(size 1 1)
@@ -21895,7 +21870,7 @@
 		(property "Value" "AO3400A"
 			(at 0 2.4 90)
 			(layer "F.Fab")
-			(uuid "8baf265a-2ee7-48cb-ba71-fb708993ce85")
+			(uuid "ec3d54e6-b5c7-4ba3-83df-47c83b42d6b7")
 			(effects
 				(font
 					(size 1 1)
@@ -21907,7 +21882,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "f5ad61d0-97c2-4775-9c41-b5153092664c")
+			(uuid "555479f4-0a14-44ec-90da-0edf2dfe87eb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21918,7 +21893,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "524c7614-1c58-4105-9647-133b24063fad")
+			(uuid "6a449142-58be-448a-98da-98eb9a6b3eeb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21950,7 +21925,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/d2e957e5-e6b0-4846-9451-f5775ad544b3")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -22234,7 +22208,7 @@
 			(roundrect_rratio 0.25)
 			(net "/OUT1_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "6e3ff318-feb1-43b6-ae0e-3f22b53df21b")
 		)
 		(pad "2" smd roundrect
@@ -22490,7 +22464,7 @@
 			(at 0 -1.35 180)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "a65955dc-e592-4f39-9619-b7b64c68fda0")
+			(uuid "db8fffe8-a1ec-4800-863c-6f64b56c3e39")
 			(effects
 				(font
 					(size 1 1)
@@ -22501,7 +22475,7 @@
 		(property "Value" "PESD5V0S1UL"
 			(at 0 1.35 180)
 			(layer "F.Fab")
-			(uuid "77f1dbb4-4ba3-442f-99ed-d59d00178bf3")
+			(uuid "9415733d-5d1f-470c-a113-bf925fbd56b2")
 			(effects
 				(font
 					(size 1 1)
@@ -22514,7 +22488,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "0067b541-a40b-48aa-883b-e226881731de")
+			(uuid "1ebd00ad-b126-4eab-8cf2-624ba721e14d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22527,7 +22501,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "796687ec-bbca-48c5-bec3-406f53f95629")
+			(uuid "9b64144f-e673-422d-9266-a97b4afceb82")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22548,7 +22522,7 @@
 				)
 			)
 		)
-		(property ki_fp_filters "D*SOD?882")
+		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/433d416c-b6d2-4bd8-9ff7-c6d7dd69c630")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -22962,7 +22936,7 @@
 			(at 17.5 -3 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "451e22df-42d5-43e4-99f2-0a81781ed082")
+			(uuid "8d8f2612-e6d3-4a51-8e1a-98034594bd59")
 			(effects
 				(font
 					(size 1 1)
@@ -22973,7 +22947,7 @@
 		(property "Value" "RTD1-2 1-Wire"
 			(at 17.5 9.2 270)
 			(layer "F.Fab")
-			(uuid "8a0ed0a2-2b42-45ca-ac44-73fb62c73b8c")
+			(uuid "9cedc7c8-129e-4dd4-b95b-11e3209b7277")
 			(effects
 				(font
 					(size 1 1)
@@ -22985,7 +22959,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "9bc18152-7298-4830-92ca-043f30f9ee5a")
+			(uuid "b183fa3f-b98f-4a0b-a193-e90540032c4d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22996,7 +22970,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2cc9cd6f-4a72-438d-a33a-5566dd86124d")
+			(uuid "cf367e5b-a0d9-4b65-bb61-91888a72f948")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -23041,7 +23015,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/ca26b79a-a58c-42f4-a500-838179203155")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -23304,7 +23277,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.138889)
 			(net "/RTD1_FP")
-			(pinfunction "Pin_1_1")
+			(pinfunction "RTD1/F+_1")
 			(pintype "passive")
 			(uuid "3ad2ab63-cd4e-4ba3-be61-baf68c42cfcb")
 		)
@@ -23315,7 +23288,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD1_SP")
-			(pinfunction "Pin_2_2")
+			(pinfunction "RTD1/RTD+_2")
 			(pintype "passive")
 			(uuid "ccac888a-c5d2-4b01-b907-49723ae6f3b5")
 		)
@@ -23326,7 +23299,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD1_SM")
-			(pinfunction "Pin_3_3")
+			(pinfunction "RTD1/RTD−_3")
 			(pintype "passive")
 			(uuid "101d17c7-825e-4103-a395-7cd8771f80ad")
 		)
@@ -23337,7 +23310,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD1_FM")
-			(pinfunction "Pin_4_4")
+			(pinfunction "RTD1/F−_4")
 			(pintype "passive")
 			(uuid "efa05c0f-077d-46ff-8ca3-7882f8a6c5d6")
 		)
@@ -23348,7 +23321,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_FP")
-			(pinfunction "Pin_5_5")
+			(pinfunction "RTD2/F+_5")
 			(pintype "passive")
 			(uuid "ba7478ea-af26-4907-a2fa-46cd62ece3f5")
 		)
@@ -23359,7 +23332,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_SP")
-			(pinfunction "Pin_6_6")
+			(pinfunction "RTD2/RTD+_6")
 			(pintype "passive")
 			(uuid "7ac180bf-88ea-4999-b492-206b980c1844")
 		)
@@ -23370,7 +23343,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_SM")
-			(pinfunction "Pin_7_7")
+			(pinfunction "RTD2/RTD−_7")
 			(pintype "passive")
 			(uuid "48329e13-a114-405a-94d4-c33f3ca43758")
 		)
@@ -23381,7 +23354,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD2_FM")
-			(pinfunction "Pin_8_8")
+			(pinfunction "RTD2/F−_8")
 			(pintype "passive")
 			(uuid "d95ee30c-209b-4d8b-a6cc-4812ab6af1a2")
 		)
@@ -23392,7 +23365,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OW_3V3")
-			(pinfunction "Pin_9_9")
+			(pinfunction "1-Wire/3V3_9")
 			(pintype "passive")
 			(uuid "40414f3b-491b-4de5-8d03-a6b4e066c5a2")
 		)
@@ -23403,7 +23376,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OW_DQ")
-			(pinfunction "Pin_10_10")
+			(pinfunction "1-Wire/DQ_10")
 			(pintype "passive")
 			(uuid "e211bab6-cd1e-4eb5-ac17-f5ab4bab7d1c")
 		)
@@ -23414,7 +23387,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_11_11")
+			(pinfunction "GND_11")
 			(pintype "passive")
 			(uuid "f08220bb-8b3d-401a-b902-7d9fcfb37758")
 		)
@@ -23600,7 +23573,7 @@
 			(at 0 -3.8 270)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "138322d7-61e0-45c3-880b-e4b708b0d095")
+			(uuid "11bffe67-30c9-4fe1-a2c4-868f624db4ed")
 			(effects
 				(font
 					(size 1 1)
@@ -23611,7 +23584,7 @@
 		(property "Value" "MAX31865ATP+"
 			(at 0 3.8 270)
 			(layer "F.Fab")
-			(uuid "8fa02197-259a-4c1d-82c3-fe814fc27b61")
+			(uuid "c0d7f029-3fd6-4185-9982-a5b6908f36be")
 			(effects
 				(font
 					(size 1 1)
@@ -23623,7 +23596,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "58d70f6b-a14c-429e-8e81-9bffbed8fd2a")
+			(uuid "22a50fe5-cc00-438b-818c-e96ea7c5e6c7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -23634,7 +23607,7 @@
 			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "1d713b8a-7970-40e4-9726-0b84cf4e89e6")
+			(uuid "12b084ae-5a13-4795-96e1-bebda6c3b662")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -23679,15 +23652,14 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TQFN*1EP*5x5mm*P0.65mm*")
 		(path "/3fcfd56f-b18d-42ed-8f9c-701d5abb25d0")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "18" "11" "12" "13" "14" "17" "19" "15" "20" "10" "16" "21" "1"
-					"2" "3" "4" "5" "6" "7" "8" "9"
+				(pins "14" "11" "12" "13" "10" "15" "16" "21" "6" "5" "7" "8" "9" "1"
+					"2" "3" "4" "18" "17" "20" "19"
 				)
 			)
 		)
@@ -24043,7 +24015,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD2_BIAS")
 			(pinfunction "BIAS_1")
-			(pintype "power_out")
+			(pintype "passive")
 			(uuid "e5d13697-6dc0-4f4d-a741-85d5eb1bc0d2")
 		)
 		(pad "2" smd roundrect
@@ -24053,7 +24025,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD2_BIAS")
 			(pinfunction "REFIN+_2")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "5f3a8276-3d7e-4297-ba7d-43b90bc8ac76")
 		)
 		(pad "3" smd roundrect
@@ -24062,8 +24034,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD2_REF")
-			(pinfunction "REFIN-_3")
-			(pintype "input")
+			(pinfunction "REFIN−_3")
+			(pintype "passive")
 			(uuid "3d8b788f-1372-46de-bcdb-25a3389a520f")
 		)
 		(pad "4" smd roundrect
@@ -24093,7 +24065,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD2_F2")
 			(pinfunction "FORCE2_6")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "a97e61ef-b6bb-4c5c-8726-1c46cab298a7")
 		)
 		(pad "7" smd roundrect
@@ -24103,7 +24075,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD2_SP")
 			(pinfunction "RTDIN+_7")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "1a627980-cd5f-45be-8374-59fc7e65fa51")
 		)
 		(pad "8" smd roundrect
@@ -24112,8 +24084,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD2_SM")
-			(pinfunction "RTDIN-_8")
-			(pintype "input")
+			(pinfunction "RTDIN−_8")
+			(pintype "passive")
 			(uuid "45c0e3fb-7ca1-49ec-bdb6-c4f596d0cf8d")
 		)
 		(pad "9" smd roundrect
@@ -24122,8 +24094,8 @@
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net "/RTD2_FM")
-			(pinfunction "FORCE-_9")
-			(pintype "power_out")
+			(pinfunction "FORCE−_9")
+			(pintype "passive")
 			(uuid "a8bd639a-b4a1-4482-9eaa-99e82b886936")
 		)
 		(pad "10" smd roundrect
@@ -24133,7 +24105,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "GND_10")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "bf975586-739b-451f-b567-7f069c0f6c3a")
 		)
 		(pad "11" smd roundrect
@@ -24143,7 +24115,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_MOSI")
 			(pinfunction "SDI_11")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "574335ec-27b1-4935-89b2-d79a8a7dd515")
 		)
 		(pad "12" smd roundrect
@@ -24153,7 +24125,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_SCK")
 			(pinfunction "SCLK_12")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "8f90bca3-8149-44c4-ad6a-3e5b5d153e0c")
 		)
 		(pad "13" smd roundrect
@@ -24163,7 +24135,7 @@
 			(roundrect_rratio 0.25)
 			(net "/RTD_CS2")
 			(pinfunction "~{CS}_13")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "6f80ec11-40dd-4e38-a7e1-bc873f0da408")
 		)
 		(pad "14" smd roundrect
@@ -24173,7 +24145,7 @@
 			(roundrect_rratio 0.25)
 			(net "/SPI_MISO")
 			(pinfunction "SDO_14")
-			(pintype "tri_state")
+			(pintype "passive")
 			(uuid "6a8272bf-b0da-4dc3-bdea-95a3e8e5d872")
 		)
 		(pad "15" smd roundrect
@@ -24183,7 +24155,7 @@
 			(roundrect_rratio 0.25)
 			(net "GND")
 			(pinfunction "DGND_15")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "2507ff18-3662-4a8d-a59e-ef5a5fe34ae2")
 		)
 		(pad "16" smd roundrect
@@ -24203,7 +24175,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U5-NC-Pad17)")
 			(pinfunction "NC_17")
-			(pintype "no_connect")
+			(pintype "passive+no_connect")
 			(uuid "13cdf6b6-a3c1-4990-9a20-6caa9a456935")
 		)
 		(pad "18" smd roundrect
@@ -24213,7 +24185,7 @@
 			(roundrect_rratio 0.25)
 			(net "unconnected-(U5-~{DRDY}-Pad18)")
 			(pinfunction "~{DRDY}_18")
-			(pintype "output+no_connect")
+			(pintype "passive+no_connect")
 			(uuid "3ecde267-c1bd-4555-89a9-61f4785f68a2")
 		)
 		(pad "19" smd roundrect
@@ -24223,7 +24195,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "DVDD_19")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "35875fec-fe9e-4c41-9a52-431f438d400e")
 		)
 		(pad "20" smd roundrect
@@ -24233,7 +24205,7 @@
 			(roundrect_rratio 0.25)
 			(net "+3V3")
 			(pinfunction "VDD_20")
-			(pintype "power_in")
+			(pintype "passive")
 			(uuid "ffde4634-d761-4d28-a9c2-d8a779b1f15b")
 		)
 		(pad "21" smd rect
@@ -24242,7 +24214,7 @@
 			(property pad_prop_heatsink)
 			(layers "F.Cu" "F.Mask")
 			(net "GND")
-			(pinfunction "GND_21")
+			(pinfunction "EP_21")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "f4a425a2-a814-4f2a-8b6e-cee4996ae6ce")
@@ -24539,7 +24511,7 @@
 			(at 0 -4.5 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "3cdc08ce-97c6-4ba1-afc9-2ff6f36fbe93")
+			(uuid "1827b900-8366-4aa4-999c-25ccb3879216")
 			(effects
 				(font
 					(size 1 1)
@@ -24550,7 +24522,7 @@
 		(property "Value" "AOD4184A"
 			(at 0 4.5 90)
 			(layer "F.Fab")
-			(uuid "18110b8a-c556-4790-8379-9a08285fd48a")
+			(uuid "9fc58720-7b98-4652-b5a7-ff47bf6068b0")
 			(effects
 				(font
 					(size 1 1)
@@ -24562,7 +24534,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "4e219ce1-6422-4c71-9919-f4dc5450a518")
+			(uuid "d1a26f9f-7c37-4fb4-b556-841b042bc02a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -24573,7 +24545,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "26b90b22-ef5a-49ca-a694-e63b978d764d")
+			(uuid "96216690-1c11-4151-8e7a-1239f95e9e5a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -24827,7 +24799,7 @@
 			(roundrect_rratio 0.208333)
 			(net "/PWR2_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "d467862e-570f-490e-858e-61cc0bad8c37")
 		)
 		(pad "2" smd roundrect
@@ -25365,7 +25337,7 @@
 			(at 5.25 -3 180)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "aff7ac55-0968-4a6c-807b-8be0932d6f03")
+			(uuid "09651908-425f-4577-ae08-2fa7cea9e143")
 			(effects
 				(font
 					(size 1 1)
@@ -25376,7 +25348,7 @@
 		(property "Value" "PWR1-2"
 			(at 5.25 9.2 180)
 			(layer "F.Fab")
-			(uuid "6da33e7d-8292-41dc-b83c-c0b90d485206")
+			(uuid "6a8da7c0-1b8d-4280-8048-819aef32677a")
 			(effects
 				(font
 					(size 1 1)
@@ -25388,7 +25360,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e6608f77-1408-4faa-8df9-d1855a7ed8e9")
+			(uuid "99127032-fc32-48ed-a63f-5df300a03451")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -25399,7 +25371,7 @@
 			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "c88df187-fa9f-485e-88b5-06d3244a2353")
+			(uuid "80eed4ab-844f-4fb0-978e-65c9c74a365d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -25431,14 +25403,13 @@
 				)
 			)
 		)
-		(property ki_fp_filters "TerminalBlock*:*")
 		(path "/4c14f541-e084-4d0d-bf68-111096a2edd1")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
 		(units
 			(unit
 				(name "A")
-				(pins "1" "2" "3" "4")
+				(pins "4" "3" "2" "1")
 			)
 		)
 		(attr through_hole)
@@ -25624,7 +25595,7 @@
 			(remove_unused_layers no)
 			(roundrect_rratio 0.138889)
 			(net "/PWR2_L")
-			(pinfunction "Pin_1_1")
+			(pinfunction "PWR2−_1")
 			(pintype "passive")
 			(uuid "ad43716d-3831-4ebb-8c19-2d0215a35556")
 		)
@@ -25635,7 +25606,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/PWR2_P")
-			(pinfunction "Pin_2_2")
+			(pinfunction "PWR2+12V_2")
 			(pintype "passive")
 			(uuid "a38b4cb9-a576-4f1d-a48c-c64e86f34f0f")
 		)
@@ -25646,7 +25617,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/PWR1_L")
-			(pinfunction "Pin_3_3")
+			(pinfunction "PWR1−_3")
 			(pintype "passive")
 			(uuid "a904674e-8bb3-4540-bdba-25aa60e6d2c1")
 		)
@@ -25657,7 +25628,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/PWR1_P")
-			(pinfunction "Pin_4_4")
+			(pinfunction "PWR1+12V_4")
 			(pintype "passive")
 			(uuid "1c2a23f6-762b-41a8-8c46-50cf57b498ac")
 		)
@@ -26112,7 +26083,7 @@
 			(at 0 -2.4 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "d458a939-9979-47f1-b993-4f11536bb8b1")
+			(uuid "cdba8673-72e6-4406-8506-1a76e18d4a5a")
 			(effects
 				(font
 					(size 1 1)
@@ -26123,7 +26094,7 @@
 		(property "Value" "AO3400A"
 			(at 0 2.4 90)
 			(layer "F.Fab")
-			(uuid "dde56b12-f997-4e24-8767-1fb1e62ea404")
+			(uuid "f50f38b2-dd3c-4aca-badd-79e85d3356dc")
 			(effects
 				(font
 					(size 1 1)
@@ -26135,7 +26106,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "e3cbb960-5cb5-46c8-b16d-b5aa14143440")
+			(uuid "fec479b9-9ed5-4a66-949f-23aaa6183565")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26146,7 +26117,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "72b190e1-a319-4614-a935-9e126490509d")
+			(uuid "ff33689f-11c7-47b4-98e1-348d32d93b8d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -26178,7 +26149,6 @@
 				)
 			)
 		)
-		(property ki_fp_filters "SOT?23*")
 		(path "/ec7b98e2-75bb-442a-a8de-618972a8fe13")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -26462,7 +26432,7 @@
 			(roundrect_rratio 0.25)
 			(net "/OUT4_G")
 			(pinfunction "G_1")
-			(pintype "input")
+			(pintype "passive")
 			(uuid "db444575-9b6d-4f22-8d1c-8494001bc88b")
 		)
 		(pad "2" smd roundrect
@@ -27292,7 +27262,7 @@
 		(property "Reference" "J8"
 			(at 1.27 2.38 90)
 			(layer "B.SilkS")
-			(uuid "dde05562-e13c-493f-8bf9-637427066be0")
+			(uuid "f3d0cbcc-4e77-4d5b-ae5d-8d127db6f5c2")
 			(effects
 				(font
 					(size 1 1)
@@ -27304,7 +27274,7 @@
 		(property "Value" "J8 panel"
 			(at 1.27 -40.48 90)
 			(layer "B.Fab")
-			(uuid "df77c371-fd3e-40ea-a5fe-22562fa09bca")
+			(uuid "2cb1d99b-0047-4ccf-8294-28ce57a72650")
 			(effects
 				(font
 					(size 1 1)
@@ -27317,7 +27287,7 @@
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "9cecf959-2381-4d43-b363-0ca8a21b174c")
+			(uuid "ec2ae03d-f7f7-421d-999d-b8f04ff1d579")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27329,7 +27299,7 @@
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "fe16e23d-1e0c-4055-994c-71066eb78375")
+			(uuid "9577d43f-d09e-4df6-a526-108a820188bb")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27378,7 +27348,6 @@
 				(justify mirror)
 			)
 		)
-		(property ki_fp_filters "Connector*:*_2x??_*")
 		(path "/b9b7e1be-0130-4d01-abe0-d8390f0a58c7")
 		(sheetname "/")
 		(sheetfile "backpack.kicad_sch")
@@ -27553,7 +27522,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "unconnected-(J8-BAT-Pad1)")
-			(pinfunction "Pin_1_1")
+			(pinfunction "BAT_1")
 			(pintype "passive+no_connect")
 			(uuid "78fd46ae-15e0-419e-ae68-629416eb7e8d")
 		)
@@ -27564,7 +27533,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+5V")
-			(pinfunction "Pin_2_2")
+			(pinfunction "5V_2")
 			(pintype "passive")
 			(uuid "9c7211f7-d675-4331-9a61-45450d35650d")
 		)
@@ -27575,7 +27544,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_3_3")
+			(pinfunction "GND_3")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "a6c1044e-3b9c-4293-999b-8fc7b1f6a9f7")
@@ -27587,7 +27556,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_4_4")
+			(pinfunction "GND_4")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "031411b3-5a15-46e0-a287-dfa4949f5567")
@@ -27599,7 +27568,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/PWR2")
-			(pinfunction "Pin_5_5")
+			(pinfunction "GPIO21_5")
 			(pintype "passive")
 			(uuid "d7e94bbf-6de2-4671-8d4e-4e6358dbba42")
 		)
@@ -27610,7 +27579,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "unconnected-(J8-D−(19)-Pad6)")
-			(pinfunction "Pin_6_6")
+			(pinfunction "D−(19)_6")
 			(pintype "passive+no_connect")
 			(uuid "fe2e21f5-28db-40b5-a920-e1f2946f7b15")
 		)
@@ -27621,7 +27590,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT1")
-			(pinfunction "Pin_7_7")
+			(pinfunction "GPIO38_7")
 			(pintype "passive")
 			(uuid "2a031793-455d-476a-bb2c-c4951d7eab50")
 		)
@@ -27632,7 +27601,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "unconnected-(J8-D+(20)-Pad8)")
-			(pinfunction "Pin_8_8")
+			(pinfunction "D+(20)_8")
 			(pintype "passive+no_connect")
 			(uuid "09d23170-d677-40ae-89e9-b12cf698d449")
 		)
@@ -27643,7 +27612,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT2")
-			(pinfunction "Pin_9_9")
+			(pinfunction "GPIO39_9")
 			(pintype "passive")
 			(uuid "ba23850b-e649-4e69-8d96-d76d9f282fb1")
 		)
@@ -27654,7 +27623,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/SPI_SCK")
-			(pinfunction "Pin_10_10")
+			(pinfunction "GPIO11/SCK_10")
 			(pintype "passive")
 			(uuid "9491e9aa-0668-4b77-83e0-2dfaac8e0bab")
 		)
@@ -27665,7 +27634,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT3")
-			(pinfunction "Pin_11_11")
+			(pinfunction "GPIO40_11")
 			(pintype "passive")
 			(uuid "a230ca03-2bde-4a5a-bfb8-fd6dcc861c33")
 		)
@@ -27676,7 +27645,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/SPI_MOSI")
-			(pinfunction "Pin_12_12")
+			(pinfunction "GPIO10/MOSI_12")
 			(pintype "passive")
 			(uuid "8fc5d408-1ebc-4262-a41d-ad414ce32249")
 		)
@@ -27687,7 +27656,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/OUT4")
-			(pinfunction "Pin_13_13")
+			(pinfunction "GPIO41_13")
 			(pintype "passive")
 			(uuid "5fd39474-1356-408e-bded-db50b33c40a6")
 		)
@@ -27698,7 +27667,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/SPI_MISO")
-			(pinfunction "Pin_14_14")
+			(pinfunction "GPIO9/MISO_14")
 			(pintype "passive")
 			(uuid "2b5f5f01-315f-42f2-8940-d6e27e6a7c57")
 		)
@@ -27709,7 +27678,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/PWR1")
-			(pinfunction "Pin_15_15")
+			(pinfunction "GPIO42_15")
 			(pintype "passive")
 			(uuid "356c5874-5f27-4522-994f-d3b77aab5075")
 		)
@@ -27720,7 +27689,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/ONEWIRE")
-			(pinfunction "Pin_16_16")
+			(pinfunction "GPIO17/1-Wire_16")
 			(pintype "passive")
 			(uuid "e66fc99c-95ca-458d-8d27-8cc22cb0f15b")
 		)
@@ -27731,7 +27700,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/GPIO45")
-			(pinfunction "Pin_17_17")
+			(pinfunction "GPIO45_17")
 			(pintype "passive")
 			(uuid "e7a6c41c-efbd-446a-88dc-2942f81495f5")
 		)
@@ -27742,7 +27711,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/LEVEL")
-			(pinfunction "Pin_18_18")
+			(pinfunction "GPIO18/level_18")
 			(pintype "passive")
 			(uuid "3dc5fb16-b7b2-4b2d-bc29-48f69072f699")
 		)
@@ -27753,7 +27722,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/GPIO46")
-			(pinfunction "Pin_19_19")
+			(pinfunction "GPIO46_19")
 			(pintype "passive")
 			(uuid "b8706392-d782-4727-ae0e-a3de833f1520")
 		)
@@ -27764,7 +27733,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/ESP_BOOT")
-			(pinfunction "Pin_20_20")
+			(pinfunction "BOOT(IO0)_20")
 			(pintype "passive")
 			(uuid "53010acb-e27c-4dd8-bc96-6184f40ea9d9")
 		)
@@ -27775,7 +27744,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD_CS1")
-			(pinfunction "Pin_21_21")
+			(pinfunction "GPIO47/CS1_21")
 			(pintype "passive")
 			(uuid "b2dfb794-1697-449e-8dd6-75cfe9512ca1")
 		)
@@ -27786,7 +27755,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/ESP_RST")
-			(pinfunction "Pin_22_22")
+			(pinfunction "RST(EN)_22")
 			(pintype "passive")
 			(uuid "55494241-417c-4f38-88c9-ab9940935010")
 		)
@@ -27797,7 +27766,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/RTD_CS2")
-			(pinfunction "Pin_23_23")
+			(pinfunction "GPIO48/CS2_23")
 			(pintype "passive")
 			(uuid "531682d7-3a8e-4fd7-aaa3-efff9f16c108")
 		)
@@ -27808,7 +27777,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "unconnected-(J8-PWR-Pad24)")
-			(pinfunction "Pin_24_24")
+			(pinfunction "PWR_24")
 			(pintype "passive+no_connect")
 			(uuid "82cc7330-9094-4d5a-b9f9-d5a2f192c8ae")
 		)
@@ -27819,7 +27788,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/UART_RX")
-			(pinfunction "Pin_25_25")
+			(pinfunction "RXD(44)_25")
 			(pintype "passive")
 			(uuid "c02dadc0-188c-4b9c-af02-9f403ca5bc15")
 		)
@@ -27830,7 +27799,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/I2C_SCL")
-			(pinfunction "Pin_26_26")
+			(pinfunction "SCL(7)_26")
 			(pintype "passive")
 			(uuid "34c7cbec-bf27-4c3a-adb0-1889c87f62d3")
 		)
@@ -27841,7 +27810,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/UART_TX")
-			(pinfunction "Pin_27_27")
+			(pinfunction "TXD(43)_27")
 			(pintype "passive")
 			(uuid "1a69c79a-50c5-4427-b1bc-2887ffc52b8d")
 		)
@@ -27852,7 +27821,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "/I2C_SDA")
-			(pinfunction "Pin_28_28")
+			(pinfunction "SDA(8)_28")
 			(pintype "passive")
 			(uuid "286b43c4-9e1c-480e-a938-a54e89b85f0e")
 		)
@@ -27863,7 +27832,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_29_29")
+			(pinfunction "GND_29")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "32df80fd-1568-4ea4-bccc-837d234262ad")
@@ -27875,7 +27844,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "GND")
-			(pinfunction "Pin_30_30")
+			(pinfunction "GND_30")
 			(pintype "passive")
 			(zone_connect 2)
 			(uuid "e5d9f93c-1644-4b6f-93b2-6304c65a38e9")
@@ -27887,7 +27856,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+3V3")
-			(pinfunction "Pin_31_31")
+			(pinfunction "3V3_31")
 			(pintype "passive")
 			(uuid "2e7a4988-fa3e-4bde-b57f-400b3aab51b2")
 		)
@@ -27898,7 +27867,7 @@
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net "+3V3")
-			(pinfunction "Pin_32_32")
+			(pinfunction "3V3_32")
 			(pintype "passive")
 			(uuid "e1421aae-114e-4d12-94f5-674962c94029")
 		)
